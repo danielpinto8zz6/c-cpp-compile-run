@@ -6,33 +6,27 @@ import { VSCodeUI } from "./VSCodeUI";
 
 export function activate(context: vscode.ExtensionContext) {
     let CompileRunCommand = vscode.commands.registerCommand('extension.CompileRun', () => {
-        let currentFile = vscode.window.activeTextEditor.document.uri.path;
+        let currentFile = vscode.window.activeTextEditor.document.fileName;
+        let outputFile = path.join(path.parse(currentFile).dir, path.parse(currentFile).name);
+
+        console.log(currentFile);
+        console.log(outputFile);
 
         if (!currentFile) {
             return;
         }
 
-        let outputFile = path.join(path.dirname(currentFile), path.parse(currentFile).name);
-
         switch (path.parse(currentFile).ext) {
             case '.cpp': {
-                VSCodeUI.runInTerminal('g++ -std=c++17 -Wall -Wextra ' + '"' + currentFile + '"' + ' -o ' + '"' + outputFile + '"');
-                if (process.platform === "win32") {
-                    VSCodeUI.runInTerminal('cls');
-                } else {
-                    VSCodeUI.runInTerminal('clear');
-                }
-                VSCodeUI.runInTerminal('"' + outputFile + '"');
+                VSCodeUI.runInTerminal('g++ -std=c++17 -Wall -Wextra ' + "'" + currentFile + "'" + ' -o ' + "'" + outputFile + "'");
+                VSCodeUI.runInTerminal("clear");
+                VSCodeUI.runInTerminal("'" + outputFile + "'");
                 break;
             }
             case '.c': {
-                VSCodeUI.runInTerminal('gcc -Wall -Wextra ' + '"' + currentFile + '"' + ' -o ' + '"' + outputFile + '"' + ' && ' + '"' + outputFile + '"');
-                if (process.platform === "win32") {
-                    VSCodeUI.runInTerminal('cls');
-                } else {
-                    VSCodeUI.runInTerminal('clear');
-                }
-                VSCodeUI.runInTerminal('"' + outputFile + '"');
+                VSCodeUI.runInTerminal('gcc -Wall -Wextra ' + "'" + currentFile + "'" + ' -o ' + "'" + outputFile + "'");
+                VSCodeUI.runInTerminal("clear");
+                VSCodeUI.runInTerminal("'" + outputFile + "'");
                 break;
             }
             default: {

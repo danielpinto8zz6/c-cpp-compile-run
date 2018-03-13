@@ -1,9 +1,10 @@
 {
     "name": "c-cpp-compile-run",
-    "displayName": "c-cpp-compile-run",
-    "description": "C/C++ Compile Run",
-    "version": "0.0.1",
+    "displayName": "C/C++ Compile Run",
+    "description": "Compile & Run single c/c++ files easly",
+    "version": "0.0.5",
     "publisher": "danielpinto8zz6",
+    "icon": "resources/logo.png",
     "engines": {
         "vscode": "^1.21.0"
     },

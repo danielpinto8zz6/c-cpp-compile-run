@@ -1,6 +1,6 @@
 # c-cpp-compile-run README
 
-Compile & Run simple C/C++ files easly
+Compile & Run single c/c++ files easly
 
 ## Features
 
@@ -17,6 +17,10 @@ Compile & Run C/C++ opened file directly from the command pallet or by pressing 
 
 ## Release Notes
 
+## 0.0.5
+- Fix compile & run on windows
+- Add icon
+
 ### 0.0.1
 
-Initial release
+- Initial release

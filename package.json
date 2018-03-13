@@ -1,0 +1,51 @@
+{
+    "name": "c-cpp-compile-run",
+    "displayName": "c-cpp-compile-run",
+    "description": "C/C++ Compile Run",
+    "version": "0.0.1",
+    "publisher": "danielpinto8zz6",
+    "engines": {
+        "vscode": "^1.21.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onCommand:extension.CompileRun"
+    ],
+    "main": "./out/extension",
+    "contributes": {
+        "commands": [
+            {
+                "command": "extension.CompileRun",
+                "title": "Compile & Run"
+            }
+        ],
+        "keybindings": [
+            {
+                "mac": "cmd+r",
+                "win": "f6",
+                "linux": "f6",
+                "key": "f6",
+                "command": "extension.CompileRun"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "test": "npm run compile && node ./node_modules/vscode/bin/test"
+    },
+    "devDependencies": {
+        "typescript": "^2.6.1",
+        "vscode": "^1.1.6",
+        "tslint": "^5.8.0",
+        "@types/node": "^7.0.43",
+        "@types/mocha": "^2.2.42"
+    },
+    "dependencies": {
+        "path": "^0.12.7"
+    }
+}

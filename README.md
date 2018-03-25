@@ -17,7 +17,10 @@ Compile & Run C/C++ opened file directly from the command pallet or by pressing 
 
 ## Release Notes
 
-## 0.0.5
+### 0.0.6
+- Only show command on c or cpp files
+
+### 0.0.5
 - Fix compile & run on windows
 - Add icon
 

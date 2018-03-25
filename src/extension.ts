@@ -9,9 +9,6 @@ export function activate(context: vscode.ExtensionContext) {
         let currentFile = vscode.window.activeTextEditor.document.fileName;
         let outputFile = path.join(path.parse(currentFile).dir, path.parse(currentFile).name);
 
-        console.log(currentFile);
-        console.log(outputFile);
-
         if (!currentFile) {
             return;
         }

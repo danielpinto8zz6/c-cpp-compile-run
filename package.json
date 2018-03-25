@@ -2,7 +2,7 @@
     "name": "c-cpp-compile-run",
     "displayName": "C/C++ Compile Run",
     "description": "Compile & Run single c/c++ files easly",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "publisher": "danielpinto8zz6",
     "icon": "resources/logo.png",
     "engines": {
@@ -22,6 +22,18 @@
                 "title": "Compile & Run"
             }
         ],
+        "menus": {
+            "commandPalette": [
+                {
+                    "command": "extension.CompileRun",
+                    "when": "editorLangId ==  c"
+                },
+                {
+                    "command": "extension.CompileRun",
+                    "when": "editorLangId ==  cpp"
+                }
+            ]
+        },
         "keybindings": [
             {
                 "mac": "cmd+r",

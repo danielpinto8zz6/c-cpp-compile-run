@@ -1,12 +1,12 @@
 {
-    "name": "c-cpp-compile-run",
-    "displayName": "C/C++ Compile Run",
-    "description": "Compile & Run single c/c++ files easly",
-    "version": "0.0.6",
-    "publisher": "danielpinto8zz6",
+    "name": "c-cpp-compile-run-windows",
+    "displayName": "c-cpp-compile-run-windows",
+    "description": "Compile & Run single c/c++ files easly on Windows",
+    "version": "0.0.2",
+    "publisher": "BDZNH",
     "icon": "resources/logo.png",
     "engines": {
-        "vscode": "^1.21.0"
+        "vscode": "^1.26.0"
     },
     "categories": [
         "Other"

@@ -1,4 +1,9 @@
-# c-cpp-compile-run README
+
+Forked From https://github.com/danielpinto8zz6/c-cpp-compile-run
+
+-----
+
+# c-cpp-compile-run 
 
 Compile & Run single c/c++ files easly
 
@@ -27,3 +32,10 @@ Compile & Run C/C++ opened file directly from the command pallet or by pressing 
 ### 0.0.1
 
 - Initial release
+
+-----
+
+一些说明：
+原本的扩展叫做[C/C++ Compile Run](https://marketplace.visualstudio.com/items?itemName=danielpinto8zz6.c-cpp-compile-run)，使用之后发现工作不正常，改了一下，发了request给作者，不见回应，于是自己在商店发了一个。
+
+商店链接：[https://marketplace.visualstudio.com/items?itemName=BDZNH.c-cpp-compile-run-windows](https://marketplace.visualstudio.com/items?itemName=BDZNH.c-cpp-compile-run-windows)

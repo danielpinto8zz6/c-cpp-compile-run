@@ -1,6 +1,6 @@
 # Change Log
 
-## [0.1]
+## [0.1.0]
 - Fix vulnerabilities
 - Show output in Error/Info message
 - Fix compilation on windows

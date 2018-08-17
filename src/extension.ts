@@ -15,15 +15,15 @@ export function activate(context: vscode.ExtensionContext) {
 
         switch (path.parse(currentFile).ext) {
             case '.cpp': {
-                VSCodeUI.runInTerminal('g++ -std=c++17 -Wall -Wextra ' + "'" + currentFile + "'" + ' -o ' + "'" + outputFile + "'");
-                VSCodeUI.runInTerminal("clear");
-                VSCodeUI.runInTerminal("'" + outputFile + "'");
+                VSCodeUI.runInTerminal('g++ -std=c++17 -Wall -Wextra ' + "\"" + currentFile + "\"" + ' -o ' + "\"" + outputFile + ".exe\"");
+                VSCodeUI.runInTerminal("cls");
+                VSCodeUI.runInTerminal("\"" + outputFile + ".exe\"");
                 break;
             }
             case '.c': {
-                VSCodeUI.runInTerminal('gcc -Wall -Wextra ' + "'" + currentFile + "'" + ' -o ' + "'" + outputFile + "'");
-                VSCodeUI.runInTerminal("clear");
-                VSCodeUI.runInTerminal("'" + outputFile + "'");
+                VSCodeUI.runInTerminal('gcc -Wall -Wextra ' + "\"" + currentFile + "\"" + ' -o ' + "\"" + outputFile + ".exe\"");
+                VSCodeUI.runInTerminal("cls");
+                VSCodeUI.runInTerminal("\"" + outputFile + ".exe\"");
                 break;
             }
             default: {
@@ -31,7 +31,6 @@ export function activate(context: vscode.ExtensionContext) {
             }
         }
     });
-
     context.subscriptions.push(CompileRunCommand);
 
     context.subscriptions.push(vscode.window.onDidCloseTerminal((closedTerminal: vscode.Terminal) => {

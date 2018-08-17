@@ -6,24 +6,42 @@ import { VSCodeUI } from "./VSCodeUI";
 
 export function activate(context: vscode.ExtensionContext) {
     let CompileRunCommand = vscode.commands.registerCommand('extension.CompileRun', () => {
-        let currentFile = vscode.window.activeTextEditor.document.fileName;
-        let outputFile = path.join(path.parse(currentFile).dir, path.parse(currentFile).name);
+        let fname = vscode.window.activeTextEditor.document.fileName;
 
-        if (!currentFile) {
+        let execSync = require('child_process').execSync;
+
+        if (!fname) {
             return;
         }
 
-        switch (path.parse(currentFile).ext) {
+        let ext = "";
+        if (process.platform === 'win32') {
+            ext = ".exe";
+        }
+
+        let output = path.join(path.parse(fname).dir, path.parse(fname).name + ext);
+
+        switch (path.parse(fname).ext) {
             case '.cpp': {
-                VSCodeUI.runInTerminal('g++ -std=c++17 -Wall -Wextra ' + "'" + currentFile + "'" + ' -o ' + "'" + outputFile + "'");
-                VSCodeUI.runInTerminal("clear");
-                VSCodeUI.runInTerminal("'" + outputFile + "'");
+                try {
+                    execSync('g++ std=c++11 -Wall -Wextra ' + '\"' + fname + '\"' + ' -o ' + '"' + output + '"');
+                    vscode.window.showInformationMessage('Compile succeed');
+                    VSCodeUI.runInTerminal(output);
+                }
+                catch (error) {
+                    vscode.window.showErrorMessage(error.message.split("/"));
+                }
                 break;
             }
             case '.c': {
-                VSCodeUI.runInTerminal('gcc -Wall -Wextra ' + "'" + currentFile + "'" + ' -o ' + "'" + outputFile + "'");
-                VSCodeUI.runInTerminal("clear");
-                VSCodeUI.runInTerminal("'" + outputFile + "'");
+                try {
+                    execSync('gcc -Wall -Wextra ' + '\"' + fname + '\"' + ' -o ' + '"' + output + '"');
+                    vscode.window.showInformationMessage('Compile succeed');
+                    VSCodeUI.runInTerminal(output);
+                }
+                catch (error) {
+                    vscode.window.showErrorMessage(error.message.split("/"));
+                }
                 break;
             }
             default: {

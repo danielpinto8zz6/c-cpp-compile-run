@@ -11,6 +11,9 @@ Compile & Run C/C++ opened file directly from the command pallet or by pressing 
 * If you are on linux you must install gcc
 * If you are on window you must install mingw
 
+## How to use
+Make sure you have .c or .cpp file open and press "F6", this will compile the file
+
 ## Extension Settings
 
 ## Known Issues

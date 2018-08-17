@@ -10,7 +10,7 @@ export function activate(context: vscode.ExtensionContext) {
         let outputFile = path.join(path.parse(currentFile).dir, path.parse(currentFile).name);
 
         if (!currentFile) {
-            return;
+            return; 
         }
 
         switch (path.parse(currentFile).ext) {

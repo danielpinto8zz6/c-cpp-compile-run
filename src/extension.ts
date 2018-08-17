@@ -15,7 +15,7 @@ export function activate(context: vscode.ExtensionContext) {
 
         switch (path.parse(currentFile).ext) {
             case '.cpp': {
-                VSCodeUI.runInTerminal('g++ -std=c++17 -Wall -Wextra ' + "\"" + currentFile + "\"" + ' -o ' + "\"" + outputFile + ".exe\"");
+                VSCodeUI.runInTerminal('g++ -std=c++11 -Wall -Wextra ' + "\"" + currentFile + "\"" + ' -o ' + "\"" + outputFile + ".exe\"");
                 VSCodeUI.runInTerminal("cls");
                 VSCodeUI.runInTerminal("\"" + outputFile + ".exe\"");
                 break;

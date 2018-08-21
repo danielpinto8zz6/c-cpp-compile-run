@@ -1,5 +1,8 @@
 # Change Log
 
+## [0.1.1]
+- Revert to old code
+
 ## [0.1.0]
 - Fix vulnerabilities
 - Show output in Error/Info message

@@ -6,42 +6,24 @@ import { VSCodeUI } from "./VSCodeUI";
 
 export function activate(context: vscode.ExtensionContext) {
     let CompileRunCommand = vscode.commands.registerCommand('extension.CompileRun', () => {
-        let fname = vscode.window.activeTextEditor.document.fileName;
+        let currentFile = vscode.window.activeTextEditor.document.fileName;
+        let outputFile = path.join(path.parse(currentFile).dir, path.parse(currentFile).name);
 
-        let execSync = require('child_process').execSync;
-
-        if (!fname) {
+        if (!currentFile) {
             return;
         }
 
-        let ext = "";
-        if (process.platform === 'win32') {
-            ext = ".exe";
-        }
-
-        let output = path.join(path.parse(fname).dir, path.parse(fname).name + ext);
-
-        switch (path.parse(fname).ext) {
+        switch (path.parse(currentFile).ext) {
             case '.cpp': {
-                try {
-                    execSync('g++ std=c++11 -Wall -Wextra ' + '\"' + fname + '\"' + ' -o ' + '"' + output + '"');
-                    vscode.window.showInformationMessage('Compile succeed');
-                    VSCodeUI.runInTerminal(output);
-                }
-                catch (error) {
-                    vscode.window.showErrorMessage(error.message.split("/"));
-                }
+                VSCodeUI.runInTerminal('g++ -std=c++17 -Wall -Wextra ' + "'" + currentFile + "'" + ' -o ' + "'" + outputFile + "'");
+                VSCodeUI.runInTerminal("clear");
+                VSCodeUI.runInTerminal("'" + outputFile + "'");
                 break;
             }
             case '.c': {
-                try {
-                    execSync('gcc -Wall -Wextra ' + '\"' + fname + '\"' + ' -o ' + '"' + output + '"');
-                    vscode.window.showInformationMessage('Compile succeed');
-                    VSCodeUI.runInTerminal(output);
-                }
-                catch (error) {
-                    vscode.window.showErrorMessage(error.message.split("/"));
-                }
+                VSCodeUI.runInTerminal('gcc -Wall -Wextra ' + "'" + currentFile + "'" + ' -o ' + "'" + outputFile + "'");
+                VSCodeUI.runInTerminal("clear");
+                VSCodeUI.runInTerminal("'" + outputFile + "'");
                 break;
             }
             default: {

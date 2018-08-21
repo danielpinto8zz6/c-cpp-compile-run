@@ -20,6 +20,9 @@ Make sure you have .c or .cpp file open and press "F6", this will compile the fi
 
 ## Release Notes
 
+### 0.1.1
+- Revert to old code
+
 ### 0.1.0
 - Fix vulnerabilities
 - Show output in Error/Info message

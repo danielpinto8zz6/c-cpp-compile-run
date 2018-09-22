@@ -20,6 +20,12 @@ Make sure you have .c or .cpp file open and press "F6", this will compile the fi
 
 ## Release Notes
 
+### 0.2.0
+- Rework compiling method + log
+- Redirect errors to output
+- Add info/error messages
+- Only run in terminal if succeed
+
 ### 0.1.1
 - Revert to old code
 

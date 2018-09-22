@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.2.0]
+- Rework compiling method + log
+- Redirect errors to output
+- Add info/error messages
+- Only run in terminal if succeed
+
 ## [0.1.1]
 - Revert to old code
 

@@ -60,5 +60,8 @@
     },
     "dependencies": {
         "path": "^0.12.7"
-    }
+    },
+    "extensionPack": [
+        "IBM.output-colorizer"
+    ]
 }

@@ -15,15 +15,11 @@ export function activate(context: vscode.ExtensionContext) {
 
         switch (path.parse(currentFile).ext) {
             case '.cpp': {
-                VSCodeUI.runInTerminal(`g++ -std=c++17 -Wall -Wextra "${ currentFile }" -o "${ outputFile }"`);
-                VSCodeUI.runInTerminal("clear");
-                VSCodeUI.runInTerminal(`"${ outputFile }"`);
+                VSCodeUI.runInTerminal(`g++ -std=c++17 -Wall -Wextra "${ currentFile }" -o "${ outputFile }" && clear && "${ outputFile }"`);
                 break;
             }
             case '.c': {
-                VSCodeUI.runInTerminal(`g++ -Wall -Wextra "${ currentFile }" -o "${ outputFile }"`);
-                VSCodeUI.runInTerminal("clear");
-                VSCodeUI.runInTerminal(`"${ outputFile }"`);
+                VSCodeUI.runInTerminal(`g++ -Wall -Wextra "${ currentFile }" -o "${ outputFile }" && clear && "${ outputFile }"`);
                 break;
             }
             default: {

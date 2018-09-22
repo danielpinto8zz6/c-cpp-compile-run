@@ -2,6 +2,10 @@
 
 Compile & Run single c/c++ files easly
 
+## Donation
+
+If you like this extension, you can donate via **[PayPal](https://www.paypal.me/danielpinto8zz6)**. It will help me to spend more time improving this!
+
 ## Features
 
 Compile & Run C/C++ opened file directly from the command pallet or by pressing 'f6'
@@ -19,6 +23,10 @@ Make sure you have .c or .cpp file open and press "F6", this will compile the fi
 ## Known Issues
 
 ## Release Notes
+
+### 0.2.2
+- Add project links
+- Add donation information
 
 ### 0.2.0
 - Rework compiling method + log

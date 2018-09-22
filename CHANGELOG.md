@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.2.2]
+- Add project links
+- Add donation information
+
 ## [0.2.0]
 - Rework compiling method + log
 - Redirect errors to output

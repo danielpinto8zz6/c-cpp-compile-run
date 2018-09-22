@@ -24,6 +24,10 @@ Make sure you have .c or .cpp file open and press "F6", this will compile the fi
 
 ## Release Notes
 
+### 0.2.3
+- Allow to compile or run without doing both
+- Cleanup code
+
 ### 0.2.2
 - Add project links
 - Add donation information

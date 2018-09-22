@@ -2,7 +2,7 @@
     "name": "c-cpp-compile-run",
     "displayName": "C/C++ Compile Run",
     "description": "Compile & Run single c/c++ files easly",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "publisher": "danielpinto8zz6",
     "icon": "resources/logo.png",
     "engines": {
@@ -11,31 +11,41 @@
     "categories": [
         "Programming Languages",
         "Other"
-      ],
-      "keywords": [
+    ],
+    "keywords": [
         "c",
         "cpp",
         "compile",
         "run"
-      ],
-      "bugs": {
+    ],
+    "bugs": {
         "url": "https://github.com/danielpinto8zz6/c-cpp-compile-run/issues",
         "email": "danielpinto8zz6@gmail.com"
-      },
-      "homepage": "https://github.com/danielpinto8zz6/c-cpp-compile-run/blob/master/README.md",
-      "repository": {
+    },
+    "homepage": "https://github.com/danielpinto8zz6/c-cpp-compile-run/blob/master/README.md",
+    "repository": {
         "type": "git",
         "url": "https://github.com/danielpinto8zz6/c-cpp-compile-run.git"
-      },
+    },
     "activationEvents": [
-        "onCommand:extension.CompileRun"
+        "onCommand:extension.CompileRun",
+        "onCommand:extension.Compile",
+        "onCommand:extension.Run"
     ],
     "main": "./out/extension",
     "contributes": {
         "commands": [
             {
                 "command": "extension.CompileRun",
-                "title": "Compile & Run"
+                "title": "CompileRun : Compile & Run"
+            },
+            {
+                "command": "extension.Compile",
+                "title": "CompileRun : Compile"
+            },
+            {
+                "command": "extension.Run",
+                "title": "CompileRun : Run"
             }
         ],
         "menus": {
@@ -46,6 +56,22 @@
                 },
                 {
                     "command": "extension.CompileRun",
+                    "when": "editorLangId ==  cpp"
+                },
+                {
+                    "command": "extension.Compile",
+                    "when": "editorLangId ==  c"
+                },
+                {
+                    "command": "extension.Compile",
+                    "when": "editorLangId ==  cpp"
+                },
+                {
+                    "command": "extension.Run",
+                    "when": "editorLangId ==  c"
+                },
+                {
+                    "command": "extension.Run",
                     "when": "editorLangId ==  cpp"
                 }
             ]
@@ -76,8 +102,5 @@
     },
     "dependencies": {
         "path": "^0.12.7"
-    },
-    "extensionPack": [
-        "IBM.output-colorizer"
-    ]
+    }
 }

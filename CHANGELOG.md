@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.2.3]
+- Allow to compile or run without doing both
+- Cleanup code
+
 ## [0.2.2]
 - Add project links
 - Add donation information

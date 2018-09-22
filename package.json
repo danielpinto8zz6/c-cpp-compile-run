@@ -9,8 +9,24 @@
         "vscode": "^1.21.0"
     },
     "categories": [
+        "Programming Languages",
         "Other"
-    ],
+      ],
+      "keywords": [
+        "c",
+        "cpp",
+        "compile",
+        "run"
+      ],
+      "bugs": {
+        "url": "https://github.com/danielpinto8zz6/c-cpp-compile-run/issues",
+        "email": "danielpinto8zz6@gmail.com"
+      },
+      "homepage": "https://github.com/danielpinto8zz6/c-cpp-compile-run/blob/master/README.md",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/danielpinto8zz6/c-cpp-compile-run.git"
+      },
     "activationEvents": [
         "onCommand:extension.CompileRun"
     ],

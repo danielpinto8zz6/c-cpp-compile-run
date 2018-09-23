@@ -2,20 +2,22 @@
 
 import * as vscode from 'vscode';
 import { VSCodeUI } from "./VSCodeUI";
-import { CompileRun } from './compilerun';
-import { Constants } from './constants';
+import { CompileRun } from './compileRun';
+import { Constants } from './compileRun';
 
 export function activate(context: vscode.ExtensionContext) {
+    const compileRun = new CompileRun();
+
     let CompileRunCommand = vscode.commands.registerCommand('extension.CompileRun', () => {
-        CompileRun.compileRun(Constants.Action.CompileRun);
+        compileRun.compileRun(Constants.Action.CompileRun);
     });
 
     let CompileCommand = vscode.commands.registerCommand('extension.Compile', () => {
-        CompileRun.compileRun(Constants.Action.Compile);
+        compileRun.compileRun(Constants.Action.Compile);
     });
 
     let RunCommand = vscode.commands.registerCommand('extension.Run', () => {
-        CompileRun.compileRun(Constants.Action.Run);
+        compileRun.compileRun(Constants.Action.Run);
     });
 
     context.subscriptions.push(CompileRunCommand);

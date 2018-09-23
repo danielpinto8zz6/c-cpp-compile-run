@@ -5,6 +5,7 @@ import * as path from "path";
 import * as fs from 'fs';
 import { VSCodeUI } from "./VSCodeUI";
 import { Constants } from './Constants';
+import { Settings } from './Settings';
 
 export class CompileRun {
     private outputChannel: VSCodeUI.CompileRunOutputChannel;
@@ -20,7 +21,7 @@ export class CompileRun {
         const spawn = require('child_process').spawn;
         let commandExistsSync = require('command-exists').sync;
 
-        let save = vscode.workspace.getConfiguration('', vscode.window.activeTextEditor.document.uri).get<boolean>("c-cpp-compile-run.save-before-compile");
+        let save = Settings.saveBeforeCompile;
 
         if (save) {
             await vscode.window.activeTextEditor.document.save();
@@ -154,8 +155,8 @@ export class CompileRun {
     }
 
     private getCCompiler(): string {
-        const cCompiler = vscode.workspace.getConfiguration('', vscode.window.activeTextEditor.document.uri).get<string>('c-cpp-compile-run.c-compiler');
-
+        const cCompiler = Settings.cCompiler();
+        
         if (!cCompiler) {
             return "gcc";
         } else {
@@ -164,8 +165,8 @@ export class CompileRun {
     }
 
     private getCPPCompiler(): string {
-        const cppCompiler = vscode.workspace.getConfiguration('', vscode.window.activeTextEditor.document.uri).get<string>("c-cpp-compile-run.cpp-compiler");
-
+        const cppCompiler = Settings.cppCompiler();
+        
         if (!cppCompiler) {
             return "g++";
         } else {

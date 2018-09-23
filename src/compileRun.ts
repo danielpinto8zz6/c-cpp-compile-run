@@ -4,33 +4,23 @@ import * as vscode from 'vscode';
 import * as path from "path";
 import * as fs from 'fs';
 import { VSCodeUI } from "./VSCodeUI";
-
-export namespace Constants {
-    export enum Action {
-        Compile,
-        Run,
-        CompileRun,
-        CompileWithFlags,
-        RunWithArguments
-    }
-}
+import { Constants } from './Constants';
 
 export class CompileRun {
-    private _outputChannel: vscode.OutputChannel;
-    private _config: vscode.WorkspaceConfiguration;
-
+    private outputChannel: VSCodeUI.CompileRunOutputChannel;
+    private terminal: VSCodeUI.CompileRunTerminal;
     readonly Action: Constants.Action;
 
     constructor() {
-        this._outputChannel = vscode.window.createOutputChannel("C/C++ Compile Run");
-        this._config = vscode.workspace.getConfiguration("c-cpp-compile-run", null);
+        this.outputChannel = new VSCodeUI.CompileRunOutputChannel();
+        this.terminal = VSCodeUI.compileRunTerminal;
     }
 
     private async compile(currentFile: string, outputFile: string, doRun: boolean = false, withFlags: boolean = false) {
         const spawn = require('child_process').spawn;
-        var commandExistsSync = require('command-exists').sync;
+        let commandExistsSync = require('command-exists').sync;
 
-        let save = this._config.get<boolean>("save-before-compile");
+        let save = vscode.workspace.getConfiguration('', vscode.window.activeTextEditor.document.uri).get<boolean>("c-cpp-compile-run.save-before-compile");
 
         if (save) {
             await vscode.window.activeTextEditor.document.save();
@@ -64,7 +54,15 @@ export class CompileRun {
                 let cCompiler = this.getCCompiler();
 
                 if (!commandExistsSync(cCompiler)) {
-                    vscode.window.showErrorMessage("Compiler not found, try to change path in settings!");
+                    const CHANGE_PATH: string = "Change path";
+                    const choiceForDetails: string = await vscode.window.showErrorMessage("Compiler not found, try to change path in settings!", CHANGE_PATH);
+                    if (choiceForDetails === CHANGE_PATH) {
+                        let path = await this.promptForPath();
+                        await vscode.workspace.getConfiguration().update('c-cpp-compile-run.c-compiler', path, vscode.ConfigurationTarget.Global);
+                        this.compile(currentFile, outputFile, doRun, withFlags);
+                        return;
+                    }
+                    
                     return;
                 }
 
@@ -87,13 +85,13 @@ export class CompileRun {
         }
 
         exec.stdout.on('data', (data: any) => {
-            this._outputChannel.appendLine(data);
-            this._outputChannel.show(true);
+            this.outputChannel.appendLine(data, currentFile);
+            this.outputChannel.show();
         });
 
         exec.stderr.on('data', (data: any) => {
-            this._outputChannel.appendLine(data);
-            this._outputChannel.show(true);
+            this.outputChannel.appendLine(data, currentFile);
+            this.outputChannel.show();
         });
 
         exec.on('close', (data: any) => {
@@ -118,9 +116,9 @@ export class CompileRun {
 
         if (withArgs) {
             let args = await this.promptForRunArgs();
-            VSCodeUI.runInTerminal(`"${outputFile}" ${args}`);
+            this.terminal.runInTerminal(`"${outputFile}" ${args}`);
         } else {
-            VSCodeUI.runInTerminal(`"${outputFile}"`);
+            this.terminal.runInTerminal(`"${outputFile}"`);
         }
     }
 
@@ -156,7 +154,7 @@ export class CompileRun {
     }
 
     private getCCompiler(): string {
-        const cCompiler = this._config.get<string>("c-compiler");
+        const cCompiler = vscode.workspace.getConfiguration('', vscode.window.activeTextEditor.document.uri).get<string>('c-cpp-compile-run.c-compiler');
 
         if (!cCompiler) {
             return "gcc";
@@ -166,7 +164,7 @@ export class CompileRun {
     }
 
     private getCPPCompiler(): string {
-        const cppCompiler = this._config.get<string>("cpp-compiler");
+        const cppCompiler = vscode.workspace.getConfiguration('', vscode.window.activeTextEditor.document.uri).get<string>("c-cpp-compile-run.cpp-compiler");
 
         if (!cppCompiler) {
             return "g++";
@@ -191,6 +189,17 @@ export class CompileRun {
             return await vscode.window.showInputBox({
                 prompt: 'Arguments',
                 placeHolder: 'arg'
+            });
+        } catch (e) {
+            return null;
+        }
+    }
+
+    private async promptForPath(): Promise<string | undefined> {
+        try {
+            return await vscode.window.showInputBox({
+                prompt: 'Path',
+                placeHolder: '/usr/bin/gcc'
             });
         } catch (e) {
             return null;

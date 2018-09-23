@@ -3,7 +3,7 @@
 import * as vscode from 'vscode';
 import { VSCodeUI } from "./VSCodeUI";
 import { CompileRun } from './compileRun';
-import { Constants } from './compileRun';
+import { Constants } from "./Constants";
 
 export function activate(context: vscode.ExtensionContext) {
     const compileRun = new CompileRun();
@@ -35,7 +35,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(RunWithArgumentsCommand);
 
     context.subscriptions.push(vscode.window.onDidCloseTerminal((closedTerminal: vscode.Terminal) => {
-        VSCodeUI.onDidCloseTerminal(closedTerminal);
+        VSCodeUI.compileRunTerminal.onDidCloseTerminal(closedTerminal);
     }));
 }
 

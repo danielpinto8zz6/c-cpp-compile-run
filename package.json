@@ -2,7 +2,7 @@
     "name": "c-cpp-compile-run",
     "displayName": "C/C++ Compile Run",
     "description": "Compile & Run single c/c++ files easly",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "publisher": "danielpinto8zz6",
     "icon": "resources/logo.png",
     "engines": {
@@ -84,7 +84,24 @@
                 "key": "f6",
                 "command": "extension.CompileRun"
             }
-        ]
+        ],
+        "configuration": {
+            "title": "Compile Run configuration",
+            "properties": {
+                "c-cpp-compile-run.c-compiler": {
+                    "type": "string",
+                    "default": "gcc",
+                    "description": "Set your c compiler path if it is not working",
+                    "scope": "resource"
+                },
+                "c-cpp-compile-run.cpp-compiler": {
+                    "type": "string",
+                    "default": "g++",
+                    "description": "Set your cpp compiler path if it is not working",
+                    "scope": "resource"
+                }
+            }
+        }
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
@@ -101,6 +118,7 @@
         "vscode": "^1.1.21"
     },
     "dependencies": {
+        "command-exists": "^1.2.7",
         "path": "^0.12.7"
     }
 }

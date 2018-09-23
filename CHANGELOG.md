@@ -1,5 +1,8 @@
 # Change Log
 
+## [0.2.4]
+- Allow to change compiler path
+
 ## [0.2.3]
 - Allow to compile or run without doing both
 - Cleanup code

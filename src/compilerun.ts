@@ -8,25 +8,48 @@ import { Constants } from './constants';
 export namespace CompileRun {
     function compile(currentFile: string, outputFile: string, doRun: boolean = false) {
         const spawn = require('child_process').spawn;
-
-        let args = ['-Wall', '-Wextra'];
-        args.push(currentFile, '-o', outputFile);
+        var commandExistsSync = require('command-exists').sync;
 
         let exec;
 
         switch (path.parse(currentFile).ext) {
             case '.cpp': {
-                exec = spawn('g++', args);
+                let cppCompiler = Utils.getCPPCompiler();
+
+                if (!commandExistsSync(cppCompiler)) {
+                    vscode.window.showErrorMessage("Compiler not found, try to change path in settings!");
+                    return;
+                }
+
+                let cppArgs = Utils.getCPPFlags();
+                cppArgs.push(currentFile, '-o', outputFile);
+
+                exec = spawn(cppCompiler, cppArgs);
                 break;
             }
             case '.c': {
-                exec = spawn('gcc', args);
+                let cCompiler = Utils.getCCompiler();
+
+                if (!commandExistsSync(cCompiler)) {
+                    vscode.window.showErrorMessage("Compiler not found, try to change path in settings!");
+                    return;
+                }
+
+                let cArgs = Utils.getCFlags();
+                cArgs.push(currentFile, '-o', outputFile);
+
+                exec = spawn(cCompiler, cArgs);
                 break;
             }
             default: {
                 return;
             }
         }
+
+        exec.stdout.on('data', (data: any) => {
+            Utils.getOutputChannel().appendLine(data);
+            Utils.getOutputChannel().show(true);
+        });
 
         exec.stderr.on('data', (data: any) => {
             Utils.getOutputChannel().appendLine(data);

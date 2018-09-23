@@ -46,6 +46,14 @@
             {
                 "command": "extension.Run",
                 "title": "CompileRun : Run"
+            },
+            {
+                "command": "extension.CompileWithFlags",
+                "title": "CompileRun : Compile with flags"
+            },
+            {
+                "command": "extension.RunWithArguments",
+                "title": "CompileRun : Run with arguments"
             }
         ],
         "menus": {
@@ -72,6 +80,22 @@
                 },
                 {
                     "command": "extension.Run",
+                    "when": "editorLangId ==  cpp"
+                },
+                {
+                    "command": "extension.CompileWithFlags",
+                    "when": "editorLangId ==  c"
+                },
+                {
+                    "command": "extension.CompileWithFlags",
+                    "when": "editorLangId ==  cpp"
+                },
+                {
+                    "command": "extension.RunWithArguments",
+                    "when": "editorLangId ==  c"
+                },
+                {
+                    "command": "extension.RunWithArguments",
                     "when": "editorLangId ==  cpp"
                 }
             ]

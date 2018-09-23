@@ -9,25 +9,28 @@ export namespace Constants {
     export enum Action {
         Compile,
         Run,
-        CompileRun
+        CompileRun,
+        CompileWithFlags,
+        RunWithArguments
     }
 }
 
 export class CompileRun {
     private _outputChannel: vscode.OutputChannel;
+    private _config: vscode.WorkspaceConfiguration;
 
     readonly Action: Constants.Action;
 
     constructor() {
         this._outputChannel = vscode.window.createOutputChannel("C/C++ Compile Run");
+        this._config = vscode.workspace.getConfiguration("c-cpp-compile-run", null);
     }
 
-    public async compile(currentFile: string, outputFile: string, doRun: boolean = false) {
+    private async compile(currentFile: string, outputFile: string, doRun: boolean = false, withFlags: boolean = false) {
         const spawn = require('child_process').spawn;
         var commandExistsSync = require('command-exists').sync;
 
-        const config = this.getConfiguration("c-cpp-compile-run");
-        let save = config.get<boolean>("save-before-compile");
+        let save = this._config.get<boolean>("save-before-compile");
 
         if (save) {
             await vscode.window.activeTextEditor.document.save();
@@ -44,8 +47,15 @@ export class CompileRun {
                     return;
                 }
 
-                let cppArgs = this.getCPPFlags();
-                cppArgs.push(currentFile, '-o', outputFile);
+                let cppArgs = [currentFile, '-o', outputFile];
+
+                if (withFlags) {
+                    let flagsStr = await this.promptForFlags();
+                    if (flagsStr) {
+                        let flags = flagsStr.split(" ");
+                        cppArgs = cppArgs.concat(flags);
+                    }
+                }
 
                 exec = spawn(cppCompiler, cppArgs);
                 break;
@@ -58,8 +68,15 @@ export class CompileRun {
                     return;
                 }
 
-                let cArgs = this.getCFlags();
-                cArgs.push(currentFile, '-o', outputFile);
+                let cArgs = [currentFile, '-o', outputFile];
+
+                if (withFlags) {
+                    let flagsStr = await this.promptForFlags();
+                    if (flagsStr) {
+                        let flags = flagsStr.split(" ");
+                        cArgs = cArgs.concat(flags);
+                    }
+                }
 
                 exec = spawn(cCompiler, cArgs);
                 break;
@@ -93,13 +110,18 @@ export class CompileRun {
         });
     }
 
-    public async run(outputFile: string) {
+    private async run(outputFile: string, withArgs: boolean = false) {
         if (!fs.existsSync(outputFile)) {
-            vscode.window.showErrorMessage(`"${outputFile}" doesn't exists`);
+            vscode.window.showErrorMessage(`"${outputFile}" doesn't exists!`);
             return;
         }
 
-        VSCodeUI.runInTerminal(`"${outputFile}"`);
+        if (withArgs) {
+            let args = await this.promptForRunArgs();
+            VSCodeUI.runInTerminal(`"${outputFile}" ${args}`);
+        } else {
+            VSCodeUI.runInTerminal(`"${outputFile}"`);
+        }
     }
 
     public async compileRun(action: Constants.Action) {
@@ -124,13 +146,17 @@ export class CompileRun {
             case Constants.Action.CompileRun:
                 this.compile(currentFile, outputFile, true);
                 break;
+            case Constants.Action.CompileWithFlags:
+                this.compile(currentFile, outputFile, false, true);
+            case Constants.Action.RunWithArguments:
+                this.run(outputFile, true);
+                break;
             default: return;
         }
     }
 
     private getCCompiler(): string {
-        const config = this.getConfiguration("c-cpp-compile-run");
-        const cCompiler = config.get<string>("c-compiler");
+        const cCompiler = this._config.get<string>("c-compiler");
 
         if (!cCompiler) {
             return "gcc";
@@ -140,8 +166,7 @@ export class CompileRun {
     }
 
     private getCPPCompiler(): string {
-        const config = this.getConfiguration("c-cpp-compile-run");
-        const cppCompiler = config.get<string>("cpp-compiler");
+        const cppCompiler = this._config.get<string>("cpp-compiler");
 
         if (!cppCompiler) {
             return "g++";
@@ -150,15 +175,25 @@ export class CompileRun {
         }
     }
 
-    private getCFlags(): string[] {
-        return ['-Wall', '-Wextra'];
+    private async promptForFlags(): Promise<string | undefined> {
+        try {
+            return await vscode.window.showInputBox({
+                prompt: 'Flags',
+                placeHolder: '-Wall -Wextra'
+            });
+        } catch (e) {
+            return null;
+        }
     }
 
-    private getCPPFlags(): string[] {
-        return ['-Wall', '-Wextra'];
-    }
-
-    private getConfiguration(section?: string): vscode.WorkspaceConfiguration {
-        return vscode.workspace.getConfiguration(section, null);
+    private async promptForRunArgs(): Promise<string | undefined> {
+        try {
+            return await vscode.window.showInputBox({
+                prompt: 'Arguments',
+                placeHolder: 'arg'
+            });
+        } catch (e) {
+            return null;
+        }
     }
 }

@@ -20,9 +20,19 @@ export function activate(context: vscode.ExtensionContext) {
         compileRun.compileRun(Constants.Action.Run);
     });
 
+    let CompileWithFlagsCommand = vscode.commands.registerCommand('extension.CompileWithFlags', () => {
+        compileRun.compileRun(Constants.Action.CompileWithFlags);
+    });
+
+    let RunWithArgumentsCommand = vscode.commands.registerCommand('extension.RunWithArguments', () => {
+        compileRun.compileRun(Constants.Action.RunWithArguments);
+    });
+
     context.subscriptions.push(CompileRunCommand);
     context.subscriptions.push(CompileCommand);
     context.subscriptions.push(RunCommand);
+    context.subscriptions.push(CompileWithFlagsCommand);
+    context.subscriptions.push(RunWithArgumentsCommand);
 
     context.subscriptions.push(vscode.window.onDidCloseTerminal((closedTerminal: vscode.Terminal) => {
         VSCodeUI.onDidCloseTerminal(closedTerminal);

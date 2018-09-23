@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.2.5]
+- Allow to compile with flags
+- Allow to run with argumets
+- If compiler is not found you can set the new path on while compiling
+
 ## [0.2.4]
 - Allow to change compiler path
 - Allow to save before compile

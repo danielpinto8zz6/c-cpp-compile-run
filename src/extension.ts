@@ -2,7 +2,7 @@
 
 import * as vscode from 'vscode';
 import { VSCodeUI } from "./VSCodeUI";
-import { CompileRun } from './compileRun';
+import { CompileRun } from './CompileRun';
 import { Constants } from "./Constants";
 
 export function activate(context: vscode.ExtensionContext) {

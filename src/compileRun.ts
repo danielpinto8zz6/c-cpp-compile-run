@@ -26,6 +26,13 @@ export class CompileRun {
         const spawn = require('child_process').spawn;
         var commandExistsSync = require('command-exists').sync;
 
+        const config = this.getConfiguration("c-cpp-compile-run");
+        let save = config.get<boolean>("save-before-compile");
+
+        if (save) {
+            await vscode.window.activeTextEditor.document.save();
+        }
+
         let exec;
 
         switch (path.parse(currentFile).ext) {

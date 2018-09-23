@@ -16,7 +16,9 @@ Compile & Run C/C++ opened file directly from the command pallet or by pressing 
 * If you are on window you must install mingw
 
 ## How to use
-Make sure you have .c or .cpp file open and press "F6", this will compile the file
+Make sure you have .c or .cpp file open and press "F6", this will compile the file.
+If you want to register gcc/g++ path manually you can set it under settings.
+You can also set to save file before compiling.
 
 ## Extension Settings
 
@@ -26,6 +28,7 @@ Make sure you have .c or .cpp file open and press "F6", this will compile the fi
 
 ### 0.2.4
 - Allow to change compiler path
+- Allow to save before compile
 
 ### 0.2.3
 - Allow to compile or run without doing both

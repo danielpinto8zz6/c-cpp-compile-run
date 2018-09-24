@@ -17,19 +17,17 @@ export class CompileRun {
         this.terminal = VSCodeUI.compileRunTerminal;
     }
 
-    private async compile(currentFile: string, outputFile: string, doRun: boolean = false, withFlags: boolean = false) {
+    private async compile(currentFile: vscode.TextDocument, outputFile: string, doRun: boolean = false, withFlags: boolean = false) {
         const spawn = require('child_process').spawn;
         let commandExistsSync = require('command-exists').sync;
 
-        let save = Settings.saveBeforeCompile;
-
-        if (save) {
+        if (Settings.saveBeforeCompile()) {
             await vscode.window.activeTextEditor.document.save();
         }
 
         let exec;
 
-        switch (path.parse(currentFile).ext) {
+        switch (currentFile.languageId) {
             case '.cpp': {
                 let cppCompiler = this.getCPPCompiler();
 
@@ -86,12 +84,12 @@ export class CompileRun {
         }
 
         exec.stdout.on('data', (data: any) => {
-            this.outputChannel.appendLine(data, currentFile);
+            this.outputChannel.appendLine(data, currentFile.fileName);
             this.outputChannel.show();
         });
 
         exec.stderr.on('data', (data: any) => {
-            this.outputChannel.appendLine(data, currentFile);
+            this.outputChannel.appendLine(data, currentFile.fileName);
             this.outputChannel.show();
         });
 
@@ -124,13 +122,13 @@ export class CompileRun {
     }
 
     public async compileRun(action: Constants.Action) {
-        let currentFile = vscode.window.activeTextEditor.document.fileName;
+        let currentFile = vscode.window.activeTextEditor.document;
 
         if (!currentFile) {
             return;
         }
 
-        let outputFile = path.join(path.parse(currentFile).dir, path.parse(currentFile).name);
+        let outputFile = path.join(path.parse(currentFile.fileName).dir, path.parse(currentFile.fileName).name);
         if (process.platform === 'win32') {
             outputFile = outputFile + '.exe';
         }

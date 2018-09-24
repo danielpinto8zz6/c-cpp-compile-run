@@ -1,39 +1,41 @@
 'use strict';
 
 import * as vscode from 'vscode';
-import * as path from "path";
 import { VSCodeUI } from "./VSCodeUI";
+import { CompileRun } from './CompileRun';
+import { Constants } from "./Constants";
 
 export function activate(context: vscode.ExtensionContext) {
+    const compileRun = new CompileRun();
+
     let CompileRunCommand = vscode.commands.registerCommand('extension.CompileRun', () => {
-        let document = vscode.window.activeTextEditor.document;
-        let outputFile = path.join(path.parse(document.fileName).dir, path.parse(document.fileName).name);
+        compileRun.compileRun(Constants.Action.CompileRun);
+    });
 
-        if (!document)
-            return;
+    let CompileCommand = vscode.commands.registerCommand('extension.Compile', () => {
+        compileRun.compileRun(Constants.Action.Compile);
+    });
 
-        switch (document.languageId) {
-            case 'cpp': {
-                VSCodeUI.runInTerminal(VSCodeUI.Commands.command(`g++ -std=c++17 -Wall -Wextra "${ document.fileName }" -o "${ outputFile }"`));
-                break;
-            }
-            case 'c': {
-                VSCodeUI.runInTerminal(VSCodeUI.Commands.command(`g++ -Wall -Wextra "${ document.fileName }" -o "${ outputFile }"`));
-                break;
-            }
-            default: {
-                vscode.window.showErrorMessage("The file to be compiled is not a C/C++ file.");
-                return;
-            }
-        }
-        VSCodeUI.runInTerminal(VSCodeUI.Commands.clearscreen());
-        VSCodeUI.runInTerminal(`"${ outputFile }"`);
+    let RunCommand = vscode.commands.registerCommand('extension.Run', () => {
+        compileRun.compileRun(Constants.Action.Run);
+    });
+
+    let CompileWithFlagsCommand = vscode.commands.registerCommand('extension.CompileWithFlags', () => {
+        compileRun.compileRun(Constants.Action.CompileWithFlags);
+    });
+
+    let RunWithArgumentsCommand = vscode.commands.registerCommand('extension.RunWithArguments', () => {
+        compileRun.compileRun(Constants.Action.RunWithArguments);
     });
 
     context.subscriptions.push(CompileRunCommand);
+    context.subscriptions.push(CompileCommand);
+    context.subscriptions.push(RunCommand);
+    context.subscriptions.push(CompileWithFlagsCommand);
+    context.subscriptions.push(RunWithArgumentsCommand);
 
     context.subscriptions.push(vscode.window.onDidCloseTerminal((closedTerminal: vscode.Terminal) => {
-        VSCodeUI.onDidCloseTerminal(closedTerminal);
+        VSCodeUI.compileRunTerminal.onDidCloseTerminal(closedTerminal);
     }));
 }
 

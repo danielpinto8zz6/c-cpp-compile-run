@@ -2,24 +2,60 @@
     "name": "c-cpp-compile-run",
     "displayName": "C/C++ Compile Run",
     "description": "Compile & Run single c/c++ files easly",
-    "version": "0.1.1",
+    "version": "0.2.5",
     "publisher": "danielpinto8zz6",
     "icon": "resources/logo.png",
     "engines": {
         "vscode": "^1.21.0"
     },
     "categories": [
+        "Programming Languages",
         "Other"
     ],
+    "keywords": [
+        "c",
+        "cpp",
+        "compile",
+        "run"
+    ],
+    "bugs": {
+        "url": "https://github.com/danielpinto8zz6/c-cpp-compile-run/issues",
+        "email": "danielpinto8zz6@gmail.com"
+    },
+    "homepage": "https://github.com/danielpinto8zz6/c-cpp-compile-run/blob/master/README.md",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/danielpinto8zz6/c-cpp-compile-run.git"
+    },
     "activationEvents": [
-        "onCommand:extension.CompileRun"
+        "onCommand:extension.CompileRun",
+        "onCommand:extension.Compile",
+        "onCommand:extension.Run",
+        "onCommand:extension.CompileWithFlags",
+        "onCommand:extension.RunWithArguments"
     ],
     "main": "./out/extension",
     "contributes": {
         "commands": [
             {
                 "command": "extension.CompileRun",
-                "title": "Compile & Run"
+                "title": "CompileRun : Compile & Run"
+            },
+            {
+                "command": "extension.Compile",
+                "title": "CompileRun : Compile"
+            },
+            {
+                "command": "extension.Run",
+                "title": "CompileRun : Run"
+            },
+            {
+                "command": "extension.CompileWithFlags",
+                "title": "CompileRun : Compile with flags"
+            },
+            {
+                "command": "extension.RunWithArguments",
+                "title": "CompileRun : Run with arguments"
             }
         ],
         "menus": {
@@ -30,6 +66,38 @@
                 },
                 {
                     "command": "extension.CompileRun",
+                    "when": "editorLangId ==  cpp"
+                },
+                {
+                    "command": "extension.Compile",
+                    "when": "editorLangId ==  c"
+                },
+                {
+                    "command": "extension.Compile",
+                    "when": "editorLangId ==  cpp"
+                },
+                {
+                    "command": "extension.Run",
+                    "when": "editorLangId ==  c"
+                },
+                {
+                    "command": "extension.Run",
+                    "when": "editorLangId ==  cpp"
+                },
+                {
+                    "command": "extension.CompileWithFlags",
+                    "when": "editorLangId ==  c"
+                },
+                {
+                    "command": "extension.CompileWithFlags",
+                    "when": "editorLangId ==  cpp"
+                },
+                {
+                    "command": "extension.RunWithArguments",
+                    "when": "editorLangId ==  c"
+                },
+                {
+                    "command": "extension.RunWithArguments",
                     "when": "editorLangId ==  cpp"
                 }
             ]
@@ -42,7 +110,30 @@
                 "key": "f6",
                 "command": "extension.CompileRun"
             }
-        ]
+        ],
+        "configuration": {
+            "title": "Compile Run configuration",
+            "properties": {
+                "c-cpp-compile-run.c-compiler": {
+                    "type": "string",
+                    "default": "gcc",
+                    "description": "Set your c compiler path if it is not working",
+                    "scope": "resource"
+                },
+                "c-cpp-compile-run.cpp-compiler": {
+                    "type": "string",
+                    "default": "g++",
+                    "description": "Set your cpp compiler path if it is not working",
+                    "scope": "resource"
+                },
+                "c-cpp-compile-run.save-before-compile": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Saves the file before compilation",
+                    "scope": "resource"
+                }
+            }
+        }
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
@@ -59,6 +150,7 @@
         "vscode": "^1.1.21"
     },
     "dependencies": {
+        "command-exists": "^1.2.7",
         "path": "^0.12.7"
     }
 }

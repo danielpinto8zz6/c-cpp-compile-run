@@ -147,6 +147,7 @@ export class CompileRun {
                 break;
             case Constants.Action.CompileWithFlags:
                 this.compile(currentFile, outputFile, false, true);
+                break;
             case Constants.Action.RunWithArguments:
                 this.run(outputFile, true);
                 break;

@@ -30,7 +30,9 @@
     "activationEvents": [
         "onCommand:extension.CompileRun",
         "onCommand:extension.Compile",
-        "onCommand:extension.Run"
+        "onCommand:extension.Run",
+        "onCommand:extension.CompileWithFlags",
+        "onCommand:extension.RunWithArguments"
     ],
     "main": "./out/extension",
     "contributes": {

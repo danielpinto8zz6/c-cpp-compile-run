@@ -1,6 +1,6 @@
-# c-cpp-compile-run README
+# C/C++ Compile Run extension
 
-Compile & Run single c/c++ files easly
+An extension running on [Visual Studio Code](https://code.visualstudio.com) to **Compile & Run** single c/c++ files easly
 
 ## Donation
 

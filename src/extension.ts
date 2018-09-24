@@ -6,30 +6,28 @@ import { VSCodeUI } from "./VSCodeUI";
 
 export function activate(context: vscode.ExtensionContext) {
     let CompileRunCommand = vscode.commands.registerCommand('extension.CompileRun', () => {
-        let currentFile = vscode.window.activeTextEditor.document.fileName;
-        let outputFile = path.join(path.parse(currentFile).dir, path.parse(currentFile).name);
+        let document = vscode.window.activeTextEditor.document;
+        let outputFile = path.join(path.parse(document.fileName).dir, path.parse(document.fileName).name);
 
-        if (!currentFile) {
+        if (!document)
             return;
-        }
 
-        switch (path.parse(currentFile).ext) {
-            case '.cpp': {
-                VSCodeUI.runInTerminal(`g++ -std=c++17 -Wall -Wextra "${ currentFile }" -o "${ outputFile }"`);
-                VSCodeUI.runInTerminal("clear");
-                VSCodeUI.runInTerminal(`"${ outputFile }"`);
+        switch (document.languageId) {
+            case 'cpp': {
+                VSCodeUI.runInTerminal(VSCodeUI.Commands.command(`g++ -std=c++17 -Wall -Wextra "${ document.fileName }" -o "${ outputFile }"`));
                 break;
             }
-            case '.c': {
-                VSCodeUI.runInTerminal(`g++ -Wall -Wextra "${ currentFile }" -o "${ outputFile }"`);
-                VSCodeUI.runInTerminal("clear");
-                VSCodeUI.runInTerminal(`"${ outputFile }"`);
+            case 'c': {
+                VSCodeUI.runInTerminal(VSCodeUI.Commands.command(`g++ -Wall -Wextra "${ document.fileName }" -o "${ outputFile }"`));
                 break;
             }
             default: {
-                break;
+                vscode.window.showErrorMessage("The file to be compiled is not a C/C++ file.");
+                return;
             }
         }
+        VSCodeUI.runInTerminal(VSCodeUI.Commands.clearscreen());
+        VSCodeUI.runInTerminal(`"${ outputFile }"`);
     });
 
     context.subscriptions.push(CompileRunCommand);

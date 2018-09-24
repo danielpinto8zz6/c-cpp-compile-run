@@ -16,14 +16,6 @@ export namespace VSCodeUI{
                     return `cd "${cwd}"`; // Unknown, try using common one.
             }
         }
-        static clearscreen(): string{
-            switch(currentWindowsShell()){
-                case 'Command Propmt':
-                    return "cls";
-                default:
-                    return "clear";
-            }
-        }
         static command(cmd: string): string {
             switch (currentWindowsShell()) {
                 case 'PowerShell':

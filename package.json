@@ -128,7 +128,7 @@
                 },
                 "c-cpp-compile-run.save-before-compile": {
                     "type": "boolean",
-                    "default": false,
+                    "default": true,
                     "description": "Saves the file before compilation",
                     "scope": "resource"
                 }

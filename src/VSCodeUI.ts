@@ -66,7 +66,7 @@ export namespace VSCodeUI{
             }
             this.terminals[name].show();
             if (cwd) {
-                this.terminals[name].sendText(Commands.command(cwd), true);
+                this.terminals[name].sendText(Commands.cd(cwd), true);
             }
             this.terminals[name].sendText(Commands.command(command), addNewLine);
         }

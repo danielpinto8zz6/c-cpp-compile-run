@@ -21,9 +21,7 @@ export class CompileRun {
         const spawn = require('child_process').spawn;
         let commandExistsSync = require('command-exists').sync;
 
-        let save = Settings.saveBeforeCompile;
-
-        if (save) {
+        if (Settings.saveBeforeCompile) {
             await vscode.window.activeTextEditor.document.save();
         }
 

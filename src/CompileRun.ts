@@ -28,6 +28,7 @@ export class CompileRun {
         let exec;
 
         switch (path.parse(currentFile).ext) {
+            case '.cc':
             case '.cpp': {
                 let cppCompiler = this.getCPPCompiler();
 

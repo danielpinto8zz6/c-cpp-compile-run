@@ -30,7 +30,9 @@ export class CompileRun {
         switch (path.parse(currentFile).ext) {
             case '.cc':
             case '.cpp': {
-                let cppCompiler = this.getCPPCompiler();
+                let cppCompiler = Settings.cppCompiler();
+
+                console.log(cppCompiler);
 
                 if (!commandExistsSync(cppCompiler)) {
                     const CHANGE_PATH: string = "Change path";
@@ -61,7 +63,7 @@ export class CompileRun {
                 break;
             }
             case '.c': {
-                let cCompiler = this.getCCompiler();
+                let cCompiler = Settings.cCompiler();
 
                 if (!commandExistsSync(cCompiler)) {
                     const CHANGE_PATH: string = "Change path";
@@ -161,26 +163,6 @@ export class CompileRun {
                 this.run(outputFile, true);
                 break;
             default: return;
-        }
-    }
-
-    private getCCompiler(): string {
-        const cCompiler = Settings.cCompiler();
-
-        if (!cCompiler) {
-            return "gcc";
-        } else {
-            return cCompiler;
-        }
-    }
-
-    private getCPPCompiler(): string {
-        const cppCompiler = Settings.cppCompiler();
-
-        if (!cppCompiler) {
-            return "gcc";
-        } else {
-            return cppCompiler;
         }
     }
 

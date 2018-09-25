@@ -122,7 +122,7 @@
                 },
                 "c-cpp-compile-run.cpp-compiler": {
                     "type": "string",
-                    "default": "g++",
+                    "default": "gcc",
                     "description": "Set your cpp compiler path if it is not working",
                     "scope": "resource"
                 },

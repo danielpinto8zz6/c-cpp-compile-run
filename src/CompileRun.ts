@@ -32,7 +32,15 @@ export class CompileRun {
                 let cppCompiler = this.getCPPCompiler();
 
                 if (!commandExistsSync(cppCompiler)) {
-                    vscode.window.showErrorMessage("Invalid compiler path, try to change path in settings! (eg. /usr/bin/gcc)");
+                    const CHANGE_PATH: string = "Change path";
+                    const choiceForDetails: string = await vscode.window.showErrorMessage("Compiler not found, try to change path in settings!", CHANGE_PATH);
+                    if (choiceForDetails === CHANGE_PATH) {
+                        let path = await this.promptForPath();
+                        await vscode.workspace.getConfiguration().update('c-cpp-compile-run.cpp-compiler', path, vscode.ConfigurationTarget.Global);
+                        this.compile(currentFile, outputFile, doRun, withFlags);
+                        return;
+                    }
+
                     return;
                 }
 
@@ -45,6 +53,8 @@ export class CompileRun {
                         cppArgs = cppArgs.concat(flags);
                     }
                 }
+
+                cppArgs.push('-lstdc++');
 
                 exec = spawn(cppCompiler, cppArgs);
                 break;
@@ -61,7 +71,7 @@ export class CompileRun {
                         this.compile(currentFile, outputFile, doRun, withFlags);
                         return;
                     }
-                    
+
                     return;
                 }
 
@@ -155,7 +165,7 @@ export class CompileRun {
 
     private getCCompiler(): string {
         const cCompiler = Settings.cCompiler();
-        
+
         if (!cCompiler) {
             return "gcc";
         } else {
@@ -165,9 +175,9 @@ export class CompileRun {
 
     private getCPPCompiler(): string {
         const cppCompiler = Settings.cppCompiler();
-        
+
         if (!cppCompiler) {
-            return "g++";
+            return "gcc";
         } else {
             return cppCompiler;
         }

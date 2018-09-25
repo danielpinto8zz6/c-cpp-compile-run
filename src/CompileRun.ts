@@ -28,6 +28,7 @@ export class CompileRun {
         let exec;
 
         switch (path.parse(currentFile).ext) {
+            case '.cc':
             case '.cpp': {
                 let cppCompiler = this.getCPPCompiler();
 
@@ -61,7 +62,7 @@ export class CompileRun {
                         this.compile(currentFile, outputFile, doRun, withFlags);
                         return;
                     }
-                    
+
                     return;
                 }
 
@@ -155,7 +156,7 @@ export class CompileRun {
 
     private getCCompiler(): string {
         const cCompiler = Settings.cCompiler();
-        
+
         if (!cCompiler) {
             return "gcc";
         } else {
@@ -165,7 +166,7 @@ export class CompileRun {
 
     private getCPPCompiler(): string {
         const cppCompiler = Settings.cppCompiler();
-        
+
         if (!cppCompiler) {
             return "g++";
         } else {

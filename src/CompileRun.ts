@@ -28,7 +28,7 @@ export class CompileRun {
         let exec;
 
         switch (currentFile.languageId) {
-            case '.cpp': {
+            case 'cpp': {
                 let cppCompiler = this.getCPPCompiler();
 
                 if (!commandExistsSync(cppCompiler)) {
@@ -49,7 +49,7 @@ export class CompileRun {
                 exec = spawn(cppCompiler, cppArgs);
                 break;
             }
-            case '.c': {
+            case 'c': {
                 let cCompiler = this.getCCompiler();
 
                 if (!commandExistsSync(cCompiler)) {

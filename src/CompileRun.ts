@@ -17,7 +17,7 @@ export class CompileRun {
         this.terminal = VSCodeUI.compileRunTerminal;
     }
 
-    private async compile(currentFile: string, outputFile: string, doRun: boolean = false, withFlags: boolean = false) {
+    private async compile(currentFile: vscode.TextDocument, outputFile: string, doRun: boolean = false, withFlags: boolean = false) {
         const spawn = require('child_process').spawn;
         let commandExistsSync = require('command-exists').sync;
 
@@ -27,9 +27,8 @@ export class CompileRun {
 
         let exec;
 
-        switch (path.parse(currentFile).ext) {
-            case '.cc':
-            case '.cpp': {
+        switch (currentFile.languageId) {
+            case 'cpp': {
                 let cppCompiler = Settings.cppCompiler();
 
                 console.log(cppCompiler);
@@ -47,7 +46,7 @@ export class CompileRun {
                     return;
                 }
 
-                let cppArgs = [currentFile, '-o', outputFile];
+                let cppArgs = [currentFile.fileName, '-o', outputFile];
 
                 if (withFlags) {
                     let flagsStr = await this.promptForFlags();
@@ -63,7 +62,7 @@ export class CompileRun {
                 break;
             }
 
-            case '.c': {
+            case 'c': {
                 let cCompiler = Settings.cCompiler();
 
                 if (!commandExistsSync(cCompiler)) {
@@ -79,7 +78,7 @@ export class CompileRun {
                     return;
                 }
 
-                let cArgs = [currentFile, '-o', outputFile];
+                let cArgs = [currentFile.fileName, '-o', outputFile];
 
                 if (withFlags) {
                     let flagsStr = await this.promptForFlags();
@@ -98,12 +97,12 @@ export class CompileRun {
         }
 
         exec.stdout.on('data', (data: any) => {
-            this.outputChannel.appendLine(data, currentFile);
+            this.outputChannel.appendLine(data, currentFile.fileName);
             this.outputChannel.show();
         });
 
         exec.stderr.on('data', (data: any) => {
-            this.outputChannel.appendLine(data, currentFile);
+            this.outputChannel.appendLine(data, currentFile.fileName);
             this.outputChannel.show();
         });
 
@@ -136,13 +135,13 @@ export class CompileRun {
     }
 
     public async compileRun(action: Constants.Action) {
-        let currentFile = vscode.window.activeTextEditor.document.fileName;
+        let currentFile = vscode.window.activeTextEditor.document;
 
         if (!currentFile) {
             return;
         }
 
-        let outputFile = path.join(path.parse(currentFile).dir, path.parse(currentFile).name);
+        let outputFile = path.join(path.parse(currentFile.fileName).dir, path.parse(currentFile.fileName).name);
         if (process.platform === 'win32') {
             outputFile = outputFile + '.exe';
         }

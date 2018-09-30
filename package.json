@@ -99,6 +99,26 @@
                 {
                     "command": "extension.RunWithArguments",
                     "when": "editorLangId ==  cpp"
+                },
+                                {
+                    "command": "extension.CompileRun",
+                    "when": "editorLangId ==  cc"
+                },
+                {
+                    "command": "extension.Compile",
+                    "when": "editorLangId ==  cc"
+                },
+                {
+                    "command": "extension.Run",
+                    "when": "editorLangId ==  cc"
+                },
+                {
+                    "command": "extension.CompileWithFlags",
+                    "when": "editorLangId ==  cc"
+                },
+                {
+                    "command": "extension.RunWithArguments",
+                    "when": "editorLangId ==  cc"
                 }
             ]
         },

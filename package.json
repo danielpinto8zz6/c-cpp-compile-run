@@ -100,7 +100,7 @@
                     "command": "extension.RunWithArguments",
                     "when": "editorLangId ==  cpp"
                 },
-                                {
+                {
                     "command": "extension.CompileRun",
                     "when": "editorLangId ==  cc"
                 },
@@ -170,6 +170,7 @@
         "vscode": "^1.1.21"
     },
     "dependencies": {
+        "child_process": "^1.0.2",
         "command-exists": "^1.2.7",
         "path": "^0.12.7"
     }

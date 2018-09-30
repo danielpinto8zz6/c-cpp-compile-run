@@ -1,30 +1,6 @@
 import { Terminal, window, workspace, OutputChannel } from "vscode";
 
 export namespace VSCodeUI{
-    export class Commands{
-        static cd(cwd: string): string{
-            switch (currentWindowsShell()) {
-                case 'Git Bash':
-                    return `cd "${cwd.replace(/\\+$/, "")}"`; // Git Bash: remove trailing '\'
-                case 'PowerShell':
-                    return `cd "${cwd}"`; // PowerShell
-                case 'Command Prompt':
-                    return `cd /d "${cwd}"`; // CMD
-                case 'WSL Bash':
-                    return `cd "${toWSLPath(cwd)}"`; // WSL
-                default:
-                    return `cd "${cwd}"`; // Unknown, try using common one.
-            }
-        }
-        static command(cmd: string): string {
-            switch (currentWindowsShell()) {
-                case 'PowerShell':
-                    return `cmd /c ${cmd}`; // PowerShell
-                default:
-                    return cmd; // others, try using common one.
-            }
-        }
-    }
 
     export class CompileRunOutputChannel {
         private readonly channel: OutputChannel = window.createOutputChannel("C/C++ Compile Run");
@@ -58,9 +34,9 @@ export namespace VSCodeUI{
             }
             this.terminals[name].show();
             if (cwd) {
-                this.terminals[name].sendText(Commands.cd(cwd), true);
+                this.terminals[name].sendText(getCDCommand(cwd), true);
             }
-            this.terminals[name].sendText(Commands.command(command), addNewLine);
+            this.terminals[name].sendText(getCommand(command), addNewLine);
         }
 
         public closeAllTerminals(): void {
@@ -80,6 +56,38 @@ export namespace VSCodeUI{
     }
 
     export const compileRunTerminal: CompileRunTerminal = new CompileRunTerminal();
+
+    function getCommand(cmd: string): string {
+        if (process.platform === "win32") {
+            switch (currentWindowsShell()) {
+                case 'PowerShell':
+                    return `cmd /c ${cmd}`; // PowerShell
+                default:
+                    return cmd; // others, try using common one.
+            }
+        } else {
+            return cmd;
+        }
+    }
+
+    function getCDCommand(cwd: string): string {
+        if (process.platform === "win32") {
+            switch (currentWindowsShell()) {
+                case 'Git Bash':
+                    return `cd "${cwd.replace(/\\+$/, "")}"`; // Git Bash: remove trailing '\'
+                case 'PowerShell':
+                    return `cd "${cwd}"`; // PowerShell
+                case 'Command Prompt':
+                    return `cd /d "${cwd}"`; // CMD
+                case 'WSL Bash':
+                    return `cd "${toWSLPath(cwd)}"`; // WSL
+                default:
+                    return `cd "${cwd}"`; // Unknown, try using common one.
+            }
+        } else {
+            return `cd "${cwd}"`;
+        }
+    }
 
     export function currentWindowsShell(): string {
         const is32ProcessOn64Windows: boolean = process.env.hasOwnProperty('PROCESSOR_ARCHITEW6432');

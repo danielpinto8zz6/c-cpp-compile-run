@@ -100,7 +100,7 @@
                     "command": "extension.RunWithArguments",
                     "when": "editorLangId ==  cpp"
                 },
-                                {
+                {
                     "command": "extension.CompileRun",
                     "when": "editorLangId ==  cc"
                 },

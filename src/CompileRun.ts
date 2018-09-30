@@ -17,9 +17,11 @@ export class CompileRun {
         this.terminal = VSCodeUI.compileRunTerminal;
     }
 
-    private async compile(currentFile: string, outputFile: string, doRun: boolean = false, withFlags: boolean = false) {
+    private async compile(currentFile: vscode.TextDocument, outputFileName: string, doRun: boolean = false, withFlags: boolean = false) {
         const spawn = require('child_process').spawn;
         let commandExistsSync = require('command-exists').sync;
+
+        let currentFileName = currentFile.fileName;
 
         if (Settings.saveBeforeCompile) {
             await vscode.window.activeTextEditor.document.save();
@@ -27,12 +29,9 @@ export class CompileRun {
 
         let exec;
 
-        switch (path.parse(currentFile).ext) {
-            case '.cc':
-            case '.cpp': {
+        switch (currentFile.languageId) {
+            case 'cpp': {
                 let cppCompiler = Settings.cppCompiler();
-
-                console.log(cppCompiler);
 
                 if (!commandExistsSync(cppCompiler)) {
                     const CHANGE_PATH: string = "Change path";
@@ -40,14 +39,14 @@ export class CompileRun {
                     if (choiceForDetails === CHANGE_PATH) {
                         let path = await this.promptForPath();
                         await vscode.workspace.getConfiguration().update('c-cpp-compile-run.cpp-compiler', path, vscode.ConfigurationTarget.Global);
-                        this.compile(currentFile, outputFile, doRun, withFlags);
+                        this.compile(currentFile, outputFileName, doRun, withFlags);
                         return;
                     }
 
                     return;
                 }
 
-                let cppArgs = [currentFile, '-o', outputFile];
+                let cppArgs = [currentFileName, '-o', outputFileName];
 
                 if (withFlags) {
                     let flagsStr = await this.promptForFlags();
@@ -62,7 +61,7 @@ export class CompileRun {
                 exec = spawn(cppCompiler, cppArgs);
                 break;
             }
-            case '.c': {
+            case 'c': {
                 let cCompiler = Settings.cCompiler();
 
                 if (!commandExistsSync(cCompiler)) {
@@ -71,14 +70,14 @@ export class CompileRun {
                     if (choiceForDetails === CHANGE_PATH) {
                         let path = await this.promptForPath();
                         await vscode.workspace.getConfiguration().update('c-cpp-compile-run.c-compiler', path, vscode.ConfigurationTarget.Global);
-                        this.compile(currentFile, outputFile, doRun, withFlags);
+                        this.compile(currentFile, outputFileName, doRun, withFlags);
                         return;
                     }
 
                     return;
                 }
 
-                let cArgs = [currentFile, '-o', outputFile];
+                let cArgs = [currentFileName, '-o', outputFileName];
 
                 if (withFlags) {
                     let flagsStr = await this.promptForFlags();
@@ -97,12 +96,12 @@ export class CompileRun {
         }
 
         exec.stdout.on('data', (data: any) => {
-            this.outputChannel.appendLine(data, currentFile);
+            this.outputChannel.appendLine(data, currentFileName);
             this.outputChannel.show();
         });
 
         exec.stderr.on('data', (data: any) => {
-            this.outputChannel.appendLine(data, currentFile);
+            this.outputChannel.appendLine(data, currentFileName);
             this.outputChannel.show();
         });
 
@@ -111,7 +110,7 @@ export class CompileRun {
                 // Compiled successfully let's tell the user & execute
                 vscode.window.showInformationMessage("Compiled successfuly!");
                 if (doRun) {
-                    this.run(outputFile);
+                    this.run(outputFileName);
                 }
             } else {
                 // Error compiling
@@ -135,13 +134,13 @@ export class CompileRun {
     }
 
     public async compileRun(action: Constants.Action) {
-        let currentFile = vscode.window.activeTextEditor.document.fileName;
+        let currentFile = vscode.window.activeTextEditor.document;
 
         if (!currentFile) {
             return;
         }
 
-        let outputFile = path.join(path.parse(currentFile).dir, path.parse(currentFile).name);
+        let outputFile = path.join(path.parse(currentFile.fileName).dir, path.parse(currentFile.fileName).name);
         if (process.platform === 'win32') {
             outputFile = outputFile + '.exe';
         }

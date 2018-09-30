@@ -1,6 +1,6 @@
 import { Terminal, window, workspace, OutputChannel } from "vscode";
 
-export namespace VSCodeUI{
+export namespace VSCodeUI {
 
     export class CompileRunOutputChannel {
         private readonly channel: OutputChannel = window.createOutputChannel("C/C++ Compile Run");

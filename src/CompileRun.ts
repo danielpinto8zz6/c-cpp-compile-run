@@ -29,10 +29,20 @@ export class CompileRun {
 
         switch (currentFile.languageId) {
             case 'cpp': {
-                let cppCompiler = this.getCPPCompiler();
+                let cppCompiler = Settings.cppCompiler();
+
+                console.log(cppCompiler);
 
                 if (!commandExistsSync(cppCompiler)) {
-                    vscode.window.showErrorMessage("Invalid compiler path, try to change path in settings! (eg. /usr/bin/gcc)");
+                    const CHANGE_PATH: string = "Change path";
+                    const choiceForDetails: string = await vscode.window.showErrorMessage("Compiler not found, try to change path in settings!", CHANGE_PATH);
+                    if (choiceForDetails === CHANGE_PATH) {
+                        let path = await this.promptForPath();
+                        await vscode.workspace.getConfiguration().update('c-cpp-compile-run.cpp-compiler', path, vscode.ConfigurationTarget.Global);
+                        this.compile(currentFile, outputFile, doRun, withFlags);
+                        return;
+                    }
+
                     return;
                 }
 
@@ -46,11 +56,14 @@ export class CompileRun {
                     }
                 }
 
+                cppArgs.push('-lstdc++');
+
                 exec = spawn(cppCompiler, cppArgs);
                 break;
             }
+
             case 'c': {
-                let cCompiler = this.getCCompiler();
+                let cCompiler = Settings.cCompiler();
 
                 if (!commandExistsSync(cCompiler)) {
                     const CHANGE_PATH: string = "Change path";
@@ -61,7 +74,7 @@ export class CompileRun {
                         this.compile(currentFile, outputFile, doRun, withFlags);
                         return;
                     }
-                    
+
                     return;
                 }
 
@@ -150,26 +163,6 @@ export class CompileRun {
                 this.run(outputFile, true);
                 break;
             default: return;
-        }
-    }
-
-    private getCCompiler(): string {
-        const cCompiler = Settings.cCompiler();
-        
-        if (!cCompiler) {
-            return "gcc";
-        } else {
-            return cCompiler;
-        }
-    }
-
-    private getCPPCompiler(): string {
-        const cppCompiler = Settings.cppCompiler();
-        
-        if (!cppCompiler) {
-            return "g++";
-        } else {
-            return cppCompiler;
         }
     }
 

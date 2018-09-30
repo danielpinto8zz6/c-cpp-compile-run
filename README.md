@@ -26,6 +26,10 @@ You can also set to save file before compiling.
 
 ## Release Notes
 
+### 0.2.7
+- Fix settings
+- Fix compiler find on windows
+
 ### 0.2.5
 - Allow to compile with flags
 - Allow to run with argumets

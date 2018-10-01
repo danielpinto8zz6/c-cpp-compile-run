@@ -100,7 +100,7 @@
                     "command": "extension.RunWithArguments",
                     "when": "editorLangId ==  cpp"
                 },
-                                {
+                {
                     "command": "extension.CompileRun",
                     "when": "editorLangId ==  cc"
                 },
@@ -134,13 +134,13 @@
         "configuration": {
             "title": "Compile Run configuration",
             "properties": {
-                "c-cpp-compile-run.c-compiler": {
+                "c-cpp-compile-run.c-compiler-path": {
                     "type": "string",
                     "default": "gcc",
                     "description": "Set your c compiler path if it is not working",
                     "scope": "resource"
                 },
-                "c-cpp-compile-run.cpp-compiler": {
+                "c-cpp-compile-run.cpp-compiler-path": {
                     "type": "string",
                     "default": "gcc",
                     "description": "Set your cpp compiler path if it is not working",
@@ -151,6 +151,27 @@
                     "default": true,
                     "description": "Saves the file before compilation",
                     "scope": "resource"
+                },
+                "c-cpp-compile-run.c-compiler-args": {
+                    "type": "array",
+                    "default": [],
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "c-cpp-compile-run.cpp-compiler-args": {
+                    "type": "array",
+                    "default": [],
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "c-cpp-compile-run.run-args": {
+                    "type": "array",
+                    "default": [],
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         }

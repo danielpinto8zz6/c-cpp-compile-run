@@ -7,6 +7,39 @@ import { VSCodeUI } from "./VSCodeUI";
 import { Constants } from './Constants';
 import { Settings } from './Settings';
 
+export class Args {
+    private _args: Set<string>;
+    public add(value: string) {
+        this._args.add(value);
+    }
+
+    constructor(...arr: Array<string>) {
+        this._args = new Set<string>(arr);
+    }
+
+    [Symbol.iterator] = function* () {
+        for (const i of this.args) {
+            yield i;
+        }
+    };
+
+    public concat(concatArgs: Args) {
+        for (const i of concatArgs) {
+            this._args.add(i);
+        }
+    }
+
+    public toArray = () => [...this._args];
+
+    public toString(): string {
+        var str = "";
+        for (const i of this._args) {
+            str += `${i} `;
+        }
+        return str.trimRight();
+    }
+}
+
 export class CompileRun {
     private outputChannel: VSCodeUI.CompileRunOutputChannel;
     private terminal: VSCodeUI.CompileRunTerminal;
@@ -23,77 +56,70 @@ export class CompileRun {
 
         let currentFileName = currentFile.fileName;
 
-        if (Settings.saveBeforeCompile) {
+        if (Settings.saveBeforeCompile()) {
             await vscode.window.activeTextEditor.document.save();
         }
 
         let exec;
 
+        let compilerArgs = new Args(currentFile.fileName, '-o', outputFileName);
+        
+        let compilerSetting: { path: string, args: Args};
+        let compilerSettingKey: { path: string, args: string };
         switch (currentFile.languageId) {
             case 'cpp': {
-                let cppCompiler = Settings.cppCompiler();
-
-                if (!commandExistsSync(cppCompiler)) {
-                    const CHANGE_PATH: string = "Change path";
-                    const choiceForDetails: string = await vscode.window.showErrorMessage("Compiler not found, try to change path in settings!", CHANGE_PATH);
-                    if (choiceForDetails === CHANGE_PATH) {
-                        let path = await this.promptForPath();
-                        await vscode.workspace.getConfiguration().update('c-cpp-compile-run.cpp-compiler', path, vscode.ConfigurationTarget.Global);
-                        this.compile(currentFile, outputFileName, doRun, withFlags);
-                        return;
-                    }
-
-                    return;
-                }
-
-                let cppArgs = [currentFileName, '-o', outputFileName];
-
-                if (withFlags) {
-                    let flagsStr = await this.promptForFlags();
-                    if (flagsStr) {
-                        let flags = flagsStr.split(" ");
-                        cppArgs = cppArgs.concat(flags);
-                    }
-                }
-
-                cppArgs.push('-lstdc++');
-
-                exec = spawn(cppCompiler, cppArgs);
+                compilerSetting = {
+                    path: Settings.cppCompilerPath(),
+                    args: new Args(...Settings.cppCompilerArgs(), '-lstdc++')
+                };
+                compilerSettingKey = {
+                    path: Settings.key.cppCompilerPath,
+                    args: Settings.key.cppCompilerArgs
+                };
+                compilerArgs.add("-lstdc++");
                 break;
             }
+
             case 'c': {
-                let cCompiler = Settings.cCompiler();
-
-                if (!commandExistsSync(cCompiler)) {
-                    const CHANGE_PATH: string = "Change path";
-                    const choiceForDetails: string = await vscode.window.showErrorMessage("Compiler not found, try to change path in settings!", CHANGE_PATH);
-                    if (choiceForDetails === CHANGE_PATH) {
-                        let path = await this.promptForPath();
-                        await vscode.workspace.getConfiguration().update('c-cpp-compile-run.c-compiler', path, vscode.ConfigurationTarget.Global);
-                        this.compile(currentFile, outputFileName, doRun, withFlags);
-                        return;
-                    }
-
-                    return;
-                }
-
-                let cArgs = [currentFileName, '-o', outputFileName];
-
-                if (withFlags) {
-                    let flagsStr = await this.promptForFlags();
-                    if (flagsStr) {
-                        let flags = flagsStr.split(" ");
-                        cArgs = cArgs.concat(flags);
-                    }
-                }
-
-                exec = spawn(cCompiler, cArgs);
+                compilerSetting = {
+                    path: Settings.cCompilerPath(),
+                    args: new Args(...Settings.cCompilerArgs())
+                };
+                compilerSettingKey = {
+                    path: Settings.key.cCompilerPath,
+                    args: Settings.key.cCompilerArgs
+                };
                 break;
             }
             default: {
                 return;
             }
         }
+
+        console.log(compilerSetting.path);
+        if (!commandExistsSync(compilerSetting.path)) {
+            const CHANGE_PATH: string = "Change path";
+            const choiceForDetails: string = await vscode.window.showErrorMessage("Compiler not found, try to change path in settings!", CHANGE_PATH);
+            if (choiceForDetails === CHANGE_PATH) {
+                let path = await this.promptForPath();
+                await vscode.workspace.getConfiguration().update(compilerSettingKey.path, path, vscode.ConfigurationTarget.Global);
+                this.compile(currentFile, outputFileName, doRun, withFlags);
+                return;
+            }
+
+            return;
+        }
+
+        if (withFlags) {
+            let flagsStr = await this.promptForFlags(compilerSetting.args.toString());
+            if (flagsStr === undefined){ // cancel.
+                return;
+            }
+            compilerArgs.concat(new Args(...flagsStr.split(" ")));
+        }
+        console.log(compilerArgs.toString());
+
+        exec = spawn(compilerSetting.path, compilerArgs.toArray());
 
         exec.stdout.on('data', (data: any) => {
             this.outputChannel.appendLine(data, currentFileName);
@@ -125,12 +151,15 @@ export class CompileRun {
             return;
         }
 
+        let runArgs = new Args;
         if (withArgs) {
-            let args = await this.promptForRunArgs();
-            this.terminal.runInTerminal(`"${outputFile}" ${args}`);
-        } else {
-            this.terminal.runInTerminal(`"${outputFile}"`);
+            let argsStr = await this.promptForRunArgs(new Args(...Settings.runArgs()).toString());
+            if (argsStr === undefined){ // cancel.
+                return;
+            }
+            runArgs = new Args(...argsStr.split(" "));
         }
+        this.terminal.runInTerminal(`"${outputFile}" ${runArgs.toString()}`);
     }
 
     public async compileRun(action: Constants.Action) {
@@ -165,22 +194,23 @@ export class CompileRun {
         }
     }
 
-    private async promptForFlags(): Promise<string | undefined> {
+    private async promptForFlags(defaultFlags: string): Promise<string | undefined> {
         try {
             return await vscode.window.showInputBox({
                 prompt: 'Flags',
-                placeHolder: '-Wall -Wextra'
+                placeHolder: '-Wall -Wextra',
+                value: defaultFlags
             });
         } catch (e) {
             return null;
         }
     }
 
-    private async promptForRunArgs(): Promise<string | undefined> {
+    private async promptForRunArgs(defaultArgs: string): Promise<string | undefined> {
         try {
             return await vscode.window.showInputBox({
                 prompt: 'Arguments',
-                placeHolder: 'arg'
+                value: defaultArgs
             });
         } catch (e) {
             return null;

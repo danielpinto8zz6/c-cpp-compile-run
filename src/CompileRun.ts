@@ -81,8 +81,11 @@ export class CompileRun {
             if (flagsStr === undefined) { // cancel.
                 return;
             }
-            compilerArgs.concat(flagsStr.split(" "));
+            compilerArgs = compilerArgs.concat(flagsStr.split(" "));
+        } else {
+            compilerArgs = compilerArgs.concat(compilerSetting.args);
         }
+
         console.log(compilerArgs.toString());
         exec = spawn(compilerSetting.path, compilerArgs);
 
@@ -118,8 +121,15 @@ export class CompileRun {
 
         let runArgs = "";
         if (withArgs) {
-            runArgs = await this.promptForRunArgs(Settings.runArgs().toString());
+            let argsStr = await this.promptForRunArgs(Settings.runArgs().toString());
+            if (argsStr === undefined) { // cancel.
+                return;
+            }
+            runArgs = argsStr;
+        } else {
+            runArgs = Settings.runArgs().toString();
         }
+
         this.terminal.runInTerminal(`"${outputFile}" ${runArgs}`);
     }
 

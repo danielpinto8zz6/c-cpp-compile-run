@@ -50,9 +50,11 @@ export class CompileRun {
         this.terminal = VSCodeUI.compileRunTerminal;
     }
 
-    private async compile(currentFile: vscode.TextDocument, outputFile: string, doRun: boolean = false, withFlags: boolean = false) {
+    private async compile(currentFile: vscode.TextDocument, outputFileName: string, doRun: boolean = false, withFlags: boolean = false) {
         const spawn = require('child_process').spawn;
         let commandExistsSync = require('command-exists').sync;
+
+        let currentFileName = currentFile.fileName;
 
         if (Settings.saveBeforeCompile()) {
             await vscode.window.activeTextEditor.document.save();
@@ -60,7 +62,7 @@ export class CompileRun {
 
         let exec;
 
-        let compilerArgs = new Args(currentFile.fileName, '-o', outputFile);
+        let compilerArgs = new Args(currentFile.fileName, '-o', outputFileName);
         
         let compilerSetting: { path: string, args: Args};
         let compilerSettingKey: { path: string, args: string };
@@ -101,7 +103,7 @@ export class CompileRun {
             if (choiceForDetails === CHANGE_PATH) {
                 let path = await this.promptForPath();
                 await vscode.workspace.getConfiguration().update(compilerSettingKey.path, path, vscode.ConfigurationTarget.Global);
-                this.compile(currentFile, outputFile, doRun, withFlags);
+                this.compile(currentFile, outputFileName, doRun, withFlags);
                 return;
             }
 
@@ -120,12 +122,12 @@ export class CompileRun {
         exec = spawn(compilerSetting.path, compilerArgs.toArray());
 
         exec.stdout.on('data', (data: any) => {
-            this.outputChannel.appendLine(data, currentFile.fileName);
+            this.outputChannel.appendLine(data, currentFileName);
             this.outputChannel.show();
         });
 
         exec.stderr.on('data', (data: any) => {
-            this.outputChannel.appendLine(data, currentFile.fileName);
+            this.outputChannel.appendLine(data, currentFileName);
             this.outputChannel.show();
         });
 
@@ -134,7 +136,7 @@ export class CompileRun {
                 // Compiled successfully let's tell the user & execute
                 vscode.window.showInformationMessage("Compiled successfuly!");
                 if (doRun) {
-                    this.run(outputFile);
+                    this.run(outputFileName);
                 }
             } else {
                 // Error compiling

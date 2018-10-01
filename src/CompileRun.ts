@@ -29,28 +29,29 @@ export class CompileRun {
 
         let exec;
 
-        let compilerArgs = new Args(currentFile.fileName, '-o', outputFileName);
+        let compilerArgs = [currentFile.fileName, '-o', outputFileName];
 
-        let compilerSetting: { path: string, args: Args };
+        let compilerSetting: { path: string, args: string[] };
         let compilerSettingKey: { path: string, args: string };
 
         switch (currentFile.languageId) {
             case 'cpp': {
                 compilerSetting = {
                     path: Settings.cppCompilerPath(),
-                    args: new Args(...Settings.cppCompilerArgs(), '-lstdc++')
+                    args: Settings.cppCompilerArgs().concat('-lstdc++')
                 };
+
                 compilerSettingKey = {
                     path: Settings.key.cppCompilerPath,
                     args: Settings.key.cppCompilerArgs
                 };
-                compilerArgs.add("-lstdc++");
+                compilerArgs.push("-lstdc++");
                 break;
             }
             case 'c': {
                 compilerSetting = {
                     path: Settings.cCompilerPath(),
-                    args: new Args(...Settings.cCompilerArgs())
+                    args: Settings.cCompilerArgs()
                 };
                 compilerSettingKey = {
                     path: Settings.key.cCompilerPath,
@@ -80,10 +81,10 @@ export class CompileRun {
             if (flagsStr === undefined) { // cancel.
                 return;
             }
-            compilerArgs.concat(new Args(...flagsStr.split(" ")));
+            compilerArgs.concat(flagsStr.split(" "));
         }
         console.log(compilerArgs.toString());
-        exec = spawn(compilerSetting.path, compilerArgs.toArray());
+        exec = spawn(compilerSetting.path, compilerArgs);
 
         exec.stdout.on('data', (data: any) => {
             this.outputChannel.appendLine(data, currentFileName);
@@ -115,15 +116,11 @@ export class CompileRun {
             return;
         }
 
-        let runArgs = new Args;
+        let runArgs = "";
         if (withArgs) {
-            let argsStr = await this.promptForRunArgs(new Args(...Settings.runArgs()).toString());
-            if (argsStr === undefined) { // cancel.
-                return;
-            }
-            runArgs = new Args(...argsStr.split(" "));
+            runArgs = await this.promptForRunArgs(Settings.runArgs().toString());
         }
-        this.terminal.runInTerminal(`"${outputFile}" ${runArgs.toString()}`);
+        this.terminal.runInTerminal(`"${outputFile}" ${runArgs}`);
     }
 
     public async compileRun(action: Constants.Action) {
@@ -190,33 +187,5 @@ export class CompileRun {
         } catch (e) {
             return null;
         }
-    }
-}
-
-export class Args {
-    private _args: Set<string>;
-    public add(value: string) {
-        this._args.add(value);
-    }
-    constructor(...arr: Array<string>) {
-        this._args = new Set<string>(arr);
-    }
-    [Symbol.iterator] = function* () {
-        for (const i of this.args) {
-            yield i;
-        }
-    };
-    public concat(concatArgs: Args) {
-        for (const i of concatArgs) {
-            this._args.add(i);
-        }
-    }
-    public toArray = () => [...this._args];
-    public toString(): string {
-        var str = "";
-        for (const i of this._args) {
-            str += `${i} `;
-        }
-        return str.trimRight();
     }
 }

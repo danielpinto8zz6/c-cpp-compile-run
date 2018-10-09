@@ -9,12 +9,10 @@ import { Settings } from './Settings';
 
 export class CompileRun {
     private outputChannel: VSCodeUI.CompileRunOutputChannel;
-    private terminal: VSCodeUI.CompileRunTerminal;
     readonly Action: Constants.Action;
 
     constructor() {
         this.outputChannel = new VSCodeUI.CompileRunOutputChannel();
-        this.terminal = VSCodeUI.compileRunTerminal;
     }
 
     private async compile(currentFile: vscode.TextDocument, outputFileName: string, doRun: boolean = false, withFlags: boolean = false) {
@@ -130,7 +128,7 @@ export class CompileRun {
             runArgs = Settings.runArgs().toString();
         }
 
-        this.terminal.runInTerminal(`"${outputFile}" ${runArgs}`);
+        VSCodeUI.CompileRunTerminal.runInTerminal(`"${outputFile}" ${runArgs}`);
     }
 
     public async compileRun(action: Constants.Action) {

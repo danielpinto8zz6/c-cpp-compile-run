@@ -1,4 +1,5 @@
-import { Terminal, window, workspace, OutputChannel } from "vscode";
+import { commands, OutputChannel, Terminal, window, workspace } from "vscode";
+import { setTimeout } from "timers";
 
 export namespace VSCodeUI {
     export class CompileRunOutputChannel {
@@ -23,11 +24,25 @@ export namespace VSCodeUI {
     }
 
     export class CompileRunTerminal {
-        private readonly terminals: { [id: string]: Terminal } = {};
+        static defaultOptions: ITerminalOptions = { addNewLine: true, name: "Compile Run" };
 
-        public runInTerminal(command: string, options?: ITerminalOptions): void {
-            const defaultOptions: ITerminalOptions = { addNewLine: true, name: "Compile Run" };
-            const { addNewLine, name, cwd } = Object.assign(defaultOptions, options);
+        static get clearLineChar() {
+            return process.platform === "win32" ? '\r' : '\r\0' + '33[k';
+        }
+
+        static async runInTerminal(command: string) {
+            CodeTerminal.runInTerminal(this.clearLineChar, this.defaultOptions);
+            await new Promise(resolve => setTimeout(resolve, 700)); // await for a few time.
+            await CodeTerminal.clearTerminal();
+            CodeTerminal.runInTerminal(command, this.defaultOptions);
+        }
+    }
+
+    export class CodeTerminal {
+        private static readonly terminals: { [id: string]: Terminal } = {};
+
+        static runInTerminal(command: string, options?: ITerminalOptions): void {
+            const { addNewLine, name, cwd } = options;
             if (this.terminals[name] === undefined) {
                 this.terminals[name] = window.createTerminal({ name });
             }
@@ -38,14 +53,18 @@ export namespace VSCodeUI {
             this.terminals[name].sendText(getCommand(command), addNewLine);
         }
 
-        public closeAllTerminals(): void {
+        static async clearTerminal() {
+            commands.executeCommand('workbench.action.terminal.clear');
+        }
+
+        static closeAllTerminals(): void {
             Object.keys(this.terminals).forEach((id: string) => {
                 this.terminals[id].dispose();
                 delete this.terminals[id];
             });
         }
 
-        public onDidCloseTerminal(closedTerminal: Terminal): void {
+        static onDidCloseTerminal(closedTerminal: Terminal): void {
             try {
                 delete this.terminals[closedTerminal.name];
             } catch (error) {
@@ -53,8 +72,6 @@ export namespace VSCodeUI {
             }
         }
     }
-
-    export const compileRunTerminal: CompileRunTerminal = new CompileRunTerminal();
 
     function getCommand(cmd: string): string {
         if (process.platform === "win32") {

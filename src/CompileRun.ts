@@ -31,7 +31,7 @@ export class CompileRun {
 
         let compilerArgs = [currentFile.fileName, '-o', outputFileName];
 
-        let compilerSetting: { path: string, args: string[] };
+        let compilerSetting: { path: string, args: string };
         let compilerSettingKey: { path: string, args: string };
 
         switch (currentFile.languageId) {
@@ -76,13 +76,13 @@ export class CompileRun {
             return;
         }
         if (withFlags) {
-            let flagsStr = await this.promptForFlags(compilerSetting.args.toString());
+            let flagsStr = await this.promptForFlags(compilerSetting.args);
             if (flagsStr === undefined) { // cancel.
                 return;
             }
             compilerArgs = compilerArgs.concat(flagsStr.split(" "));
         } else {
-            compilerArgs = compilerArgs.concat(compilerSetting.args);
+            compilerArgs = compilerArgs.concat(compilerSetting.args.split(" "));
         }
 
         console.log(compilerArgs.toString());
@@ -118,15 +118,13 @@ export class CompileRun {
             return;
         }
 
-        let runArgs = "";
+        let runArgs = Settings.runArgs();
         if (withArgs) {
-            let argsStr = await this.promptForRunArgs(Settings.runArgs().toString());
+            let argsStr = await this.promptForRunArgs(Settings.runArgs());
             if (argsStr === undefined) { // cancel.
                 return;
             }
             runArgs = argsStr;
-        } else {
-            runArgs = Settings.runArgs().toString();
         }
 
         this.terminal.runInTerminal(`"${outputFile}" ${runArgs}`);

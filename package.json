@@ -152,26 +152,22 @@
                     "description": "Saves the file before compilation",
                     "scope": "resource"
                 },
-                "c-cpp-compile-run.c-compiler-args": {
-                    "type": "array",
-                    "default": [],
-                    "items": {
-                        "type": "string"
-                    }
+                "c-cpp-compile-run.c-compiler-flags": {
+                    "type": "string",
+                    "description": "Flags: e.g. -Wall. default: -Wall -Wextra",
+                    "default": "-Wall -Wextra",
+                    "scope": "resource"
                 },
-                "c-cpp-compile-run.cpp-compiler-args": {
-                    "type": "array",
-                    "default": [],
-                    "items": {
-                        "type": "string"
-                    }
+                "c-cpp-compile-run.cpp-compiler-flags": {
+                    "type": "string",
+                    "description": "Flags: e.g. -Wall. default: -Wall -Wextra",
+                    "default": "-Wall -Wextra",
+                    "scope": "resource"
                 },
                 "c-cpp-compile-run.run-args": {
-                    "type": "array",
-                    "default": [],
-                    "items": {
-                        "type": "string"
-                    }
+                    "type": "string",
+                    "description": "Run arguments",
+                    "scope": "resource"
                 }
             }
         }

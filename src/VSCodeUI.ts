@@ -1,10 +1,11 @@
-import { Terminal, window, workspace, OutputChannel } from "vscode";
+import { Terminal, window, workspace, OutputChannel, commands } from "vscode";
 
 export namespace VSCodeUI {
     export class CompileRunOutputChannel {
         private readonly channel: OutputChannel = window.createOutputChannel("C/C++ Compile Run");
 
         public appendLine(message: any, title?: string): void {
+            this.channel.clear();
             if (title) {
                 const simplifiedTime: string = (new Date()).toISOString().replace(/z|t/gi, " ").trim(); // YYYY-MM-DD HH:mm:ss.sss
                 const hightlightingTitle: string = `[${title} ${simplifiedTime}]`;
@@ -14,6 +15,7 @@ export namespace VSCodeUI {
         }
 
         public append(message: any): void {
+            this.channel.clear();
             this.channel.append(message);
         }
 
@@ -25,12 +27,15 @@ export namespace VSCodeUI {
     export class CompileRunTerminal {
         private readonly terminals: { [id: string]: Terminal } = {};
 
-        public runInTerminal(command: string, options?: ITerminalOptions): void {
+        public async runInTerminal(command: string, options?: ITerminalOptions): Promise<void> {
             const defaultOptions: ITerminalOptions = { addNewLine: true, name: "Compile Run" };
             const { addNewLine, name, cwd } = Object.assign(defaultOptions, options);
             if (this.terminals[name] === undefined) {
                 this.terminals[name] = window.createTerminal({ name });
             }
+            
+            await commands.executeCommand("workbench.action.terminal.clear");
+            
             this.terminals[name].show();
             if (cwd) {
                 this.terminals[name].sendText(getCDCommand(cwd), true);

@@ -38,14 +38,13 @@ export class CompileRun {
             case 'cpp': {
                 compilerSetting = {
                     path: Settings.cppCompilerPath(),
-                    args: Settings.cppCompilerArgs().concat('-lstdc++')
+                    args: Settings.cppCompilerArgs()
                 };
 
                 compilerSettingKey = {
                     path: Settings.key.cppCompilerPath,
                     args: Settings.key.cppCompilerArgs
                 };
-                compilerArgs.push("-lstdc++");
                 break;
             }
             case 'c': {

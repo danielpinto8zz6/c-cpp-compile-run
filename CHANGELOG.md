@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.3.0]
+- Compilation flags & args 
+- Restored g++ support
+- Clear terminal + output channel
+
 ## [0.2.7]
 - Fix settings
 - Fix compiler find on windows

@@ -127,7 +127,15 @@ export class CompileRun {
             runArgs = argsStr;
         }
 
-        this.terminal.runInTerminal(`"${outputFile}" ${runArgs}`);
+        let command = `"${outputFile}" ${runArgs}`;
+
+        if (Settings.runNewWindow()) {
+            if (process.platform === "win32") {
+                command = `start cmd /c "${command} & echo. & pause"`;
+            }
+        }
+
+        this.terminal.runInTerminal(command);
     }
 
     public async compileRun(action: Constants.Action) {

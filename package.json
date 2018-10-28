@@ -168,6 +168,12 @@
                     "type": "string",
                     "description": "Run arguments",
                     "scope": "resource"
+                },
+                "c-cpp-compile-run.run-new-window": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Run in a new external terminal but not in the integrated terminal.",
+                    "scope": "resource"
                 }
             }
         }

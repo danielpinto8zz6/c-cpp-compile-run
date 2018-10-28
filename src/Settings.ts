@@ -7,10 +7,11 @@ export namespace Settings {
         cppCompilerPath = "cpp-compiler-path",
         cppCompilerArgs = "cpp-compiler-flags",
         saveBeforeCompile = "save-before-compile",
-        runArgs = "run-args"
+        runArgs = "run-args",
+        runNewWindow = "run-new-window"
     }
 
-    export function getSetting<T>(name: string): T | undefined {
+    function getSetting<T>(name: string): T | undefined {
         return workspace.getConfiguration("c-cpp-compile-run", null).get<T>(name);
     }
     export let cCompilerPath = () => getSetting<string>(key.cCompilerPath);
@@ -19,4 +20,5 @@ export namespace Settings {
     export let cppCompilerArgs = () => getSetting<string>(key.cppCompilerArgs);
     export let saveBeforeCompile = () => getSetting<boolean>(key.saveBeforeCompile);
     export let runArgs = () => getSetting<string>(key.runArgs);
+    export let runNewWindow = () => getSetting<boolean>(key.runNewWindow);
 }

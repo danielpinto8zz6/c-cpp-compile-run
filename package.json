@@ -193,7 +193,6 @@
         "vscode": "^1.1.21"
     },
     "dependencies": {
-        "command-exists": "^1.2.8",
         "path": "^0.12.7"
     }
 }

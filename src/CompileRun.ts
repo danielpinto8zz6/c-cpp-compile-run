@@ -6,6 +6,7 @@ import * as fs from 'fs';
 import { VSCodeUI } from "./VSCodeUI";
 import { Constants } from './Constants';
 import { Settings } from './Settings';
+import { commandExists } from './CommandExists';
 
 export class CompileRun {
     private outputChannel: VSCodeUI.CompileRunOutputChannel;
@@ -19,7 +20,6 @@ export class CompileRun {
 
     private async compile(currentFile: vscode.TextDocument, outputFileName: string, doRun: boolean = false, withFlags: boolean = false) {
         const spawn = require('child_process').spawn;
-        let commandExistsSync = require('command-exists').sync;
 
         let currentFileName = currentFile.fileName;
 
@@ -64,7 +64,7 @@ export class CompileRun {
         }
 
         console.log(compilerSetting.path);
-        if (!commandExistsSync(compilerSetting.path)) {
+        if (!commandExists(compilerSetting.path)) {
             const CHANGE_PATH: string = "Change path";
             const choiceForDetails: string = await vscode.window.showErrorMessage("Compiler not found, try to change path in settings!", CHANGE_PATH);
             if (choiceForDetails === CHANGE_PATH) {

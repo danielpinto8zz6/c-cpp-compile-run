@@ -2,13 +2,12 @@
 
 import { VSCodeUI } from "./VSCodeUI";
 import { Constants } from "./Constants";
-import { TextDocument, window, ConfigurationTarget, workspace } from "vscode";
-import { Settings } from "./Settings";
-import { commandExists } from "./CommandExists";
+import { window, ConfigurationTarget, workspace } from "vscode";
+import { commandExists } from './CommandExists';
 import { existsSync } from "fs";
-import { join, parse, dirname, basename } from "path";
 import { exec, spawn } from "child_process";
-import { Run } from "./Run";
+import { File } from './File';
+import { Settings } from "./Settings";
 
 export class CompileRun {
     private outputChannel: VSCodeUI.CompileRunOutputChannel;
@@ -20,21 +19,19 @@ export class CompileRun {
         this.terminal = VSCodeUI.compileRunTerminal;
     }
 
-    private async compile(currentFile: TextDocument, outputFileName: string, doRun: boolean = false, withFlags: boolean = false) {
-        let currentFileName = currentFile.fileName;
-
+    private async compile(file: File, doRun: boolean = false, withFlags: boolean = false) {
         if (Settings.saveBeforeCompile) {
             await window.activeTextEditor.document.save();
         }
 
         let exec;
 
-        let compilerArgs = [currentFile.fileName, '-o', outputFileName];
+        let compilerArgs = [file.$name, '-o', file.$executable];
 
         let compilerSetting: { path: string, args: string };
         let compilerSettingKey: { path: string, args: string };
 
-        switch (currentFile.languageId) {
+        switch (file.$extension) {
             case 'cpp': {
                 compilerSetting = {
                     path: Settings.cppCompilerPath(),
@@ -70,7 +67,7 @@ export class CompileRun {
             if (choiceForDetails === CHANGE_PATH) {
                 let path = await this.promptForPath();
                 await workspace.getConfiguration("c-cpp-compile-run", null).update(compilerSettingKey.path, path, ConfigurationTarget.Global);
-                this.compile(currentFile, outputFileName, doRun, withFlags);
+                this.compile(file, doRun, withFlags);
                 return;
             }
             return;
@@ -85,16 +82,15 @@ export class CompileRun {
             compilerArgs = compilerArgs.concat(compilerSetting.args.split(" "));
         }
 
-        console.log(compilerArgs.toString());
-        exec = spawn(compilerSetting.path, compilerArgs);
+        exec = spawn(compilerSetting.path, compilerArgs, { cwd: file.$directory });
 
         exec.stdout.on('data', (data: any) => {
-            this.outputChannel.appendLine(data, currentFileName);
+            this.outputChannel.appendLine(data, file.$name);
             this.outputChannel.show();
         });
 
         exec.stderr.on('data', (data: any) => {
-            this.outputChannel.appendLine(data, currentFileName);
+            this.outputChannel.appendLine(data, file.$name);
             this.outputChannel.show();
         });
 
@@ -103,7 +99,7 @@ export class CompileRun {
                 // Compiled successfully let's tell the user & execute
                 window.showInformationMessage("Compiled successfuly!");
                 if (doRun) {
-                    this.run(outputFileName);
+                    this.run(file);
                 }
             } else {
                 // Error compiling
@@ -112,9 +108,9 @@ export class CompileRun {
         });
     }
 
-    private async run(outputFile: string, withArgs: boolean = false) {
-        if (!existsSync(outputFile)) {
-            window.showErrorMessage(`"${outputFile}" doesn't exists!`);
+    private async run(file: File, withArgs: boolean = false) {
+        if (!existsSync(file.$path)) {
+            window.showErrorMessage(`"${file.$path}" doesn't exists!`);
             return;
         }
 
@@ -127,45 +123,37 @@ export class CompileRun {
             runArgs = argsStr;
         }
 
-        // let command = `'${outputFile}' ${runArgs}`;
-        let run = new Run(basename(outputFile), dirname(outputFile), runArgs);
-
         if (Settings.runInExternalTerminal()) {
-            if (!this.runExternal(run)) {
-                this.terminal.runInTerminal(run.get_executable_with_args(), { cwd: run.get_directory() });
+            if (!this.runExternal(file, runArgs)) {
+                this.terminal.runInTerminal(`./${file.$executable} ${runArgs}`, { cwd: file.$directory });
             }
         } else {
-            this.terminal.runInTerminal(run.get_executable_with_args(), { cwd: run.get_directory() });
+            this.terminal.runInTerminal(`./${file.$executable} ${runArgs}`, { cwd: file.$directory });
         }
     }
 
     public async compileRun(action: Constants.Action) {
-        let currentFile = window.activeTextEditor.document;
-
-        if (!currentFile) {
+        if (!window.activeTextEditor.document) {
             return;
         }
 
-        let outputFile = join(parse(currentFile.fileName).dir, parse(currentFile.fileName).name);
-        if (process.platform === 'win32') {
-            outputFile = outputFile + '.exe';
-        }
+        let file = new File(window.activeTextEditor.document);
 
         switch (action) {
             case Constants.Action.Compile:
-                this.compile(currentFile, outputFile);
+                this.compile(file);
                 break;
             case Constants.Action.Run:
-                this.run(outputFile);
+                this.run(file);
                 break;
             case Constants.Action.CompileRun:
-                this.compile(currentFile, outputFile, true);
+                this.compile(file, true);
                 break;
             case Constants.Action.CompileWithFlags:
-                this.compile(currentFile, outputFile, false, true);
+                this.compile(file, false, true);
                 break;
             case Constants.Action.RunWithArguments:
-                this.run(outputFile, true);
+                this.run(file, true);
                 break;
             default: return;
         }
@@ -205,22 +193,22 @@ export class CompileRun {
         }
     }
 
-    private runExternal(run: Run): boolean {
+    private runExternal(file: File, args: string): boolean {
         switch (process.platform) {
             case "win32":
-                exec(`start cmd /c "${run.get_executable} ${run.get_args()} & echo. & pause"`, { cwd: run.get_directory() });
+                exec(`start cmd /c "${file.$executable} ${args} & echo. & pause"`, { cwd: file.$directory });
                 return true;
             case "linux":
                 if (commandExists('gnome-terminal')) {
-                    exec(`gnome-terminal -t ${run.get_executable()} -x bash -c './${run.get_executable()} ${run.get_args()} ; echo; read -n1 -p "Press any key to continue..."'`, { cwd: run.get_directory() });
+                    exec(`gnome-terminal -t ${file.$title} -x bash -c './${file.$executable} ${args} ; echo; read -n1 -p "Press any key to continue..."'`, { cwd: file.$directory });
                     return true;
                 } else if (commandExists('xterm')) {
-                    exec(`xterm -T ${run.get_executable()} -e './${run.get_executable()} ${run.get_args()} ; echo; read -n1 -p "Press any key to continue..."'`, { cwd: run.get_directory() });
+                    exec(`xterm -T ${file.$title} -e './${file.$executable} ${args} ; echo; read -n1 -p "Press any key to continue..."'`, { cwd: file.$directory });
                     return true;
                 }
                 return false;
             case "darwin":
-                exec(`osascript - e 'tell application "Terminal" to do script "./${run.get_executable()} && read -n1 -p "Press any key to continue...""'`, { cwd: run.get_directory() });
+                exec(`osascript - e 'tell application "Terminal" to do script "./${file.$executable} && read -n1 -p "Press any key to continue...""'`, { cwd: file.$directory });
                 return true;
         }
         return false;

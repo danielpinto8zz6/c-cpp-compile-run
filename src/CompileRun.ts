@@ -69,7 +69,7 @@ export class CompileRun {
             const choiceForDetails: string = await window.showErrorMessage("Compiler not found, try to change path in settings!", CHANGE_PATH);
             if (choiceForDetails === CHANGE_PATH) {
                 let path = await this.promptForPath();
-                await workspace.getConfiguration().update(compilerSettingKey.path, path, ConfigurationTarget.Global);
+                await workspace.getConfiguration("c-cpp-compile-run", null).update(compilerSettingKey.path, path, ConfigurationTarget.Global);
                 this.compile(currentFile, outputFileName, doRun, withFlags);
                 return;
             }

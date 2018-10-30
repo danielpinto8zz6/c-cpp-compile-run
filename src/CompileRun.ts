@@ -206,6 +206,9 @@ export class CompileRun {
                 } else if (commandExists('xterm')) {
                     exec(`xterm -T ${file.$title} -e './${file.$executable} ${args} ; echo; read -n1 -p "Press any key to continue..."'`, { cwd: file.$directory });
                     return true;
+                } else if (commandExists('konsole')) {
+                    exec(`konsole -p tabtitle='${file.$title}' --noclose -e bash -c './${file.$executable} ${args}'`, { cwd: file.$directory });
+                    return true;
                 }
                 return false;
             case 'darwin':

@@ -200,17 +200,28 @@ export class CompileRun {
                 exec(`start cmd /c "${file.$executable} ${args} & echo. & pause"`, { cwd: file.$directory });
                 return true;
             case 'linux':
-                if (commandExists('gnome-terminal')) {
-                    exec(`gnome-terminal -t ${file.$title} -x bash -c './${file.$executable} ${args} ; echo; read -n1 -p "Press any key to continue..."'`, { cwd: file.$directory });
-                    return true;
-                } else if (commandExists('xterm')) {
-                    exec(`xterm -T ${file.$title} -e './${file.$executable} ${args} ; echo; read -n1 -p "Press any key to continue..."'`, { cwd: file.$directory });
-                    return true;
-                } else if (commandExists('konsole')) {
-                    exec(`konsole -p tabtitle='${file.$title}' --noclose -e bash -c './${file.$executable} ${args}'`, { cwd: file.$directory });
-                    return true;
+                let terminal: string = workspace.getConfiguration().get('terminal.external.linuxExec');
+                if (!commandExists(terminal)) {
+                    window.showErrorMessage(`${terminal} not found! Try to enter a valid terminal in 'terminal.external.linuxExec' settings! (gnome-terminal, xterm, konsole)`);
+                    window.showInformationMessage('Running on vscode terminal');
+                    return false;
                 }
-                return false;
+
+                switch (terminal) {
+                    case 'xterm':
+                        exec(`${terminal} -T ${file.$title} -e './${file.$executable} ${args} ; echo; read -n1 -p "Press any key to continue..."'`, { cwd: file.$directory });
+                        return true;
+                    case 'gnome-terminal':
+                        exec(`${terminal} -t ${file.$title} -x bash -c './${file.$executable} ${args} ; echo; read -n1 -p "Press any key to continue..."'`, { cwd: file.$directory });
+                        return true;
+                    case 'konsole':
+                        exec(`${terminal} -p tabtitle='${file.$title}' --noclose -e bash -c './${file.$executable} ${args}'`, { cwd: file.$directory });
+                        return true;
+                    default:
+                        window.showErrorMessage(`${terminal} isn't supported! Try to enter a supported terminal in 'terminal.external.linuxExec' settings! (gnome-terminal, xterm, konsole)`);
+                        window.showInformationMessage('Running on vscode terminal');
+                        return false;
+                }
             case 'darwin':
                 exec(`osascript - e 'tell application "Terminal" to do script "./${file.$executable} && read -n1 -p "Press any key to continue...""'`, { cwd: file.$directory });
                 return true;

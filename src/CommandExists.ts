@@ -3,7 +3,7 @@
 import { execSync } from 'child_process';
 import { accessSync, constants } from 'fs';
 
-export function fileNotExistsSync (command : string) {
+export function fileNotExistsSync(command: string) {
     try {
         accessSync(command, constants.F_OK);
         return false;
@@ -12,7 +12,7 @@ export function fileNotExistsSync (command : string) {
     }
 }
 
-export function localExecutableSync (command : string) {
+export function localExecutableSync(command: string) {
     try {
         accessSync(command, constants.F_OK | constants.X_OK);
         return true;
@@ -36,16 +36,16 @@ export function commandExistsUnixSync(command: string) {
     return localExecutableSync(command);
 }
 
-export function commandExistsWindowsSync (command : string) {
-    if (/[\x00-\x1f<>:"\|\?\*]/.test(command)) {
-        return false;
+export function commandExistsWindowsSync(command: string) {
+    if (fileNotExistsSync(command)) {
+        try {
+            var stdout = execSync('where ' + command, { stdio: [] });
+            return !!stdout;
+        } catch (error) {
+            return false;
+        }
     }
-    try {
-        var stdout = execSync('where ' + command, { stdio: [] });
-        return !!stdout;
-    } catch (error) {
-        return false;
-    }
+    return localExecutableSync(command);
 }
 
 export function commandExists(command: string) {

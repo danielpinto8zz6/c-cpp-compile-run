@@ -1,3 +1,5 @@
+'use strict';
+
 import { execSync } from 'child_process';
 import { accessSync, constants } from 'fs';
 

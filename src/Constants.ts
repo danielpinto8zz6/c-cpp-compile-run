@@ -1,3 +1,5 @@
+'use strict';
+
 export namespace Constants {
     export enum Action {
         Compile,

@@ -1,3 +1,5 @@
+'use strict';
+
 import { Terminal, window, workspace, OutputChannel, commands } from "vscode";
 
 export namespace VSCodeUI {

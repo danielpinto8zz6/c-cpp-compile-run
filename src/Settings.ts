@@ -1,3 +1,5 @@
+'use strict';
+
 import { workspace } from "vscode";
 
 export namespace Settings {

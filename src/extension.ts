@@ -1,30 +1,30 @@
 'use strict';
 
-import * as vscode from 'vscode';
 import { VSCodeUI } from "./VSCodeUI";
 import { CompileRun } from './CompileRun';
 import { Constants } from "./Constants";
+import { ExtensionContext, commands, window, Terminal } from "vscode";
 
-export function activate(context: vscode.ExtensionContext) {
+export function activate(context: ExtensionContext) {
     const compileRun = new CompileRun();
 
-    let CompileRunCommand = vscode.commands.registerCommand('extension.CompileRun', () => {
+    let CompileRunCommand = commands.registerCommand('extension.CompileRun', () => {
         compileRun.compileRun(Constants.Action.CompileRun);
     });
 
-    let CompileCommand = vscode.commands.registerCommand('extension.Compile', () => {
+    let CompileCommand = commands.registerCommand('extension.Compile', () => {
         compileRun.compileRun(Constants.Action.Compile);
     });
 
-    let RunCommand = vscode.commands.registerCommand('extension.Run', () => {
+    let RunCommand = commands.registerCommand('extension.Run', () => {
         compileRun.compileRun(Constants.Action.Run);
     });
 
-    let CompileWithFlagsCommand = vscode.commands.registerCommand('extension.CompileWithFlags', () => {
+    let CompileWithFlagsCommand = commands.registerCommand('extension.CompileWithFlags', () => {
         compileRun.compileRun(Constants.Action.CompileWithFlags);
     });
 
-    let RunWithArgumentsCommand = vscode.commands.registerCommand('extension.RunWithArguments', () => {
+    let RunWithArgumentsCommand = commands.registerCommand('extension.RunWithArguments', () => {
         compileRun.compileRun(Constants.Action.RunWithArguments);
     });
 
@@ -34,7 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(CompileWithFlagsCommand);
     context.subscriptions.push(RunWithArgumentsCommand);
 
-    context.subscriptions.push(vscode.window.onDidCloseTerminal((closedTerminal: vscode.Terminal) => {
+    context.subscriptions.push(window.onDidCloseTerminal((closedTerminal: Terminal) => {
         VSCodeUI.compileRunTerminal.onDidCloseTerminal(closedTerminal);
     }));
 }

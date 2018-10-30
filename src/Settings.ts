@@ -10,7 +10,7 @@ export namespace Settings {
         cppCompilerArgs = "cpp-compiler-flags",
         saveBeforeCompile = "save-before-compile",
         runArgs = "run-args",
-        runNewWindow = "run-new-window"
+        runInExternalTerminal = "run-in-external-terminal",
     }
 
     function getSetting<T>(name: string): T | undefined {
@@ -22,5 +22,5 @@ export namespace Settings {
     export let cppCompilerArgs = () => getSetting<string>(key.cppCompilerArgs);
     export let saveBeforeCompile = () => getSetting<boolean>(key.saveBeforeCompile);
     export let runArgs = () => getSetting<string>(key.runArgs);
-    export let runNewWindow = () => getSetting<boolean>(key.runNewWindow);
+    export let runInExternalTerminal = () => getSetting<boolean>(key.runInExternalTerminal);
 }

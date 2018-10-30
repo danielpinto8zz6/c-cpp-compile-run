@@ -6,7 +6,9 @@ import { TextDocument, window, ConfigurationTarget, workspace } from "vscode";
 import { Settings } from "./Settings";
 import { commandExists } from "./CommandExists";
 import { existsSync } from "fs";
-import { join, parse } from "path";
+import { join, parse, dirname, basename } from "path";
+import { exec, spawn } from "child_process";
+import { Run } from "./Run";
 
 export class CompileRun {
     private outputChannel: VSCodeUI.CompileRunOutputChannel;
@@ -19,8 +21,6 @@ export class CompileRun {
     }
 
     private async compile(currentFile: TextDocument, outputFileName: string, doRun: boolean = false, withFlags: boolean = false) {
-        const spawn = require('child_process').spawn;
-
         let currentFileName = currentFile.fileName;
 
         if (Settings.saveBeforeCompile) {
@@ -127,15 +127,16 @@ export class CompileRun {
             runArgs = argsStr;
         }
 
-        let command = `"${outputFile}" ${runArgs}`;
+        // let command = `'${outputFile}' ${runArgs}`;
+        let run = new Run(basename(outputFile), dirname(outputFile), runArgs);
 
-        if (Settings.runNewWindow()) {
-            if (process.platform === "win32") {
-                command = `start cmd /c "${command} & echo. & pause"`;
+        if (Settings.runInExternalTerminal()) {
+            if (!this.runExternal(run)) {
+                this.terminal.runInTerminal(run.get_executable_with_args(), { cwd: run.get_directory() });
             }
+        } else {
+            this.terminal.runInTerminal(run.get_executable_with_args(), { cwd: run.get_directory() });
         }
-
-        this.terminal.runInTerminal(command);
     }
 
     public async compileRun(action: Constants.Action) {
@@ -202,5 +203,26 @@ export class CompileRun {
         } catch (e) {
             return null;
         }
+    }
+
+    private runExternal(run: Run): boolean {
+        switch (process.platform) {
+            case "win32":
+                exec(`start cmd /c "${run.get_executable} ${run.get_args()} & echo. & pause"`, { cwd: run.get_directory() });
+                return true;
+            case "linux":
+                if (commandExists('gnome-terminal')) {
+                    exec(`gnome-terminal -t ${run.get_executable()} -x bash -c './${run.get_executable()} ${run.get_args()} ; echo; read -n1 -p "Press any key to continue..."'`, { cwd: run.get_directory() });
+                    return true;
+                } else if (commandExists('xterm')) {
+                    exec(`xterm -T ${run.get_executable()} -e './${run.get_executable()} ${run.get_args()} ; echo; read -n1 -p "Press any key to continue..."'`, { cwd: run.get_directory() });
+                    return true;
+                }
+                return false;
+            case "darwin":
+                exec(`osascript - e 'tell application "Terminal" to do script "./${run.get_executable()} && read -n1 -p "Press any key to continue...""'`, { cwd: run.get_directory() });
+                return true;
+        }
+        return false;
     }
 }

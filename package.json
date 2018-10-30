@@ -135,16 +135,16 @@
         "configuration": {
             "title": "Compile Run configuration",
             "properties": {
-                "c-cpp-compile-run.c-compiler-path": {
+                "c-cpp-compile-run.c-compiler": {
                     "type": "string",
                     "default": "gcc",
-                    "description": "Set your c compiler path if it is not working",
+                    "description": "Set your c compiler if it is not working",
                     "scope": "resource"
                 },
-                "c-cpp-compile-run.cpp-compiler-path": {
+                "c-cpp-compile-run.cpp-compiler": {
                     "type": "string",
                     "default": "g++",
-                    "description": "Set your cpp compiler path if it is not working",
+                    "description": "Set your cpp compiler if it is not working",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.save-before-compile": {
@@ -153,13 +153,13 @@
                     "description": "Saves the file before compilation",
                     "scope": "resource"
                 },
-                "c-cpp-compile-run.c-compiler-flags": {
+                "c-cpp-compile-run.c-flags": {
                     "type": "string",
                     "description": "Flags: e.g. -Wall. default: -Wall -Wextra",
                     "default": "-Wall -Wextra",
                     "scope": "resource"
                 },
-                "c-cpp-compile-run.cpp-compiler-flags": {
+                "c-cpp-compile-run.cpp-flags": {
                     "type": "string",
                     "description": "Flags: e.g. -Wall. default: -Wall -Wextra",
                     "default": "-Wall -Wextra",

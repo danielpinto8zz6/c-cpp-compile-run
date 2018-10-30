@@ -1,6 +1,6 @@
 'use strict';
 
-import { Terminal, window, workspace, OutputChannel, commands } from "vscode";
+import { Terminal, window, workspace, OutputChannel } from "vscode";
 
 export namespace VSCodeUI {
     export class CompileRunOutputChannel {
@@ -35,9 +35,7 @@ export namespace VSCodeUI {
             if (this.terminals[name] === undefined) {
                 this.terminals[name] = window.createTerminal({ name });
             }
-            
-            commands.executeCommand("workbench.action.terminal.clear");
-            
+                       
             this.terminals[name].show();
             if (cwd) {
                 this.terminals[name].sendText(getCDCommand(cwd), true);

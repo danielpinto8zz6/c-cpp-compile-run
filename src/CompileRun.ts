@@ -2,7 +2,7 @@
 
 import { VSCodeUI } from "./VSCodeUI";
 import { Constants } from "./Constants";
-import { window, ConfigurationTarget, workspace } from "vscode";
+import { window, ConfigurationTarget, workspace, commands } from "vscode";
 import { commandExists } from './CommandExists';
 import { existsSync } from "fs";
 import { exec, spawn } from "child_process";
@@ -28,30 +28,30 @@ export class CompileRun {
 
         let compilerArgs = [file.$name, '-o', file.$executable];
 
-        let compilerSetting: { path: string, args: string };
-        let compilerSettingKey: { path: string, args: string };
+        let compilerSetting: { path: string, flags: string };
+        let compilerSettingKey: { path: string, flags: string };
 
         switch (file.$extension) {
             case 'cpp': {
                 compilerSetting = {
-                    path: Settings.cppCompilerPath(),
-                    args: Settings.cppCompilerArgs()
+                    path: Settings.cppCompiler(),
+                    flags: Settings.cppFlags()
                 };
 
                 compilerSettingKey = {
-                    path: Settings.key.cppCompilerPath,
-                    args: Settings.key.cppCompilerArgs
+                    path: Settings.key.cppCompiler,
+                    flags: Settings.key.cppFlags
                 };
                 break;
             }
             case 'c': {
                 compilerSetting = {
-                    path: Settings.cCompilerPath(),
-                    args: Settings.cCompilerArgs()
+                    path: Settings.cCompiler(),
+                    flags: Settings.cFlags()
                 };
                 compilerSettingKey = {
-                    path: Settings.key.cCompilerPath,
-                    args: Settings.key.cCompilerArgs
+                    path: Settings.key.cCompiler,
+                    flags: Settings.key.cFlags
                 };
                 break;
             }
@@ -60,7 +60,6 @@ export class CompileRun {
             }
         }
 
-        console.log(compilerSetting.path);
         if (!commandExists(compilerSetting.path)) {
             const CHANGE_PATH: string = "Change path";
             const choiceForDetails: string = await window.showErrorMessage("Compiler not found, try to change path in settings!", CHANGE_PATH);
@@ -73,13 +72,13 @@ export class CompileRun {
             return;
         }
         if (withFlags) {
-            let flagsStr = await this.promptForFlags(compilerSetting.args);
+            let flagsStr = await this.promptForFlags(compilerSetting.flags);
             if (flagsStr === undefined) { // cancel.
                 return;
             }
             compilerArgs = compilerArgs.concat(flagsStr.split(" "));
         } else {
-            compilerArgs = compilerArgs.concat(compilerSetting.args.split(" "));
+            compilerArgs = compilerArgs.concat(compilerSetting.flags.split(" "));
         }
 
         exec = spawn(compilerSetting.path, compilerArgs, { cwd: file.$directory });
@@ -108,27 +107,29 @@ export class CompileRun {
         });
     }
 
-    private async run(file: File, withArgs: boolean = false) {
+    private async run(file: File, inputArgs: boolean = false) {
         if (!existsSync(file.$path)) {
             window.showErrorMessage(`"${file.$path}" doesn't exists!`);
             return;
         }
 
-        let runArgs = Settings.runArgs();
-        if (withArgs) {
+        let args = Settings.runArgs();
+        if (inputArgs) {
             let argsStr = await this.promptForRunArgs(Settings.runArgs());
             if (argsStr === undefined) { // cancel.
                 return;
             }
-            runArgs = argsStr;
+            args = argsStr;
         }
 
         if (Settings.runInExternalTerminal()) {
-            if (!this.runExternal(file, runArgs)) {
-                this.terminal.runInTerminal(`./${file.$executable} ${runArgs}`, { cwd: file.$directory });
+            if (!this.runExternal(file, args)) {
+                commands.executeCommand("workbench.action.terminal.clear");
+                this.terminal.runInTerminal(`./${file.$executable} ${args}`, { cwd: file.$directory });
             }
         } else {
-            this.terminal.runInTerminal(`./${file.$executable} ${runArgs}`, { cwd: file.$directory });
+            commands.executeCommand("workbench.action.terminal.clear");
+            this.terminal.runInTerminal(`./${file.$executable} ${args}`, { cwd: file.$directory });
         }
     }
 
@@ -195,10 +196,10 @@ export class CompileRun {
 
     private runExternal(file: File, args: string): boolean {
         switch (process.platform) {
-            case "win32":
+            case 'win32':
                 exec(`start cmd /c "${file.$executable} ${args} & echo. & pause"`, { cwd: file.$directory });
                 return true;
-            case "linux":
+            case 'linux':
                 if (commandExists('gnome-terminal')) {
                     exec(`gnome-terminal -t ${file.$title} -x bash -c './${file.$executable} ${args} ; echo; read -n1 -p "Press any key to continue..."'`, { cwd: file.$directory });
                     return true;
@@ -207,7 +208,7 @@ export class CompileRun {
                     return true;
                 }
                 return false;
-            case "darwin":
+            case 'darwin':
                 exec(`osascript - e 'tell application "Terminal" to do script "./${file.$executable} && read -n1 -p "Press any key to continue...""'`, { cwd: file.$directory });
                 return true;
         }

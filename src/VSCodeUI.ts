@@ -36,7 +36,7 @@ export namespace VSCodeUI {
                 this.terminals[name] = window.createTerminal({ name });
             }
             
-            await commands.executeCommand("workbench.action.terminal.clear");
+            commands.executeCommand("workbench.action.terminal.clear");
             
             this.terminals[name].show();
             if (cwd) {

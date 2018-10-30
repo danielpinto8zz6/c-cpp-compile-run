@@ -1,9 +1,5 @@
-let execSync = require('child_process').execSync;
-let fs = require('fs');
-let accessSync = fs.accessSync;
-let constants = fs.constants || fs;
-
-let isUsingWindows = process.platform === 'win32';
+import { execSync } from 'child_process';
+import { accessSync, constants } from 'fs';
 
 export function fileNotExistsSync (command : string) {
     try {
@@ -51,7 +47,7 @@ export function commandExistsWindowsSync (command : string) {
 }
 
 export function commandExists(command: string) {
-    if (isUsingWindows) {
+    if (process.platform === 'win32') {
         return commandExistsWindowsSync(command);
     } else {
         return commandExistsUnixSync(command);

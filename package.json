@@ -22,6 +22,7 @@
         "url": "https://github.com/danielpinto8zz6/c-cpp-compile-run/issues",
         "email": "danielpinto8zz6@gmail.com"
     },
+    "license": "GPL-3.0",
     "homepage": "https://github.com/danielpinto8zz6/c-cpp-compile-run/blob/master/README.md",
     "repository": {
         "type": "git",
@@ -192,7 +193,5 @@
         "typescript": "^3.1.3",
         "vscode": "^1.1.21"
     },
-    "dependencies": {
-        "path": "^0.12.7"
-    }
+    "dependencies": {}
 }

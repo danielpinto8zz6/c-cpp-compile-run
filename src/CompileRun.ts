@@ -209,13 +209,21 @@ export class CompileRun {
 
                 switch (terminal) {
                     case 'xterm':
-                        exec(`${terminal} -T ${file.$title} -e './${file.$executable} ${args} ; echo; read -n1 -p "Press any key to continue..."'`, { cwd: file.$directory });
+                        exec(`${terminal} -T ${file.$title} -e './${file.$executable} ${args}; echo; read -n1 -p "Press any key to continue..."'`, { cwd: file.$directory });
                         return true;
                     case 'gnome-terminal':
-                        exec(`${terminal} -t ${file.$title} -x bash -c './${file.$executable} ${args} ; echo; read -n1 -p "Press any key to continue..."'`, { cwd: file.$directory });
+                    case 'tilix':
+                    case 'mate-terminal':
+                        exec(`${terminal} -t ${file.$title} -x bash -c './${file.$executable} ${args}; echo; read -n1 -p "Press any key to continue..."'`, { cwd: file.$directory });
+                        return true;
+                    case 'xfce4-terminal':
+                        exec(`${terminal} --title ${file.$title} -x bash -c './${file.$executable} ${args}; read -n1 -p "Press any key to continue..."'`, { cwd: file.$directory });
                         return true;
                     case 'konsole':
                         exec(`${terminal} -p tabtitle='${file.$title}' --noclose -e bash -c './${file.$executable} ${args}'`, { cwd: file.$directory });
+                        return true;
+                    case 'io.elementary.terminal':
+                        exec(`${terminal} -e './${file.$executable} ${args}'`, { cwd: file.$directory });
                         return true;
                     default:
                         window.showErrorMessage(`${terminal} isn't supported! Try to enter a supported terminal in 'terminal.external.linuxExec' settings! (gnome-terminal, xterm, konsole)`);

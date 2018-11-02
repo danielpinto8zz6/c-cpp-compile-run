@@ -125,11 +125,11 @@ export class CompileRun {
         if (Settings.runInExternalTerminal()) {
             if (!this.runExternal(file, args)) {
                 commands.executeCommand("workbench.action.terminal.clear");
-                this.terminal.runInTerminal(`./${file.$executable} ${args}`, { cwd: file.$directory });
+                this.terminal.runExecutable(file.$executable, args, { cwd: file.$directory });
             }
         } else {
             commands.executeCommand("workbench.action.terminal.clear");
-            this.terminal.runInTerminal(`./${file.$executable} ${args}`, { cwd: file.$directory });
+            this.terminal.runExecutable(file.$executable, args, { cwd: file.$directory });
         }
     }
 

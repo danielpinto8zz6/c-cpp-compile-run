@@ -26,6 +26,9 @@ You can also set to save file before compiling.
 
 ## Release Notes
 
+### 0.4.1
+- Fixed run on windows
+
 ### 0.4.0
 - Fixed a lot of bugs
 - Fixed gcc not found on windows, plus if you set custom gcc it will work now.

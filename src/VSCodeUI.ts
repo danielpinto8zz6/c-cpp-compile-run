@@ -35,12 +35,20 @@ export namespace VSCodeUI {
             if (this.terminals[name] === undefined) {
                 this.terminals[name] = window.createTerminal({ name });
             }
-                       
+
             this.terminals[name].show();
             if (cwd) {
                 this.terminals[name].sendText(getCDCommand(cwd), true);
             }
             this.terminals[name].sendText(getCommand(command), addNewLine);
+        }
+
+        public async runExecutable(executable: string, args: string, options?: ITerminalOptions): Promise<void> {
+            if (process.platform !== 'win32') {
+                executable = './' + executable;
+            }
+
+            this.runInTerminal(`${executable} ${args}`, options);
         }
 
         public closeAllTerminals(): void {

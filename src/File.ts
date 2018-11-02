@@ -16,9 +16,9 @@ export class File {
         this.directory = dirname(this.path);
         this.extension = file.languageId;
         if (process.platform === 'win32') {
-            this.executable = this.title + '.exe';
+            this.executable = `"${this.title}.exe"`;
         } else {
-            this.executable = this.title;
+            this.executable = `"${this.title}"`;
         }
     }
 

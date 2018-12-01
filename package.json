@@ -30,33 +30,38 @@
     },
     "activationEvents": [
         "onCommand:extension.CompileRun",
+        "onCommand:extension.CustomCompileRun",
         "onCommand:extension.Compile",
         "onCommand:extension.Run",
-        "onCommand:extension.CompileWithFlags",
-        "onCommand:extension.RunWithArguments"
+        "onCommand:extension.CustomCompile",
+        "onCommand:extension.CustomRun"
     ],
     "main": "./out/extension",
     "contributes": {
         "commands": [
             {
                 "command": "extension.CompileRun",
-                "title": "CompileRun : Compile & Run"
+                "title": "CompileRun : Compile with default flags & Run with default arguments"
+            },
+            {
+                "command": "extension.CustomCompileRun",
+                "title": "CompileRun : Compile with custom flags & Run with custom arguments"
             },
             {
                 "command": "extension.Compile",
-                "title": "CompileRun : Compile"
+                "title": "CompileRun : Compile with default flags"
             },
             {
                 "command": "extension.Run",
-                "title": "CompileRun : Run"
+                "title": "CompileRun : Run with default arguments"
             },
             {
-                "command": "extension.CompileWithFlags",
-                "title": "CompileRun : Compile with flags"
+                "command": "extension.CustomCompile",
+                "title": "CompileRun : Compile with custom flags"
             },
             {
-                "command": "extension.RunWithArguments",
-                "title": "CompileRun : Run with arguments"
+                "command": "extension.CustomRun",
+                "title": "CompileRun : Run with custom arguments"
             }
         ],
         "menus": {
@@ -70,55 +75,67 @@
                     "when": "editorLangId ==  cpp"
                 },
                 {
-                    "command": "extension.Compile",
-                    "when": "editorLangId ==  c"
-                },
-                {
-                    "command": "extension.Compile",
-                    "when": "editorLangId ==  cpp"
-                },
-                {
-                    "command": "extension.Run",
-                    "when": "editorLangId ==  c"
-                },
-                {
-                    "command": "extension.Run",
-                    "when": "editorLangId ==  cpp"
-                },
-                {
-                    "command": "extension.CompileWithFlags",
-                    "when": "editorLangId ==  c"
-                },
-                {
-                    "command": "extension.CompileWithFlags",
-                    "when": "editorLangId ==  cpp"
-                },
-                {
-                    "command": "extension.RunWithArguments",
-                    "when": "editorLangId ==  c"
-                },
-                {
-                    "command": "extension.RunWithArguments",
-                    "when": "editorLangId ==  cpp"
-                },
-                {
                     "command": "extension.CompileRun",
                     "when": "editorLangId ==  cc"
                 },
                 {
+                    "command": "extension.CustomCompileRun",
+                    "when": "editorLangId ==  cpp"
+                },
+                {
+                    "command": "extension.CustomCompileRun",
+                    "when": "editorLangId ==  cpp"
+                },
+                {
+                    "command": "extension.CustomCompileRun",
+                    "when": "editorLangId ==  cc"
+                },
+                {
+                    "command": "extension.Compile",
+                    "when": "editorLangId ==  c"
+                },
+                {
+                    "command": "extension.Compile",
+                    "when": "editorLangId ==  cpp"
+                },
+                {
                     "command": "extension.Compile",
                     "when": "editorLangId ==  cc"
+                },
+                {
+                    "command": "extension.Run",
+                    "when": "editorLangId ==  c"
+                },
+                {
+                    "command": "extension.Run",
+                    "when": "editorLangId ==  cpp"
                 },
                 {
                     "command": "extension.Run",
                     "when": "editorLangId ==  cc"
                 },
                 {
-                    "command": "extension.CompileWithFlags",
+                    "command": "extension.CustomCompile",
+                    "when": "editorLangId ==  c"
+                },
+                {
+                    "command": "extension.CustomCompile",
+                    "when": "editorLangId ==  cpp"
+                },
+                {
+                    "command": "extension.CustomCompile",
                     "when": "editorLangId ==  cc"
                 },
                 {
-                    "command": "extension.RunWithArguments",
+                    "command": "extension.CustomRun",
+                    "when": "editorLangId ==  c"
+                },
+                {
+                    "command": "extension.CustomRun",
+                    "when": "editorLangId ==  cpp"
+                },
+                {
+                    "command": "extension.CustomRun",
                     "when": "editorLangId ==  cc"
                 }
             ]
@@ -130,6 +147,13 @@
                 "linux": "f6",
                 "key": "f6",
                 "command": "extension.CompileRun"
+            },
+            {
+                "mac": "cmd+t",
+                "win": "f7",
+                "linux": "f7",
+                "key": "f7",
+                "command": "extension.CustomCompileRun"
             }
         ],
         "configuration": {

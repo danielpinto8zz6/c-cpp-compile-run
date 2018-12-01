@@ -19,7 +19,7 @@ export class CompileRun {
         this.terminal = VSCodeUI.compileRunTerminal;
     }
 
-    private async compile(file: File, doRun: boolean = false, withFlags: boolean = false) {
+    private async compile(file: File, withFlags: boolean, callback: (file: File) => void = null) {
         if (Settings.saveBeforeCompile) {
             await window.activeTextEditor.document.save();
         }
@@ -66,7 +66,7 @@ export class CompileRun {
             if (choiceForDetails === CHANGE_PATH) {
                 let path = await this.promptForPath();
                 await workspace.getConfiguration("c-cpp-compile-run", null).update(compilerSettingKey.path, path, ConfigurationTarget.Global);
-                this.compile(file, doRun, withFlags);
+                this.compile(file, withFlags, callback);
                 return;
             }
             return;
@@ -97,8 +97,8 @@ export class CompileRun {
             if (data === 0) {
                 // Compiled successfully let's tell the user & execute
                 window.showInformationMessage("Compiled successfuly!");
-                if (doRun) {
-                    this.run(file);
+                if (callback !== null) {
+                    callback(file);
                 }
             } else {
                 // Error compiling
@@ -107,7 +107,7 @@ export class CompileRun {
         });
     }
 
-    private async run(file: File, inputArgs: boolean = false) {
+    private async run(file: File, inputArgs: boolean) {
         if (!existsSync(file.$path)) {
             window.showErrorMessage(`"${file.$path}" doesn't exists!`);
             return;
@@ -123,14 +123,13 @@ export class CompileRun {
         }
 
         if (Settings.runInExternalTerminal()) {
-            if (!this.runExternal(file, args)) {
-                commands.executeCommand("workbench.action.terminal.clear");
-                this.terminal.runExecutable(file.$executable, args, { cwd: file.$directory });
+            if (this.runExternal(file, args)) {
+                return;
             }
-        } else {
-            commands.executeCommand("workbench.action.terminal.clear");
-            this.terminal.runExecutable(file.$executable, args, { cwd: file.$directory });
         }
+        // Otherwise
+        commands.executeCommand("workbench.action.terminal.clear");
+        this.terminal.runExecutable(file.$executable, args, { cwd: file.$directory });
     }
 
     public async compileRun(action: Constants.Action) {
@@ -142,19 +141,22 @@ export class CompileRun {
 
         switch (action) {
             case Constants.Action.Compile:
-                this.compile(file);
+                this.compile(file, false);
                 break;
             case Constants.Action.Run:
-                this.run(file);
+                this.run(file, false);
                 break;
             case Constants.Action.CompileRun:
+                this.compile(file, false, (file) => this.run(file, false));
+                break;
+            case Constants.Action.CustomCompile:
                 this.compile(file, true);
                 break;
-            case Constants.Action.CompileWithFlags:
-                this.compile(file, false, true);
-                break;
-            case Constants.Action.RunWithArguments:
+            case Constants.Action.CustomRun:
                 this.run(file, true);
+                break;
+            case Constants.Action.CustomCompileRun:
+                this.compile(file, true, (file) => this.run(file, true));
                 break;
             default: return;
         }

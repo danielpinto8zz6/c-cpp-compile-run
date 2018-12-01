@@ -5,7 +5,8 @@ export namespace Constants {
         Compile,
         Run,
         CompileRun,
-        CompileWithFlags,
-        RunWithArguments
+        CustomCompile,
+        CustomRun,
+        CustomCompileRun
     }
 }

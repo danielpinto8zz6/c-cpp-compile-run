@@ -1,13 +1,13 @@
 "use strict";
 
-import { VSCodeUI } from "./VSCodeUI";
-import { Constants } from "./Constants";
-import { window, ConfigurationTarget, workspace, commands } from "vscode";
-import { commandExists } from './CommandExists';
-import { existsSync } from "fs";
 import { exec, spawn } from "child_process";
+import { existsSync } from "fs";
+import { commands, ConfigurationTarget, window, workspace } from "vscode";
+import { commandExists } from './CommandExists';
+import { Constants } from "./Constants";
 import { File } from './File';
 import { Settings } from "./Settings";
+import { VSCodeUI } from "./VSCodeUI";
 
 export class CompileRun {
     private outputChannel: VSCodeUI.CompileRunOutputChannel;
@@ -19,7 +19,7 @@ export class CompileRun {
         this.terminal = VSCodeUI.compileRunTerminal;
     }
 
-    private async compile(file: File, withFlags: boolean, callback: (file: File) => void = null) {
+    private async compile(file: File, inputFlags: boolean, callback: (file: File) => void = null) {
         if (Settings.saveBeforeCompile) {
             await window.activeTextEditor.document.save();
         }
@@ -30,7 +30,6 @@ export class CompileRun {
 
         let compilerSetting: { path: string, flags: string };
         let compilerSettingKey: { path: string, flags: string };
-
         switch (file.$extension) {
             case 'cpp': {
                 compilerSetting = {
@@ -66,20 +65,24 @@ export class CompileRun {
             if (choiceForDetails === CHANGE_PATH) {
                 let path = await this.promptForPath();
                 await workspace.getConfiguration("c-cpp-compile-run", null).update(compilerSettingKey.path, path, ConfigurationTarget.Global);
-                this.compile(file, withFlags, callback);
+                this.compile(file, inputFlags, callback);
                 return;
             }
             return;
         }
-        if (withFlags) {
-            let flagsStr = await this.promptForFlags(compilerSetting.flags);
-            if (flagsStr === undefined) { // cancel.
+
+        let flags = compilerSetting.flags;
+        if (inputFlags) {
+            flags = await this.promptForFlags(flags);
+            if (flags === undefined) { // cancel.
                 return;
             }
-            compilerArgs = compilerArgs.concat(flagsStr.split(" "));
-        } else {
-            compilerArgs = compilerArgs.concat(compilerSetting.flags.split(" "));
         }
+        if (flags) {
+            compilerArgs = compilerArgs.concat(flags.split(" "));
+        }
+
+        console.log(compilerSetting.path, compilerArgs);
 
         exec = spawn(compilerSetting.path, compilerArgs, { cwd: file.$directory });
 
@@ -115,11 +118,10 @@ export class CompileRun {
 
         let args = Settings.runArgs();
         if (inputArgs) {
-            let argsStr = await this.promptForRunArgs(Settings.runArgs());
-            if (argsStr === undefined) { // cancel.
+            args = await this.promptForRunArgs(args);
+            if (args === undefined) { // cancel.
                 return;
             }
-            args = argsStr;
         }
 
         if (Settings.runInExternalTerminal()) {

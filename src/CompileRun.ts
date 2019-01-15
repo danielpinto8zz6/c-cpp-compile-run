@@ -82,8 +82,6 @@ export class CompileRun {
             compilerArgs = compilerArgs.concat(flags.split(" "));
         }
 
-        console.log(compilerSetting.path, compilerArgs);
-
         exec = spawn(compilerSetting.path, compilerArgs, { cwd: file.$directory });
 
         exec.stdout.on('data', (data: any) => {

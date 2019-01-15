@@ -9,6 +9,8 @@ import { File } from './File';
 import { Settings } from "./Settings";
 import { VSCodeUI } from "./VSCodeUI";
 
+let processExists = require('process-exists');
+
 export class CompileRun {
     private outputChannel: VSCodeUI.CompileRunOutputChannel;
     private terminal: VSCodeUI.CompileRunTerminal;
@@ -22,6 +24,11 @@ export class CompileRun {
     private async compile(file: File, inputFlags: boolean, callback: (file: File) => void = null) {
         if (Settings.saveBeforeCompile) {
             await window.activeTextEditor.document.save();
+        }
+
+        if (await processExists(file.$executable)) {
+            window.showErrorMessage(`${file.$executable} is already runing! Please close it first to compile successfully!`);
+            return;
         }
 
         let exec;

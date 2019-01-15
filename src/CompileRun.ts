@@ -206,7 +206,7 @@ export class CompileRun {
     private runExternal(file: File, args: string): boolean {
         switch (process.platform) {
             case 'win32':
-                exec(`start cmd /c "${file.$executable} ${args} & echo. & pause"`, { cwd: file.$directory });
+                exec(`start cmd /c ""${file.$executable}" ${args} & echo. & pause"`, { cwd: file.$directory });
                 return true;
             case 'linux':
                 let terminal: string = workspace.getConfiguration().get('terminal.external.linuxExec');
@@ -218,21 +218,21 @@ export class CompileRun {
 
                 switch (terminal) {
                     case 'xterm':
-                        exec(`${terminal} -T ${file.$title} -e './${file.$executable} ${args}; echo; read -n1 -p "Press any key to continue..."'`, { cwd: file.$directory });
+                        exec(`${terminal} -T ${file.$title} -e './"${file.$executable}" ${args}; echo; read -n1 -p "Press any key to continue..."'`, { cwd: file.$directory });
                         return true;
                     case 'gnome-terminal':
                     case 'tilix':
                     case 'mate-terminal':
-                        exec(`${terminal} -t ${file.$title} -x bash -c './${file.$executable} ${args}; echo; read -n1 -p "Press any key to continue..."'`, { cwd: file.$directory });
+                        exec(`${terminal} -t ${file.$title} -x bash -c './"${file.$executable}" ${args}; echo; read -n1 -p "Press any key to continue..."'`, { cwd: file.$directory });
                         return true;
                     case 'xfce4-terminal':
-                        exec(`${terminal} --title ${file.$title} -x bash -c './${file.$executable} ${args}; read -n1 -p "Press any key to continue..."'`, { cwd: file.$directory });
+                        exec(`${terminal} --title ${file.$title} -x bash -c './"${file.$executable}" ${args}; read -n1 -p "Press any key to continue..."'`, { cwd: file.$directory });
                         return true;
                     case 'konsole':
-                        exec(`${terminal} -p tabtitle='${file.$title}' --noclose -e bash -c './${file.$executable} ${args}'`, { cwd: file.$directory });
+                        exec(`${terminal} -p tabtitle='${file.$title}' --noclose -e bash -c './"${file.$executable}" ${args}'`, { cwd: file.$directory });
                         return true;
                     case 'io.elementary.terminal':
-                        exec(`${terminal} -e './${file.$executable} ${args}'`, { cwd: file.$directory });
+                        exec(`${terminal} -e './"${file.$executable}" ${args}'`, { cwd: file.$directory });
                         return true;
                     default:
                         window.showErrorMessage(`${terminal} isn't supported! Try to enter a supported terminal in 'terminal.external.linuxExec' settings! (gnome-terminal, xterm, konsole)`);
@@ -240,7 +240,7 @@ export class CompileRun {
                         return false;
                 }
             case 'darwin':
-                exec(`osascript - e 'tell application "Terminal" to do script "./${file.$executable} && read -n1 -p "Press any key to continue...""'`, { cwd: file.$directory });
+                exec(`osascript - e 'tell application "Terminal" to do script "./"${file.$executable}" && read -n1 -p "Press any key to continue...""'`, { cwd: file.$directory });
                 return true;
         }
         return false;

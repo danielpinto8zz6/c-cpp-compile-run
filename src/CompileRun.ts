@@ -89,9 +89,6 @@ export class CompileRun {
             compilerArgs = compilerArgs.concat(flags.split(" "));
         }
 
-        // Clear output channel
-        this.outputChannel.clear();
-
         exec = spawn(compilerSetting.path, compilerArgs, { cwd: file.$directory });
 
         exec.stdout.on('data', (data: any) => {
@@ -138,7 +135,6 @@ export class CompileRun {
             }
         }
         // Otherwise
-        commands.executeCommand("workbench.action.terminal.clear");
         this.terminal.runExecutable(file.$executable, args, { cwd: file.$directory });
     }
 

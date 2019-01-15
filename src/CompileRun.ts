@@ -89,6 +89,9 @@ export class CompileRun {
             compilerArgs = compilerArgs.concat(flags.split(" "));
         }
 
+        // Clear output channel
+        this.outputChannel.clear();
+
         exec = spawn(compilerSetting.path, compilerArgs, { cwd: file.$directory });
 
         exec.stdout.on('data', (data: any) => {

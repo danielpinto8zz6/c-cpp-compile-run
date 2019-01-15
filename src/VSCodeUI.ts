@@ -7,7 +7,6 @@ export namespace VSCodeUI {
         private readonly channel: OutputChannel = window.createOutputChannel("C/C++ Compile Run");
 
         public appendLine(message: any, title?: string): void {
-            this.channel.clear();
             if (title) {
                 const simplifiedTime: string = (new Date()).toISOString().replace(/z|t/gi, " ").trim(); // YYYY-MM-DD HH:mm:ss.sss
                 const hightlightingTitle: string = `[${title} ${simplifiedTime}]`;
@@ -17,8 +16,11 @@ export namespace VSCodeUI {
         }
 
         public append(message: any): void {
-            this.channel.clear();
             this.channel.append(message);
+        }
+
+        public clear(): void {
+            this.channel.clear();
         }
 
         public show(): void {

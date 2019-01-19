@@ -22,11 +22,6 @@ export class CompileRun {
     }
 
     private async compile(file: File, inputFlags: boolean, callback: (file: File) => void = null) {
-        if (window.activeTextEditor.document.isUntitled) {
-            window.showErrorMessage(`Please save file first then try again!`);
-            return;
-        }
-
         if (Settings.saveBeforeCompile) {
             await window.activeTextEditor.document.save();
         }
@@ -144,7 +139,14 @@ export class CompileRun {
     }
 
     public async compileRun(action: Constants.Action) {
-        if (!window.activeTextEditor.document) {
+        let doc = window.activeTextEditor.document;
+
+        if (!doc) {
+            return;
+        }
+
+        if (doc.isUntitled) {
+            window.showErrorMessage(`Please save file first then try again!`);
             return;
         }
 

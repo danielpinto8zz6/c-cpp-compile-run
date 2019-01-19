@@ -2,7 +2,7 @@
 
 import { exec, spawn } from "child_process";
 import { existsSync } from "fs";
-import { commands, ConfigurationTarget, window, workspace } from "vscode";
+import { ConfigurationTarget, window, workspace } from "vscode";
 import { commandExists } from './CommandExists';
 import { Constants } from "./Constants";
 import { File } from './File';
@@ -22,6 +22,11 @@ export class CompileRun {
     }
 
     private async compile(file: File, inputFlags: boolean, callback: (file: File) => void = null) {
+        if (window.activeTextEditor.document.isUntitled) {
+            window.showErrorMessage(`Please save file first then try again!`);
+            return;
+        }
+
         if (Settings.saveBeforeCompile) {
             await window.activeTextEditor.document.save();
         }

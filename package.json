@@ -38,6 +38,21 @@
     ],
     "main": "./out/extension",
     "contributes": {
+        "languages": [
+            {
+                "id": "Log",
+                "mimetypes": [
+                    "text/x-code-output"
+                ]
+            }
+        ],
+        "grammars": [
+            {
+                "language": "Log",
+                "scopeName": "code.log",
+                "path": "./syntaxes/log.tmLanguage"
+            }
+        ],
         "commands": [
             {
                 "command": "extension.CompileRun",

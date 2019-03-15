@@ -2,7 +2,7 @@
     "name": "c-cpp-compile-run",
     "displayName": "C/C++ Compile Run",
     "description": "Compile & Run single c/c++ files easly",
-    "version": "0.4.3",
+    "version": "0.5.0",
     "publisher": "danielpinto8zz6",
     "icon": "resources/logo.png",
     "engines": {
@@ -226,11 +226,12 @@
         "test": "npm run compile && node ./node_modules/vscode/bin/test"
     },
     "devDependencies": {
-        "@types/mocha": "^5.2.5",
-        "@types/node": "^10.12.18",
-        "tslint": "^5.12.1",
-        "typescript": "^3.2.2",
-        "vscode": "^1.1.26"
+        "@types/mocha": "^5.2.6",
+        "@types/node": "^10.14.1",
+        "gulp": "^4.0.0",
+        "tslint": "^5.14.0",
+        "typescript": "^3.3.3333",
+        "vscode": "^1.1.30"
     },
     "dependencies": {
         "process-exists": "^3.1.0"

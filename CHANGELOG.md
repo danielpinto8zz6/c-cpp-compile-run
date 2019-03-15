@@ -1,5 +1,8 @@
 # Change Log
 
+## [0.5.0]
+- Fixes and cleanups
+
 ## [0.4.1]
 - Fixed run on windows
 

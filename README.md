@@ -28,6 +28,9 @@ You can also set to save file before compiling.
 
 ## Release Notes
 
+### 0.5.0
+- Fixes and cleanups
+
 ### 0.4.1
 - Fixed run on windows
 

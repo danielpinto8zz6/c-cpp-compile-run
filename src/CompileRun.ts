@@ -7,98 +7,81 @@ import { commandExists } from './CommandExists';
 import { Constants } from "./Constants";
 import { File } from './File';
 import { Settings } from "./Settings";
-import { VSCodeUI } from "./VSCodeUI";
+import { outputChannel } from "./OutputChannel";
+import { terminal } from "./Terminal";
 
 let processExists = require('process-exists');
 
 export class CompileRun {
-    private outputChannel: VSCodeUI.CompileRunOutputChannel;
-    private terminal: VSCodeUI.CompileRunTerminal;
     readonly Action: Constants.Action;
-
-    constructor() {
-        this.outputChannel = new VSCodeUI.CompileRunOutputChannel();
-        this.terminal = VSCodeUI.compileRunTerminal;
-    }
 
     private async compile(file: File, inputFlags: boolean, callback: (file: File) => void = null) {
         if (Settings.saveBeforeCompile) {
             await window.activeTextEditor.document.save();
         }
 
-        if (await processExists(file.$executable)) {
-            window.showErrorMessage(`${file.$executable} is already runing! Please close it first to compile successfully!`);
+        if (await processExists(file.executable)) {
+            window.showErrorMessage(`${file.executable} is already runing! Please close it first to compile successfully!`);
             return;
         }
 
-        let exec;
-
-        let compilerArgs = [file.$name, '-o', file.$executable];
-
-        let compilerSetting: { path: string, flags: string };
-        let compilerSettingKey: { path: string, flags: string };
-        switch (file.$extension) {
-            case 'cpp': {
-                compilerSetting = {
+        let compiler: { path: string, flags: string, pathKey: string };
+        switch (file.extension) {
+            case 'cpp':
+            case 'hpp':
+                compiler = {
                     path: Settings.cppCompiler(),
-                    flags: Settings.cppFlags()
-                };
-
-                compilerSettingKey = {
-                    path: Settings.key.cppCompiler,
-                    flags: Settings.key.cppFlags
+                    flags: Settings.cppFlags(),
+                    pathKey: 'cpp-compiler'
                 };
                 break;
-            }
-            case 'c': {
-                compilerSetting = {
+            case 'c':
+            case 'h':
+                compiler = {
                     path: Settings.cCompiler(),
-                    flags: Settings.cFlags()
-                };
-                compilerSettingKey = {
-                    path: Settings.key.cCompiler,
-                    flags: Settings.key.cFlags
+                    flags: Settings.cFlags(),
+                    pathKey: 'cpp-compiler'
                 };
                 break;
-            }
-            default: {
+            default:
                 return;
-            }
         }
 
-        if (!commandExists(compilerSetting.path)) {
+        if (!commandExists(compiler.path)) {
             const CHANGE_PATH: string = "Change path";
             const choiceForDetails: string = await window.showErrorMessage("Compiler not found, try to change path in settings!", CHANGE_PATH);
             if (choiceForDetails === CHANGE_PATH) {
                 let path = await this.promptForPath();
-                await workspace.getConfiguration("c-cpp-compile-run", null).update(compilerSettingKey.path, path, ConfigurationTarget.Global);
+                await workspace.getConfiguration("c-cpp-compile-run", null).update(compiler.pathKey, path, ConfigurationTarget.Global);
                 this.compile(file, inputFlags, callback);
                 return;
             }
             return;
         }
 
-        let flags = compilerSetting.flags;
+        let flags = compiler.flags;
         if (inputFlags) {
             flags = await this.promptForFlags(flags);
             if (flags === undefined) { // cancel.
                 return;
             }
         }
+
+        let compilerArgs = [file.name, '-o', file.executable];
         if (flags) {
             compilerArgs = compilerArgs.concat(flags.split(" "));
         }
 
-        exec = spawn(compilerSetting.path, compilerArgs, { cwd: file.$directory });
+        let exec = spawn(compiler.pathKey, compilerArgs, { cwd: file.directory });
 
         exec.stdout.on('data', (data: any) => {
-            this.outputChannel.appendLine(data, file.$name);
-            this.outputChannel.show();
+            outputChannel.appendLine(data, file.name);
+            outputChannel.show();
         });
 
         exec.stderr.on('data', (data: any) => {
-            this.outputChannel.appendLine(data, file.$name);
-            this.outputChannel.show();
+            outputChannel.appendLine(data, file.name);
+            outputChannel.show();
         });
 
         exec.on('close', (data: any) => {
@@ -116,8 +99,8 @@ export class CompileRun {
     }
 
     private async run(file: File, inputArgs: boolean) {
-        if (!existsSync(file.$path)) {
-            window.showErrorMessage(`"${file.$path}" doesn't exists!`);
+        if (!existsSync(file.path)) {
+            window.showErrorMessage(`"${file.path}" doesn't exists!`);
             return;
         }
 
@@ -135,7 +118,7 @@ export class CompileRun {
             }
         }
         // Otherwise
-        this.terminal.runExecutable(file.$executable, args, { cwd: file.$directory });
+        terminal.runExecutable(file.executable, args, { cwd: file.directory });
     }
 
     public async compileRun(action: Constants.Action) {
@@ -212,7 +195,7 @@ export class CompileRun {
     private runExternal(file: File, args: string): boolean {
         switch (process.platform) {
             case 'win32':
-                exec(`start cmd /c ""${file.$executable}" ${args} & echo. & pause"`, { cwd: file.$directory });
+                exec(`start cmd /c ""${file.executable}" ${args} & echo. & pause"`, { cwd: file.directory });
                 return true;
             case 'linux':
                 let terminal: string = workspace.getConfiguration().get('terminal.external.linuxExec');
@@ -224,21 +207,21 @@ export class CompileRun {
 
                 switch (terminal) {
                     case 'xterm':
-                        exec(`${terminal} -T ${file.$title} -e './"${file.$executable}" ${args}; echo; read -n1 -p "Press any key to continue..."'`, { cwd: file.$directory });
+                        exec(`${terminal} -T ${file.title} -e './"${file.executable}" ${args}; echo; read -n1 -p "Press any key to continue..."'`, { cwd: file.directory });
                         return true;
                     case 'gnome-terminal':
                     case 'tilix':
                     case 'mate-terminal':
-                        exec(`${terminal} -t ${file.$title} -x bash -c './"${file.$executable}" ${args}; echo; read -n1 -p "Press any key to continue..."'`, { cwd: file.$directory });
+                        exec(`${terminal} -t ${file.title} -x bash -c './"${file.executable}" ${args}; echo; read -n1 -p "Press any key to continue..."'`, { cwd: file.directory });
                         return true;
                     case 'xfce4-terminal':
-                        exec(`${terminal} --title ${file.$title} -x bash -c './"${file.$executable}" ${args}; read -n1 -p "Press any key to continue..."'`, { cwd: file.$directory });
+                        exec(`${terminal} --title ${file.title} -x bash -c './"${file.executable}" ${args}; read -n1 -p "Press any key to continue..."'`, { cwd: file.directory });
                         return true;
                     case 'konsole':
-                        exec(`${terminal} -p tabtitle='${file.$title}' --noclose -e bash -c './"${file.$executable}" ${args}'`, { cwd: file.$directory });
+                        exec(`${terminal} -p tabtitle='${file.title}' --noclose -e bash -c './"${file.executable}" ${args}'`, { cwd: file.directory });
                         return true;
                     case 'io.elementary.terminal':
-                        exec(`${terminal} -e './"${file.$executable}" ${args}'`, { cwd: file.$directory });
+                        exec(`${terminal} -e './"${file.executable}" ${args}'`, { cwd: file.directory });
                         return true;
                     default:
                         window.showErrorMessage(`${terminal} isn't supported! Try to enter a supported terminal in 'terminal.external.linuxExec' settings! (gnome-terminal, xterm, konsole)`);
@@ -246,7 +229,7 @@ export class CompileRun {
                         return false;
                 }
             case 'darwin':
-                exec(`osascript - e 'tell application "Terminal" to do script "./"${file.$executable}" && read -n1 -p "Press any key to continue...""'`, { cwd: file.$directory });
+                exec(`osascript - e 'tell application "Terminal" to do script "./"${file.executable}" && read -n1 -p "Press any key to continue...""'`, { cwd: file.directory });
                 return true;
         }
         return false;

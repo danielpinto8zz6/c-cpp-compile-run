@@ -1,9 +1,9 @@
 'use strict';
 
-import { VSCodeUI } from "./VSCodeUI";
 import { CompileRun } from './CompileRun';
 import { Constants } from "./Constants";
 import { ExtensionContext, commands, window, Terminal } from "vscode";
+import { terminal } from './Terminal';
 
 export function activate(context: ExtensionContext) {
     const compileRun = new CompileRun();
@@ -22,7 +22,7 @@ export function activate(context: ExtensionContext) {
     register(Constants.Action.CustomRun);
 
     context.subscriptions.push(window.onDidCloseTerminal((closedTerminal: Terminal) => {
-        VSCodeUI.compileRunTerminal.onDidCloseTerminal(closedTerminal);
+        terminal.onDidCloseTerminal(closedTerminal);
     }));
 }
 

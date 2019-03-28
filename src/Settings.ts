@@ -3,24 +3,41 @@
 import { workspace } from "vscode";
 
 export namespace Settings {
-    export enum key {
-        cCompiler = "c-compiler",
-        cFlags = "c-flags",
-        cppCompiler = "cpp-compiler",
-        cppFlags = "cpp-flags",
-        saveBeforeCompile = "save-before-compile",
-        runArgs = "run-args",
-        runInExternalTerminal = "run-in-external-terminal",
-    }
-
     function getSetting<T>(name: string): T | undefined {
         return workspace.getConfiguration("c-cpp-compile-run", null).get<T>(name);
     }
-    export let cCompiler = () => getSetting<string>(key.cCompiler).trim();
-    export let cFlags = () => getSetting<string>(key.cFlags).trim();
-    export let cppCompiler = () => getSetting<string>(key.cppCompiler).trim();
-    export let cppFlags = () => getSetting<string>(key.cppFlags).trim();
-    export let saveBeforeCompile = () => getSetting<boolean>(key.saveBeforeCompile);
-    export let runArgs = () => getSetting<string>(key.runArgs).trim();
-    export let runInExternalTerminal = () => getSetting<boolean>(key.runInExternalTerminal);
+
+    export function cCompiler() {
+        return getSetting<string>("c-compiler").trim();
+    }
+
+    export function cFlags() {
+        return getSetting<string>("c-flags").trim();
+    }
+
+    export function cppCompiler() {
+        return getSetting<string>("cpp-compiler").trim();
+    }
+
+    export function cppFlags() {
+        return getSetting<string>("cpp-flags").trim();
+    }
+
+    export function saveBeforeCompile() {
+        return getSetting<boolean>("save-before-compile");
+    }
+
+    export function runArgs() {
+        return getSetting<string>("run-args").trim();
+    }
+
+    export function runInExternalTerminal() {
+        return getSetting<boolean>("run-in-external-terminal");
+    }
+
+    export namespace External {
+        export function defaultWindowsShell(): string {
+            return workspace.getConfiguration("terminal").get<string>("integrated.shell.windows").trim();
+        }
+    }
 }

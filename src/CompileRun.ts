@@ -229,7 +229,7 @@ export class CompileRun {
                         return false;
                 }
             case 'darwin':
-                exec(`osascript - e 'tell application "Terminal" to do script "./"${file.executable}" && read -n1 -p "Press any key to continue...""'`, { cwd: file.directory });
+                exec(`osascript -e 'do shell script "open -a Terminal " & "${file.directory}"' -e 'delay 0.3' -e 'tell application "Terminal" to do script ("./" & "${file.executable}") in first window'`);
                 return true;
         }
         return false;

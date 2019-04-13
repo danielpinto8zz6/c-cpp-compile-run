@@ -31,6 +31,8 @@
     "activationEvents": [
         "onCommand:extension.CompileRun",
         "onCommand:extension.CustomCompileRun",
+        "onCommand:extension.ExternalCompileRun",
+        "onCommand:extension.ExternalCustomCompileRun",
         "onCommand:extension.Compile",
         "onCommand:extension.Run",
         "onCommand:extension.CustomCompile",
@@ -61,6 +63,14 @@
             {
                 "command": "extension.CustomCompileRun",
                 "title": "CompileRun : Compile with custom flags & Run with custom arguments"
+            },
+            {
+                "command": "extension.ExternalCompileRun",
+                "title": "CompileRun : CompileRun in External Terminal"
+            },
+            {
+                "command": "extension.ExternalCustomCompileRun",
+                "title": "CompileRun : CustomCompileRun in External Terminal"
             },
             {
                 "command": "extension.Compile",
@@ -95,7 +105,7 @@
                 },
                 {
                     "command": "extension.CustomCompileRun",
-                    "when": "editorLangId ==  cpp"
+                    "when": "editorLangId ==  c"
                 },
                 {
                     "command": "extension.CustomCompileRun",
@@ -103,6 +113,30 @@
                 },
                 {
                     "command": "extension.CustomCompileRun",
+                    "when": "editorLangId ==  cc"
+                },
+                {
+                    "command": "extension.ExternalCompileRun",
+                    "when": "editorLangId ==  c"
+                },
+                {
+                    "command": "extension.ExternalCompileRun",
+                    "when": "editorLangId ==  cpp"
+                },
+                {
+                    "command": "extension.ExternalCompileRun",
+                    "when": "editorLangId ==  cc"
+                },
+                {
+                    "command": "extension.ExternalCustomCompileRun",
+                    "when": "editorLangId ==  c"
+                },
+                {
+                    "command": "extension.ExternalCustomCompileRun",
+                    "when": "editorLangId ==  cpp"
+                },
+                {
+                    "command": "extension.ExternalCustomCompileRun",
                     "when": "editorLangId ==  cc"
                 },
                 {
@@ -169,6 +203,20 @@
                 "linux": "f7",
                 "key": "f7",
                 "command": "extension.CustomCompileRun"
+            },
+            {
+                "mac": "cmd+shift+r",
+                "win": "shift+f6",
+                "linux": "shift+f6",
+                "key": "shift+f6",
+                "command": "extension.ExternalCompileRun"
+            },
+            {
+                "mac": "cmd+shift+t",
+                "win": "shift+f6",
+                "linux": "shift+f6",
+                "key": "shift+f6",
+                "command": "extension.ExternalCustomCompileRun"
             }
         ],
         "configuration": {
@@ -228,10 +276,9 @@
     "devDependencies": {
         "@types/mocha": "^5.2.6",
         "@types/node": "^10.14.1",
-        "gulp": "^4.0.0",
         "tslint": "^5.14.0",
         "typescript": "^3.3.3333",
-        "vscode": "^1.1.30"
+        "vscode": "^1.1.33"
     },
     "dependencies": {
         "process-exists": "^3.1.0"

@@ -20,6 +20,8 @@ export function activate(context: ExtensionContext) {
     register(Constants.Action.Run);
     register(Constants.Action.CustomCompile);
     register(Constants.Action.CustomRun);
+    register(Constants.Action.ExternalCompileRun);
+    register(Constants.Action.ExternalCustomCompileRun);
 
     context.subscriptions.push(window.onDidCloseTerminal((closedTerminal: Terminal) => {
         VSCodeUI.compileRunTerminal.onDidCloseTerminal(closedTerminal);

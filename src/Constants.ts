@@ -7,6 +7,8 @@ export namespace Constants {
         CompileRun,
         CustomCompile,
         CustomRun,
-        CustomCompileRun
+        CustomCompileRun,
+        ExternalCompileRun,
+        ExternalCustomCompileRun
     }
 }

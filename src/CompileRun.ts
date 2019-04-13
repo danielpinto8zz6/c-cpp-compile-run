@@ -115,7 +115,7 @@ export class CompileRun {
         });
     }
 
-    private async run(file: File, inputArgs: boolean) {
+    private async run(file: File, inputArgs: boolean, runInExternal: boolean) {
         if (!existsSync(file.$path)) {
             window.showErrorMessage(`"${file.$path}" doesn't exists!`);
             return;
@@ -129,7 +129,7 @@ export class CompileRun {
             }
         }
 
-        if (Settings.runInExternalTerminal()) {
+        if (Settings.runInExternalTerminal() || runInExternal) {
             if (this.runExternal(file, args)) {
                 return;
             }
@@ -157,19 +157,25 @@ export class CompileRun {
                 this.compile(file, false);
                 break;
             case Constants.Action.Run:
-                this.run(file, false);
+                this.run(file, false, false);
                 break;
             case Constants.Action.CompileRun:
-                this.compile(file, false, (file) => this.run(file, false));
+                this.compile(file, false, (file) => this.run(file, false, false));
                 break;
             case Constants.Action.CustomCompile:
                 this.compile(file, true);
                 break;
             case Constants.Action.CustomRun:
-                this.run(file, true);
+                this.run(file, true, false);
                 break;
             case Constants.Action.CustomCompileRun:
-                this.compile(file, true, (file) => this.run(file, true));
+                this.compile(file, true, (file) => this.run(file, true, false));
+                break;
+            case Constants.Action.ExternalCompileRun:
+                this.compile(file, false, (file) => this.run(file, false, true));
+                break;
+            case Constants.Action.ExternalCustomCompileRun:
+                this.compile(file, true, (file) => this.run(file, true, true));
                 break;
             default: return;
         }
@@ -246,7 +252,7 @@ export class CompileRun {
                         return false;
                 }
             case 'darwin':
-                exec(`osascript - e 'tell application "Terminal" to do script "./"${file.$executable}" && read -n1 -p "Press any key to continue...""'`, { cwd: file.$directory });
+                exec(`osascript -e 'do shell script "open -a Terminal " & "${file.$directory}"' -e 'delay 0.3' -e 'tell application "Terminal" to do script ("./" & "${file.$executable}") in first window'`);
                 return true;
         }
         return false;

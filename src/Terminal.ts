@@ -66,7 +66,7 @@ class Terminal implements vscode.Disposable {
 
     public async runExecutable(executable: string, args: string, options?: ITerminalOptions): Promise<void> {
         if (process.platform === 'win32') {
-            this.runInTerminal(`"${executable}" ${args}`, options);
+            this.runInTerminal(`.\"${executable}" ${args}`, options);
         } else {
             this.runInTerminal(`./"${executable}" ${args}`, options);
         }

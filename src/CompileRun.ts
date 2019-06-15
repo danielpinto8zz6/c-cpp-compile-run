@@ -195,7 +195,7 @@ export class CompileRun {
     private runExternal(file: File, args: string): boolean {
         switch (process.platform) {
             case 'win32':
-                exec(`start cmd /c ""${file.executable}" ${args} & echo. & pause"`, { cwd: file.directory });
+                exec(`start cmd /c ".\"${file.executable}" ${args} & echo. & pause"`, { cwd: file.directory });
                 return true;
             case 'linux':
                 let terminal: string = workspace.getConfiguration().get('terminal.external.linuxExec');

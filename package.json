@@ -6,8 +6,9 @@
     "publisher": "danielpinto8zz6",
     "icon": "resources/logo.png",
     "engines": {
-        "vscode": "^1.21.0"
+        "vscode": "^1.38.0"
     },
+    "main": "./out/extension",
     "categories": [
         "Programming Languages",
         "Other"
@@ -36,7 +37,6 @@
         "onCommand:extension.CustomCompile",
         "onCommand:extension.CustomRun"
     ],
-    "main": "./out/extension",
     "contributes": {
         "languages": [
             {
@@ -219,21 +219,23 @@
         }
     },
     "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
-        "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "npm run compile && node ./node_modules/vscode/bin/test"
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"pretest": "npm run compile",
+		"test": "node ./out/test/runTest.js"
     },
     "devDependencies": {
-        "@types/mocha": "^5.2.6",
-        "@types/node": "^11.12.0",
-        "gulp": "^4.0.0",
-        "tslint": "^5.14.0",
-        "typescript": "^3.3.4000",
-        "vscode": "^1.1.33"
+        "@types/mocha": "^5.2.7",
+        "@types/node": "^12.7.11",
+        "gulp": "^4.0.2",
+        "tslint": "^5.20.0",
+        "typescript": "^3.6.3",
+        "@types/vscode": "^1.38.0",
+        "vscode-test": "^1.2.0"
     },
     "dependencies": {
-        "process-exists": "^3.1.0"
+        "find-process": "^1.4.2",
+        "lookpath": "^1.0.3"
     }
 }

@@ -1,3 +1,5 @@
+![Logo](resources/logo.png)
+
 # C/C++ Compile Run extension
 
 An extension running on [Visual Studio Code](https://code.visualstudio.com) to **Compile & Run** single c/c++ files easly
@@ -27,6 +29,11 @@ You can also set to save file before compiling.
 ## Known Issues
 
 ## Release Notes
+
+### 1.0.0
+- Fixed run on powershell
+- Refactored code
+- Improve logic
 
 ### 0.5.0
 - Fixes and cleanups

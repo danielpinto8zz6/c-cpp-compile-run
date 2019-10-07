@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.0.0]
+- Fixed run on powershell
+- Refactored code
+- Improve logic
+
 ## [0.5.0]
 - Fixes and cleanups
 

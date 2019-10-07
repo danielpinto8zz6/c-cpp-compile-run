@@ -38,7 +38,7 @@ export class Run {
             }
         }
 
-        await terminal.run(`./${this.file.executable} ${this.arguments}`, { name: 'C/C++ Compile Run', cwd: this.file.directory });
+        await terminal.run(`${this.file.executable} ${this.arguments}`, { name: 'C/C++ Compile Run', cwd: this.file.directory });
     }
 
     private getExternalCommand(): string {

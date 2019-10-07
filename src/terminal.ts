@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import { outputChannel } from './output-channel';
-import { Configuration } from './configuration';
 import { executeCommand } from './utils/cp-utils';
 
 export interface ITerminalOptions {
@@ -82,7 +81,7 @@ function getCommand(cmd: string): string {
                 return cmd; // others, try using common one.
         }
     } else {
-        return cmd;
+        return `./${cmd}`;
     }
 }
 
@@ -109,7 +108,7 @@ async function getCDCommand(cwd: string): Promise<string> {
 }
 
 function currentWindowsShell(): WindowsShellType {
-    const currentWindowsShellPath: string = Configuration.defaultWindowsShell();
+    const currentWindowsShellPath: string = vscode.env.shell;
 
     if (currentWindowsShellPath.endsWith('cmd.exe')) {
         return WindowsShellType.CMD;

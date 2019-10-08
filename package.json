@@ -223,19 +223,27 @@
         "compile": "tsc -p ./",
         "watch": "tsc -watch -p ./",
         "pretest": "npm run compile",
-        "test": "node ./out/test/runTest.js"
+        "test": "node ./out/test/runTest.js",
+        "changelog": "auto-changelog -p && git add CHANGELOG.md"
     },
     "devDependencies": {
         "@types/mocha": "^5.2.7",
         "@types/node": "^12.7.11",
+        "@types/vscode": "^1.38.0",
+        "auto-changelog": "^1.16.1",
         "gulp": "^4.0.2",
         "tslint": "^5.20.0",
         "typescript": "^3.6.3",
-        "@types/vscode": "^1.38.0",
         "vscode-test": "^1.2.0"
     },
     "dependencies": {
         "find-process": "^1.4.2",
         "lookpath": "^1.0.3"
+    },
+    "auto-changelog": {
+        "output": "CHANGELOG.md",
+        "template": "changelog-template.hbs",
+        "unreleased": false,
+        "commitLimit": false
     }
 }

@@ -43,7 +43,7 @@ export class Run {
 
     private getExternalCommand(): string {
         if (process.platform === 'win32') {
-            return `start cmd /c ".\"${this.file.executable}" ${this.arguments} & echo. & pause"`;
+            return `start cmd /c ".\\\"${this.file.executable}\" ${this.arguments} & echo. & pause"`;
         }
 
         if (process.platform === 'darwin') {

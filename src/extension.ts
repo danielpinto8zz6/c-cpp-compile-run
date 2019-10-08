@@ -5,15 +5,7 @@ import { parseFile } from './utils/file-utils';
 import { Configuration } from './configuration';
 
 export function activate(context: ExtensionContext) {
-    const doc = window.activeTextEditor.document;
-    if (!doc) { return; }
-
-    if (doc.isUntitled && !Configuration.saveBeforeCompile()) {
-        window.showErrorMessage(`Please save file first then try again!`);
-        return;
-    }
-
-    const compileRunManager = new CompileRunManager(parseFile(doc));
+    const compileRunManager = new CompileRunManager();
 
     const compile = commands.registerCommand('extension.Compile', () => {
         compileRunManager.compile();

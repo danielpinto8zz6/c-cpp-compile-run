@@ -2,7 +2,7 @@
     "name": "c-cpp-compile-run",
     "displayName": "C/C++ Compile Run",
     "description": "Compile & Run single c/c++ files easly",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "publisher": "danielpinto8zz6",
     "icon": "resources/logo.png",
     "engines": {
@@ -224,14 +224,17 @@
         "watch": "tsc -watch -p ./",
         "pretest": "npm run compile",
         "test": "node ./out/test/runTest.js",
-        "changelog": "auto-changelog -p && git add CHANGELOG.md"
+        "release": "semantic-release"
     },
     "devDependencies": {
+        "@semantic-release/changelog": "^3.0.4",
+        "@semantic-release/git": "^7.0.16",
         "@types/mocha": "^5.2.7",
         "@types/node": "^12.7.11",
         "@types/vscode": "^1.38.0",
-        "auto-changelog": "^1.16.1",
         "gulp": "^4.0.2",
+        "semantic-release": "^15.13.24",
+        "semantic-release-vsce": "^2.2.8",
         "tslint": "^5.20.0",
         "typescript": "^3.6.3",
         "vscode-test": "^1.2.0"
@@ -240,10 +243,37 @@
         "find-process": "^1.4.2",
         "lookpath": "^1.0.3"
     },
-    "auto-changelog": {
-        "output": "CHANGELOG.md",
-        "template": "changelog-template.hbs",
-        "unreleased": false,
-        "commitLimit": false
+    "release": {
+        "plugins": [
+            "@semantic-release/commit-analyzer",
+            "@semantic-release/release-notes-generator",
+            "@semantic-release/changelog",
+            [
+                "@semantic-release/git",
+                {
+                    "assets": [
+                        "package.json",
+                        "CHANGELOG.md"
+                    ],
+                    "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+                }
+            ],
+            "@semantic-release/github"
+        ],
+        "verifyConditions": [
+            "semantic-release-vsce",
+            "@semantic-release/github"
+        ],
+        "prepare": {
+            "path": "semantic-release-vsce",
+            "packageVsix": "c-cpp-compile-run.vsix"
+        },
+        "publish": [
+            "semantic-release-vsce",
+            {
+                "path": "@semantic-release/github",
+                "assets": "c-cpp-compile-run.vsix"
+            }
+        ]
     }
 }

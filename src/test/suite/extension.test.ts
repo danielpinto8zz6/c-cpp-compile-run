@@ -6,10 +6,6 @@ import * as vscode from 'vscode';
 // import * as myExtension from '../extension';
 
 suite('Extension Test Suite', () => {
-    before(() => {
-        vscode.window.showInformationMessage('Start all tests.');
-    });
-
     test('Extension should be present', () => {
         assert.ok(vscode.extensions.getExtension('danielpinto8zz6.c-cpp-compile-run'));
     });

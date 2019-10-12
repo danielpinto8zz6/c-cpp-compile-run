@@ -60,7 +60,7 @@ export class Compile {
             compilerArgs = compilerArgs.concat(this.inputFlags.split(' '));
         }
 
-        const proccess = spawnSync(this.compiler, compilerArgs, { cwd: this.file.directory, shell: true, encoding: 'utf-8' });
+        const proccess = spawnSync(`"${this.compiler}"`, compilerArgs, { cwd: this.file.directory, shell: true, encoding: 'utf-8' });
 
         if (proccess.output.length > 0) {
             outputChannel.appendLine(proccess.output.toLocaleString(), this.file.name);

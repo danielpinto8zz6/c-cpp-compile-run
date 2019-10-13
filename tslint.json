@@ -59,5 +59,10 @@
         ],
         "trailing-comma": false
     },
-    "rulesDirectory": []
+    "rulesDirectory": [],
+    "linterOptions": {
+        "exclude": [
+            "src/test/**"
+        ]
+    }
 }

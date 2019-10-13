@@ -39,12 +39,15 @@ export class CompileRunManager {
     }
 
     public getFile(): File {
-        const doc = window.activeTextEditor.document;
-        if (!doc) { return; }
+        if (!window || !window.activeTextEditor || !window.activeTextEditor.document) {
+            throw new Error('Invalide active text editor document!');
+        }
 
+        const doc = window.activeTextEditor.document;
         if (doc.isUntitled && !Configuration.saveBeforeCompile()) {
-            window.showErrorMessage(`Please save file first then try again!`);
-            return;
+            const errorMessage = 'Please save file first then try again!';
+            window.showErrorMessage(errorMessage);
+            throw new Error(errorMessage);
         }
 
         return parseFile(doc);

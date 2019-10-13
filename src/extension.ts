@@ -1,8 +1,6 @@
 import { ExtensionContext, commands, window, Terminal } from 'vscode';
 import { terminal } from './terminal';
 import { CompileRunManager } from './compile-run-manager';
-import { parseFile } from './utils/file-utils';
-import { Configuration } from './configuration';
 
 export function activate(context: ExtensionContext) {
     const compileRunManager = new CompileRunManager();

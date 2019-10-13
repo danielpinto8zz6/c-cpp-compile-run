@@ -1,5 +1,9 @@
 {
 	"compilerOptions": {
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitAny": true,
+		"noImplicitReturns": true,
 		"module": "commonjs",
 		"target": "es6",
 		"outDir": "out",
@@ -9,7 +13,6 @@
 		"sourceMap": true,
 		"rootDir": "src",
 		"strict": true,
-		"strictPropertyInitialization": false,
 		"strictNullChecks": false,
 		"esModuleInterop": true
 	},

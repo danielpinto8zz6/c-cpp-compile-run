@@ -33,7 +33,7 @@ export class Compile {
 
         if (!this.isCompilerValid()) {
             const CHANGE_PATH = 'Change path';
-            const choiceForDetails: string =
+            const choiceForDetails: string | undefined =
                 await window.showErrorMessage('Compiler not found, try to change path in settings!', CHANGE_PATH);
             if (choiceForDetails === CHANGE_PATH) {
                 this.compiler = await promptCompiler();

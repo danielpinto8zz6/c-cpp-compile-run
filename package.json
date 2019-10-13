@@ -2,11 +2,11 @@
     "name": "c-cpp-compile-run",
     "displayName": "C/C++ Compile Run",
     "description": "Compile & Run single c/c++ files easly",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "publisher": "danielpinto8zz6",
     "icon": "resources/logo.png",
     "engines": {
-        "vscode": "^1.38.0"
+        "vscode": "^1.39.0"
     },
     "main": "./out/extension",
     "categories": [
@@ -224,7 +224,7 @@
         "watch": "tsc -watch -p ./",
         "pretest": "npm run compile",
         "test": "node ./out/test/runTest.js",
-        "release": "semantic-release",
+        "release": "semantic-release --no-ci",
         "lint": "tslint -c tslint.json \"src/**/*.ts\" --fix"
     },
     "devDependencies": {

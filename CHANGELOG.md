@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.0.3](https://github.com/danielpinto8zz6/c-cpp-compile-run/compare/v1.0.2...v1.0.3) - 2019-10-13
+
+### Commits
+
+- test: 💍 configure [`19e4eed`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/19e4eedb9aa0c747e22423cd9d06bf2e57b91b0b)
+- chore: 🤖 pipeline [`d8cad58`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/d8cad589aa99b1a73a8f4e40fd50c75c429a573b)
+- fix: 🐛 compile [`f922876`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/f922876f580363ccdb0ebbe4237fcf64b87722a3)
+
+## [v1.0.2](https://github.com/danielpinto8zz6/c-cpp-compile-run/compare/v1.0.1...v1.0.2) - 2019-10-09
+
+### Commits
+
+- Configure automatic release [`5889f59`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/5889f5976024c993c40bb9861a9ea0829aa76d75)
+- Update changelog [`0868cb9`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/0868cb901c5602ec0762f17460fd796be627fff2)
+- fix(file): Get file every time a command is run [`6587738`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/658773847d1e030380cec4f9b6c4566e84c5aa90)
+
 ## v1.0.1 - 2019-10-08
 
 ### Merged

@@ -26,3 +26,11 @@ steps:
 - script: |
     npm run compile
   displayName: 'Compile'
+
+- script: |
+    npm run release
+  env:
+    GH_TOKEN: $(GH_TOKEN)
+    VSCE_TOKEN: $(VSCE_TOKEN)
+  displayName: 'Release'
+  

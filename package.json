@@ -224,7 +224,7 @@
         "watch": "tsc -watch -p ./",
         "pretest": "npm run compile",
         "test": "node ./out/test/runTest.js",
-        "release": "semantic-release --no-ci",
+        "release": "semantic-release",
         "lint": "tslint -c tslint.json \"src/**/*.ts\" --fix"
     },
     "devDependencies": {

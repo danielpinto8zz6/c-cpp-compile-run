@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.0.4](https://github.com/danielpinto8zz6/c-cpp-compile-run/compare/v1.0.3...v1.0.4) - 2019-10-14
+
+### Commits
+
+- style: 💄 rules [`8cdde31`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/8cdde31beaee80c894c315c1b6e3e8843b416e05)
+- chore: 🤖 release [`7e47ca5`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/7e47ca5b5b2ce90ae8e2938bdc0f1962910ea2bb)
+- chore: 🤖 pipeline [`0e95391`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/0e953914ca4f3567bf7c3f2b6a5b0028656d2fb0)
+- fix: 🐛 compile [`a90c380`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/a90c3808ff8c9a0188b4f989db4b58b80ee376ba)
+
 ## [v1.0.3](https://github.com/danielpinto8zz6/c-cpp-compile-run/compare/v1.0.2...v1.0.3) - 2019-10-13
 
 ### Commits
@@ -17,6 +26,10 @@ All notable changes to this project will be documented in this file.
 - Configure automatic release [`5889f59`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/5889f5976024c993c40bb9861a9ea0829aa76d75)
 - Update changelog [`0868cb9`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/0868cb901c5602ec0762f17460fd796be627fff2)
 - fix(file): Get file every time a command is run [`6587738`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/658773847d1e030380cec4f9b6c4566e84c5aa90)
+- Update README [`0fc55cb`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/0fc55cb80fa0ec15be26093abb92f54073527e2d)
+- test(tests): Add unit tests [`c238dd7`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/c238dd700d8e5324969b656720b2c8967c1aaa47)
+- Set up CD with Azure Pipelines [`ec08e87`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/ec08e877f51a0644af14962d1744df1ef5330fb6)
+- Add editorconfig [`0790f8a`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/0790f8a2a582498a24aa1684bc9fa50e6aefbe34)
 
 ## v1.0.1 - 2019-10-08
 
@@ -59,7 +72,6 @@ All notable changes to this project will be documented in this file.
 - Improve compile & run [`a529bd2`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/a529bd2fa5f424ce8b7feb0a07efba443a6fc42f)
 - Use classes [`b93714d`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/b93714d17a580e1c744a9bc505cf9fb63f125f0f)
 - Allow to compile with flags & run with args [`1212e42`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/1212e42d8bb596be884c5d4f3717644e164ed5b1)
-- Update README [`0fc55cb`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/0fc55cb80fa0ec15be26093abb92f54073527e2d)
 - Update deps, restore g++ [`d2ec9d4`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/d2ec9d4950084bda8202acac61118c5f3d5765fd)
 - Update deps, restore c++ [`529b52e`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/529b52eae8c08bfbfb9105d2132ec4cf9dd0e45e)
 - Allow to use custom compiler path [`2d58364`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/2d583643ab3a9e708a09d50d64cbc6715121f1ce)

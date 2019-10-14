@@ -55,7 +55,7 @@ export class Compile {
             }
         }
 
-        let compilerArgs = [this.file.name, '-o', this.file.executable];
+        let compilerArgs = [`"${this.file.name}"`, '-o', `"${this.file.executable}"`];
         if (this.inputFlags) {
             compilerArgs = compilerArgs.concat(this.inputFlags.split(' '));
         }

@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.0.5](https://github.com/danielpinto8zz6/c-cpp-compile-run/compare/v1.0.4...v1.0.5) - 2019-10-19
+
+### Merged
+
+- chore: 🤖 Bump @types/node from 12.7.12 to 12.11.1 [`#72`](https://github.com/danielpinto8zz6/c-cpp-compile-run/pull/72)
+
+### Commits
+
+- chore: 🤖 release [`a52231c`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/a52231c9383ce8e21608c429cafb8355a08d0b44)
+- Bump @types/node from 12.7.12 to 12.11.1 [`f43543b`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/f43543bd77e203c57b85b2ef042e039646b4dbbd)
+- fix: 🐛 run executable with spaces [`aae05a5`](https://github.com/danielpinto8zz6/c-cpp-compile-run/commit/aae05a58307ca87687430c96703a1d4ed41cc8b2)
+
 ## [v1.0.4](https://github.com/danielpinto8zz6/c-cpp-compile-run/compare/v1.0.3...v1.0.4) - 2019-10-14
 
 ### Commits

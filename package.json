@@ -2,7 +2,7 @@
     "name": "c-cpp-compile-run",
     "displayName": "C/C++ Compile Run",
     "description": "Compile & Run single c/c++ files easly",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "publisher": "danielpinto8zz6",
     "icon": "resources/logo.png",
     "engines": {
@@ -236,8 +236,8 @@
         "@types/vscode": "^1.39.0",
         "glob": "^7.1.4",
         "gulp": "^4.0.2",
-        "mocha": "^6.2.1",
-        "semantic-release": "^15.13.24",
+        "mocha": "^6.2.2",
+        "semantic-release": "^15.13.27",
         "semantic-release-vsce": "^2.2.8",
         "tslint": "^5.20.0",
         "typescript": "^3.6.4",
@@ -270,13 +270,13 @@
         ],
         "prepare": {
             "path": "semantic-release-vsce",
-            "packageVsix": "c-cpp-compile-run.vsix"
+            "packageVsix": "c-cpp-compile-run-${nextRelease.version}.vsix"
         },
         "publish": [
             "semantic-release-vsce",
             {
                 "path": "@semantic-release/github",
-                "assets": "c-cpp-compile-run.vsix"
+                "assets": "c-cpp-compile-run-${nextRelease.version}.vsix"
             }
         ]
     }

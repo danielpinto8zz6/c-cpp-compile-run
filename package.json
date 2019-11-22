@@ -228,7 +228,7 @@
         "lint": "tslint -c tslint.json \"src/**/*.ts\" --fix"
     },
     "devDependencies": {
-        "@semantic-release/changelog": "^3.0.5",
+        "@semantic-release/changelog": "^3.0.6",
         "@semantic-release/git": "^7.0.18",
         "@types/glob": "^7.1.1",
         "@types/mocha": "^5.2.7",

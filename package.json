@@ -244,7 +244,7 @@
         "vscode-test": "^1.2.3"
     },
     "dependencies": {
-        "find-process": "^1.4.2",
+        "find-process": "^1.4.3",
         "lookpath": "^1.0.3"
     },
     "release": {

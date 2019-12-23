@@ -240,7 +240,7 @@
         "semantic-release": "^15.13.31",
         "semantic-release-vsce": "^2.2.8",
         "tslint": "^5.20.1",
-        "typescript": "^3.7.3",
+        "typescript": "^3.7.4",
         "vscode-test": "^1.3.0"
     },
     "dependencies": {

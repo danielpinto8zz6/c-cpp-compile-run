@@ -236,7 +236,7 @@
         "@types/vscode": "^1.41.0",
         "glob": "^7.1.6",
         "gulp": "^4.0.2",
-        "mocha": "^6.2.2",
+        "mocha": "^7.0.0",
         "semantic-release": "^15.14.0",
         "semantic-release-vsce": "^2.2.8",
         "tslint": "^5.20.1",

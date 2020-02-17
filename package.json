@@ -229,7 +229,7 @@
     },
     "devDependencies": {
         "@semantic-release/changelog": "^5.0.0",
-        "@semantic-release/git": "^7.0.18",
+        "@semantic-release/git": "^9.0.0",
         "@types/glob": "^7.1.1",
         "@types/mocha": "^7.0.1",
         "@types/node": "^13.7.0",
@@ -237,8 +237,8 @@
         "glob": "^7.1.6",
         "gulp": "^4.0.2",
         "mocha": "^7.0.1",
-        "semantic-release": "^15.14.0",
-        "semantic-release-vsce": "^2.2.8",
+        "semantic-release": "^17.0.3",
+        "semantic-release-vsce": "^3.0.1",
         "tslint": "^6.0.0",
         "typescript": "^3.7.5",
         "vscode-test": "^1.3.0"

@@ -233,7 +233,7 @@
         "@types/glob": "^7.1.1",
         "@types/mocha": "^7.0.1",
         "@types/node": "^13.7.7",
-        "@types/vscode": "^1.42.0",
+        "@types/vscode": "^1.43.0",
         "glob": "^7.1.6",
         "gulp": "^4.0.2",
         "mocha": "^7.1.0",

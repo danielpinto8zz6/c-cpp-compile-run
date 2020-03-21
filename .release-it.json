@@ -1,0 +1,23 @@
+{
+    "git": {
+        "commitMessage": "chore: 🤖 release v${version}",
+        "tagName": "v${version}",
+        "changelog": "npx auto-changelog --stdout -l false -u -p -t changelog-template.hbs"
+    },
+    "github": {
+        "release": true,
+        "releaseName": "v${version}",
+        "assets": [
+            "c-cpp-compile-run-*.vsix"
+        ],
+        "requireBranch": "master"
+    },
+    "npm": {
+        "publish": false
+    },
+    "hooks": {
+        "after:bump": "npx auto-changelog -l false -u -p -t changelog-template.hbs",
+        "before:github:release": "npx vsce package",
+        "after:github:release": "npx vsce publish"
+    }
+}

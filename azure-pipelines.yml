@@ -12,7 +12,7 @@ pool:
 steps:
 - task: NodeTool@0
   inputs:
-    versionSpec: '10.x'
+    versionSpec: '11.x'
   displayName: 'Install Node.js'
 
 - script: |
@@ -27,10 +27,10 @@ steps:
     npm run compile
   displayName: 'Compile'
 
-- script: |
-    npm run release
+# - script: |
+#     npm run release
   env:
-    GH_TOKEN: $(GH_TOKEN)
+    GITHUB_TOKEN: $(GITHUB_TOKEN)
     VSCE_TOKEN: $(VSCE_TOKEN)
   displayName: 'Release'
   

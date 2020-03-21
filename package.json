@@ -6,7 +6,7 @@
     "publisher": "danielpinto8zz6",
     "icon": "resources/logo.png",
     "engines": {
-        "vscode": "^1.39.0"
+        "vscode": "^1.43.1"
     },
     "main": "./out/extension",
     "categories": [
@@ -219,27 +219,24 @@
         }
     },
     "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
+        "vscode:prepublish": "npm run build",
+        "build": "tsc -p ./",
         "watch": "tsc -watch -p ./",
-        "pretest": "npm run compile",
+        "pretest": "npm run build",
         "test": "node ./out/test/runTest.js",
-        "release": "semantic-release",
+        "release": "release-it --disable-metrics --ci",
         "lint": "tslint -c tslint.json \"src/**/*.ts\" --fix"
     },
     "devDependencies": {
-        "@semantic-release/changelog": "^5.0.0",
-        "@semantic-release/git": "^9.0.0",
         "@types/glob": "^7.1.1",
         "@types/mocha": "^7.0.2",
         "@types/node": "^13.9.2",
         "@types/vscode": "^1.43.0",
-        "cz-conventional-changelog": "^3.1.0",
+        "git-cz": "^4.3.1",
         "glob": "^7.1.6",
         "gulp": "^4.0.2",
         "mocha": "^7.1.1",
-        "semantic-release": "^17.0.4",
-        "semantic-release-vsce": "^3.0.1",
+        "release-it": "^13.1.2",
         "tslint": "^6.1.0",
         "typescript": "^3.8.3",
         "vscode-test": "^1.3.0"
@@ -248,42 +245,9 @@
         "find-process": "^1.4.3",
         "lookpath": "^1.0.5"
     },
-    "release": {
-        "plugins": [
-            "@semantic-release/commit-analyzer",
-            "@semantic-release/release-notes-generator",
-            "@semantic-release/changelog",
-            [
-                "@semantic-release/git",
-                {
-                    "assets": [
-                        "package.json",
-                        "CHANGELOG.md"
-                    ],
-                    "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
-                }
-            ],
-            "@semantic-release/github"
-        ],
-        "verifyConditions": [
-            "semantic-release-vsce",
-            "@semantic-release/github"
-        ],
-        "prepare": {
-            "path": "semantic-release-vsce",
-            "packageVsix": "c-cpp-compile-run-${nextRelease.version}.vsix"
-        },
-        "publish": [
-            "semantic-release-vsce",
-            {
-                "path": "@semantic-release/github",
-                "assets": "c-cpp-compile-run-${nextRelease.version}.vsix"
-            }
-        ]
-    },
     "config": {
         "commitizen": {
-            "path": "./node_modules/cz-conventional-changelog"
+            "path": "./node_modules/git-cz"
         }
     }
 }

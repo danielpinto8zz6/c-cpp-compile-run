@@ -7,6 +7,7 @@ export interface ITerminalOptions {
     name: string;
     cwd?: string;
     env?: { [key: string]: string };
+    workspaceFolder?: vscode.WorkspaceFolder;
 }
 
 enum WindowsShellType {
@@ -14,7 +15,7 @@ enum WindowsShellType {
     POWER_SHELL = 'PowerShell',
     GIT_BASH = 'Git Bash',
     WSL = 'WSL Bash',
-    OHTERS = 'Others'
+    OTHERS = 'Others'
 }
 
 class Terminal implements vscode.Disposable {
@@ -22,9 +23,18 @@ class Terminal implements vscode.Disposable {
 
     public async run(command: string, options: ITerminalOptions): Promise<vscode.Terminal> {
         const defaultOptions: ITerminalOptions = { addNewLine: true, name: 'C/C++ Compile Run' };
-        const { addNewLine, name, cwd } = Object.assign(defaultOptions, options);
+        const { addNewLine, name, cwd, workspaceFolder } = Object.assign(defaultOptions, options);
         if (this.terminals[name] === undefined) {
-            this.terminals[name] = vscode.window.createTerminal({ name });
+            const env: { [envKey: string]: string } = { ...options.env };
+            // Open terminal in workspaceFolder if provided
+            // See: https://github.com/microsoft/vscode-maven/issues/467#issuecomment-584544090
+            const terminalCwd: vscode.Uri | undefined = workspaceFolder ? workspaceFolder.uri : undefined;
+            this.terminals[name] = vscode.window.createTerminal({ name, env, cwd: terminalCwd });
+            // Workaround for WSL custom envs.
+            // See: https://github.com/Microsoft/vscode/issues/71267
+            if (currentWindowsShell() === WindowsShellType.WSL) {
+                setupEnvForWSL(this.terminals[name], env);
+            }
         }
         this.terminals[name].show();
         if (cwd) {
@@ -63,11 +73,15 @@ class Terminal implements vscode.Disposable {
         }
     }
 
-    public dispose(id?: string): void {
-        if (id) {
-            this.terminals[id].dispose();
+    public dispose(terminalName?: string): void {
+        if (terminalName && this.terminals[terminalName] !== undefined) {
+            this.terminals[terminalName].dispose();
+            delete this.terminals[terminalName];
         } else {
-            this.closeAllTerminals();
+            Object.keys(this.terminals).forEach((id: string) => {
+                this.terminals[id].dispose();
+                delete this.terminals[id];
+            });
         }
     }
 }
@@ -76,12 +90,12 @@ function getCommand(cmd: string): string {
     if (process.platform === 'win32') {
         switch (currentWindowsShell()) {
             case WindowsShellType.POWER_SHELL:
-                return `cmd /c ${cmd}`; // PowerShell
+                return `& ${cmd}`; // PowerShell
             default:
                 return cmd; // others, try using common one.
         }
     } else {
-        return `./${cmd}`;
+        return cmd;
     }
 }
 
@@ -120,7 +134,7 @@ function currentWindowsShell(): WindowsShellType {
         }
         return WindowsShellType.WSL;
     } else {
-        return WindowsShellType.OHTERS;
+        return WindowsShellType.OTHERS;
     }
 }
 
@@ -149,3 +163,11 @@ export async function toWinPath(path: string): Promise<string> {
 }
 
 export const terminal: Terminal = new Terminal();
+
+function setupEnvForWSL(term: vscode.Terminal, env: { [envKey: string]: string }): void {
+    if (term !== undefined) {
+        Object.keys(env).forEach(key => {
+            term.sendText(`export ${key}="${env[key]}"`, true);
+        });
+    }
+}

@@ -16,7 +16,7 @@
         "publish": false
     },
     "hooks": {
-        "after:bump": "npx auto-changelog -l false -u -p -t changelog-template.hbs",
+        "after:bump": "npx auto-changelog -p",
         "before:github:release": "npx vsce package",
         "after:github:release": "npx vsce publish"
     }

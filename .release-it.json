@@ -18,6 +18,6 @@
     "hooks": {
         "after:bump": "npx auto-changelog -l false -u -p -t changelog-template.hbs",
         "before:github:release": "npx vsce package",
-        "after:github:release": "npx vsce publish"
+        "after:github:release": "npx vsce publish -p $VSCE_TOKEN"
     }
 }

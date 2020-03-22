@@ -2,7 +2,7 @@
     "name": "c-cpp-compile-run",
     "displayName": "C/C++ Compile Run",
     "description": "Compile & Run single c/c++ files easly",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "publisher": "danielpinto8zz6",
     "icon": "resources/logo.png",
     "engines": {

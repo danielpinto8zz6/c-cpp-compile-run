@@ -1,7 +1,7 @@
 import { exec } from 'child_process';
 import { existsSync } from 'fs';
 import { lookpath } from 'lookpath';
-import { window } from 'vscode';
+import { window, env } from 'vscode';
 import { Configuration } from './configuration';
 import { File } from './models/file';
 import { terminal } from './terminal';
@@ -38,7 +38,11 @@ export class Run {
             }
         }
 
-        await terminal.run(`"${this.file.executable}" ${this.arguments}`, { name: 'C/C++ Compile Run', cwd: this.file.directory });
+        if (process.platform === 'win32' && env.shell.endsWith('cmd.exe')) {
+            await terminal.run(`.\\\"${this.file.executable}" ${this.arguments}`, { name: 'C/C++ Compile Run', cwd: this.file.directory });
+        } else {
+            await terminal.run(`./"${this.file.executable}" ${this.arguments}`, { name: 'C/C++ Compile Run', cwd: this.file.directory });
+        }
     }
 
     private getExternalCommand(): string {

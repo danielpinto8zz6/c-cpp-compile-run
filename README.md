@@ -5,8 +5,8 @@
 [![Marketplace Version](https://vsmarketplacebadge.apphb.com/version-short/danielpinto8zz6.c-cpp-compile-run.svg)](https://marketplace.visualstudio.com/items?itemName=danielpinto8zz6.c-cpp-compile-run)
 [![Downloads](https://vsmarketplacebadge.apphb.com/downloads-short/danielpinto8zz6.c-cpp-compile-run.svg)](https://marketplace.visualstudio.com/items?itemName=danielpinto8zz6.c-cpp-compile-run)
 [![Rating](https://vsmarketplacebadge.apphb.com/rating-short/danielpinto8zz6.c-cpp-compile-run.svg)](https://marketplace.visualstudio.com/items?itemName=danielpinto8zz6.c-cpp-compile-run)
-![Build Status](https://github.com/danielpinto8zz6/c-cpp-compile-run/workflows/CI/badge.svg)
 [![VSCode.pro](https://img.shields.io/badge/LEARN-VSCODE%20TODAY%20%E2%86%92-gray.svg?colorB=4D2AFF)](https://a.paddle.com/v2/click/16413/111519?link=1227)
+
 
 An extension running on [Visual Studio Code](https://code.visualstudio.com) to **Compile & Run** single c/c++ files easly
 

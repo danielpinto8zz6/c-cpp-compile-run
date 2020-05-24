@@ -1,3 +1,7 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT license.
+// see: https://github.com/microsoft/vscode-maven/blob/master/src/mavenTerminal.ts
+
 import * as vscode from 'vscode';
 import { outputChannel } from './output-channel';
 import { executeCommand } from './utils/cp-utils';
@@ -12,7 +16,7 @@ export interface ITerminalOptions {
 
 enum WindowsShellType {
     CMD = 'Command Prompt',
-    POWER_SHELL = 'PowerShell',
+    POWERSHELL = 'PowerShell',
     GIT_BASH = 'Git Bash',
     WSL = 'WSL Bash',
     OTHERS = 'Others'
@@ -42,21 +46,6 @@ class Terminal implements vscode.Disposable {
         }
         this.terminals[name].sendText(getCommand(command), addNewLine);
         return this.terminals[name];
-    }
-
-    public closeAllTerminals(): void {
-        Object.keys(this.terminals).forEach((id: string) => {
-            this.terminals[id].dispose();
-            delete this.terminals[id];
-        });
-    }
-
-    public onClose(closedTerminal: vscode.Terminal): void {
-        try {
-            delete this.terminals[closedTerminal.name];
-        } catch (error) {
-            // ignore it.
-        }
     }
 
     // To Refactor: remove from here.
@@ -89,8 +78,8 @@ class Terminal implements vscode.Disposable {
 function getCommand(cmd: string): string {
     if (process.platform === 'win32') {
         switch (currentWindowsShell()) {
-            case WindowsShellType.POWER_SHELL:
-                return `& ${cmd}`; // PowerShell
+            case WindowsShellType.POWERSHELL:
+                return `cmd /c ${cmd}`; // PowerShell
             default:
                 return cmd; // others, try using common one.
         }
@@ -104,7 +93,7 @@ async function getCDCommand(cwd: string): Promise<string> {
         switch (currentWindowsShell()) {
             case WindowsShellType.GIT_BASH:
                 return `cd "${cwd.replace(/\\+$/, '')}"`; // Git Bash: remove trailing '\'
-            case WindowsShellType.POWER_SHELL:
+            case WindowsShellType.POWERSHELL:
                 // Escape '[' and ']' in PowerShell
                 // See: https://github.com/microsoft/vscode-maven/issues/324
                 const escaped: string = cwd.replace(/([\[\]])/g, '``$1');
@@ -127,7 +116,9 @@ function currentWindowsShell(): WindowsShellType {
     if (currentWindowsShellPath.endsWith('cmd.exe')) {
         return WindowsShellType.CMD;
     } else if (currentWindowsShellPath.endsWith('powershell.exe')) {
-        return WindowsShellType.POWER_SHELL;
+        return WindowsShellType.POWERSHELL;
+    } else if (currentWindowsShellPath.endsWith('pwsh.exe')) {
+        return WindowsShellType.POWERSHELL;
     } else if (currentWindowsShellPath.endsWith('bash.exe') || currentWindowsShellPath.endsWith('wsl.exe')) {
         if (currentWindowsShellPath.includes('Git')) {
             return WindowsShellType.GIT_BASH;

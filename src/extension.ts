@@ -36,9 +36,12 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(customRun);
     context.subscriptions.push(customCompileRun);
 
-    context.subscriptions.push(window.onDidCloseTerminal((closedTerminal: Terminal) => {
-        terminal.onClose(closedTerminal);
-    }));
+    // Free resources when manually closing a terminal
+    context.subscriptions.push(
+        window.onDidCloseTerminal((closedTerminal: Terminal) => {
+            terminal.dispose(closedTerminal.name);
+        })
+    );
 }
 
 export function deactivate() {

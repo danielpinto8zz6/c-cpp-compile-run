@@ -153,6 +153,18 @@ export async function toWinPath(path: string): Promise<string> {
     return (await executeCommand('wsl', ['wslpath', '-w', `"${path}"`])).trim();
 }
 
+export function getRunPrefix(): string {
+    if (process.platform === 'win32') {
+        const shell = currentWindowsShell();
+
+        if (shell === WindowsShellType.CMD || shell === WindowsShellType.POWERSHELL) {
+            return '.\\';
+        }
+    }
+
+    return './';
+}
+
 export const terminal: Terminal = new Terminal();
 
 function setupEnvForWSL(term: vscode.Terminal, env: { [envKey: string]: string }): void {

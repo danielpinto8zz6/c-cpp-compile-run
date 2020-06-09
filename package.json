@@ -230,7 +230,7 @@
     "devDependencies": {
         "@types/glob": "^7.1.1",
         "@types/mocha": "^7.0.2",
-        "@types/node": "^14.0.5",
+        "@types/node": "^14.0.12",
         "@types/vscode": "^1.45.1",
         "git-cz": "^4.5.0",
         "glob": "^7.1.6",

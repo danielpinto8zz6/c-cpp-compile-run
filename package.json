@@ -6,7 +6,7 @@
     "publisher": "danielpinto8zz6",
     "icon": "resources/logo.png",
     "engines": {
-        "vscode": "^1.45.1"
+        "vscode": "^1.49.0"
     },
     "main": "./out/extension",
     "categories": [
@@ -228,22 +228,22 @@
         "lint": "tslint -c tslint.json \"src/**/*.ts\" --fix"
     },
     "devDependencies": {
-        "@types/glob": "^7.1.1",
-        "@types/mocha": "^7.0.2",
-        "@types/node": "^14.0.5",
-        "@types/vscode": "^1.45.1",
-        "git-cz": "^4.5.0",
+        "@types/glob": "^7.1.3",
+        "@types/mocha": "^8.0.3",
+        "@types/node": "^14.11.1",
+        "@types/vscode": "^1.49.0",
+        "git-cz": "^4.7.1",
         "glob": "^7.1.6",
         "gulp": "^4.0.2",
-        "mocha": "^7.2.0",
-        "release-it": "^13.6.1",
-        "tslint": "^6.1.2",
-        "typescript": "^3.9.3",
-        "vscode-test": "^1.3.0"
+        "mocha": "^8.1.3",
+        "release-it": "^14.0.3",
+        "tslint": "^6.1.3",
+        "typescript": "^4.0.3",
+        "vscode-test": "^1.4.0"
     },
     "dependencies": {
         "find-process": "git+https://github.com/danielpinto8zz6/find-process.git",
-        "lookpath": "^1.0.6"
+        "lookpath": "^1.1.0"
     },
     "config": {
         "commitizen": {

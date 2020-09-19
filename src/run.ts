@@ -38,7 +38,7 @@ export class Run {
             }
         }
 
-        await terminal.run(`${getRunPrefix()}"${this.file.executable}" ${this.arguments}`,
+        await terminal.runInTerminal(`${getRunPrefix()}"${this.file.executable}" ${this.arguments}`,
             { name: 'C/C++ Compile Run', cwd: this.file.directory });
     }
 

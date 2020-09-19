@@ -242,7 +242,9 @@
         "vscode-test": "^1.4.0"
     },
     "dependencies": {
+        "@types/fs-extra": "^9.0.1",
         "find-process": "git+https://github.com/danielpinto8zz6/find-process.git",
+        "fs-extra": "^9.0.1",
         "lookpath": "^1.1.0"
     },
     "config": {

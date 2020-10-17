@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT license.
+
 import * as cp from 'child_process';
 import * as vscode from 'vscode';
 import { outputChannel } from '../output-channel';
@@ -7,7 +10,7 @@ export async function executeCommand(command: string, args: string[], options: c
         outputChannel.appendLine(`${command}, [${args.join(',')}]`);
         let result = '';
         const childProc: cp.ChildProcess = cp.spawn(command, args, options);
-        childProc.stdout.on('data', (data: string | Buffer) => {
+        childProc.stdout?.on('data', (data: string | Buffer) => {
             data = data.toString();
             result = result.concat(data);
         });

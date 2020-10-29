@@ -1,17 +1,17 @@
 import { exec } from 'child_process';
 import { existsSync } from 'fs';
 import { lookpath } from 'lookpath';
-import { Configuration } from './configuration';
 import { File } from './models/file';
 import { terminal, getRunPrefix } from './terminal';
 import { promptRunArguments } from './utils/prompt-utils';
 import { Result } from './enums/result';
 import { window } from 'vscode';
 import { isStringNullOrWhiteSpace } from './utils/string-utils';
+import { Configuration } from './configuration';
 
 export class Runner {
     private file: File;
-    private arguments: string | undefined;
+    private arguments: string;
     private shouldAskForArgs: boolean;
 
     constructor(file: File, shouldAskForArgs = false) {
@@ -19,7 +19,7 @@ export class Runner {
         this.shouldAskForArgs = shouldAskForArgs;
     }
 
-    async run(): Promise<Result> {
+    async run(shouldRunInExternalTerminal = false): Promise<Result> {
         if (!existsSync(this.file.path)) {
             window.showErrorMessage(`"${this.file.path}" doesn't exists!`);
 
@@ -31,13 +31,13 @@ export class Runner {
             this.arguments = await promptRunArguments(this.arguments);
         }
 
-        if (Configuration.runInExternalTerminal()) {
-            const command = await this.getExternalCommand() as string;
+        if (shouldRunInExternalTerminal) {
+            const command = await this.getExternalCommand();
             if (isStringNullOrWhiteSpace(command)) {
                 return Result.error;
             }
 
-            exec(command as string, { cwd: this.file.directory });
+            exec(command, { cwd: this.file.directory });
         }
         else {
             await terminal.runInTerminal(`${getRunPrefix()}"${this.file.executable}" ${this.arguments}`,
@@ -47,7 +47,7 @@ export class Runner {
         return Result.success;
     }
 
-    private async getExternalCommand(): Promise<string | undefined> {
+    private async getExternalCommand(): Promise<string> {
         switch (process.platform) {
             case 'win32':
                 return `start cmd /c ".\\\"${this.file.executable}\" ${this.arguments} & echo. & pause"`;
@@ -57,14 +57,14 @@ export class Runner {
                     + `'tell application "Terminal" to do script ("./" & "${this.file.executable}") in first window'`;
 
             case 'linux':
-                const linuxTerminal: string = Configuration.linuxTerminal() as string;
+                const linuxTerminal: string = Configuration.linuxTerminal();
 
                 if (isStringNullOrWhiteSpace(linuxTerminal)
                     || isStringNullOrWhiteSpace(await lookpath(linuxTerminal))) {
                     window.showErrorMessage(`${terminal} not found! Try to enter a valid terminal in 'terminal.external.linuxExec' `
                         + `settings!(gnome - terminal, xterm, konsole)`);
 
-                    return undefined;
+                    return null;
                 }
 
                 switch (linuxTerminal) {
@@ -88,12 +88,12 @@ export class Runner {
                         window.showErrorMessage(`${linuxTerminal} isn't supported! Try to enter a supported terminal in `
                             + `'terminal.external.linuxExec' settings! (gnome-terminal, xterm, konsole)`);
 
-                        return undefined;
+                        return null;
                 }
             default:
                 window.showErrorMessage('Unsupported platform!')
 
-                return undefined;
+                return null;
         }
     }
 }

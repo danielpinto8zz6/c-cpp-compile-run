@@ -76,14 +76,14 @@ export class Compiler {
     setCompiler(): Result {
         switch (this.file.type) {
             case FileType.c: {
-                this.compiler = Configuration.cCompiler() as string;
-                this.inputFlags = Configuration.cFlags() as string;
+                this.compiler = Configuration.cCompiler();
+                this.inputFlags = Configuration.cFlags();
 
                 return Result.success;
             }
             case FileType.cplusplus: {
-                this.compiler = Configuration.cppCompiler() as string;
-                this.inputFlags = Configuration.cppFlags() as string;
+                this.compiler = Configuration.cppCompiler();
+                this.inputFlags = Configuration.cppFlags();
 
                 return Result.success;
             }
@@ -96,14 +96,14 @@ export class Compiler {
     }
 
     async isCompilerValid(compiler?: string): Promise<boolean> {
-        return !isStringNullOrWhiteSpace(compiler) && await commandExists(compiler as string);
+        return !isStringNullOrWhiteSpace(compiler) && await commandExists(compiler);
     }
 
     async compilerNotFound() {
         const CHANGE_PATH = 'Change path';
         const choiceForDetails = await window.showErrorMessage('Compiler not found, try to change path in settings!', CHANGE_PATH);
         if (choiceForDetails === CHANGE_PATH) {
-            this.compiler = await promptCompiler() as string;
+            this.compiler = await promptCompiler();
 
             if (await this.isCompilerValid(this.compiler)) {
                 await Configuration.setCompiler(this.compiler, this.file.type);

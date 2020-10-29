@@ -31,6 +31,7 @@
     },
     "activationEvents": [
         "onCommand:extension.CompileRun",
+        "onCommand:extension.CompileRunInExternalTerminal",
         "onCommand:extension.CustomCompileRun",
         "onCommand:extension.Compile",
         "onCommand:extension.Run",
@@ -57,6 +58,10 @@
             {
                 "command": "extension.CompileRun",
                 "title": "CompileRun : Compile with default flags & Run with default arguments"
+            },
+            {
+                "command": "extension.CompileRunInExternalTerminal",
+                "title": "CompileRun : Compile with default flags & Run with default arguments in external terminal"
             },
             {
                 "command": "extension.CustomCompileRun",
@@ -94,8 +99,12 @@
                     "when": "editorLangId ==  cc"
                 },
                 {
-                    "command": "extension.CustomCompileRun",
+                    "command": "extension.CompileRunInExternalTerminal",
                     "when": "editorLangId ==  cpp"
+                },
+                {
+                    "command": "extension.CompileRunInExternalTerminal",
+                    "when": "editorLangId ==  cc"
                 },
                 {
                     "command": "extension.CustomCompileRun",
@@ -169,6 +178,13 @@
                 "linux": "f6",
                 "key": "f6",
                 "command": "extension.CompileRun"
+            },
+            {
+                "mac": "cmd+y",
+                "win": "f8",
+                "linux": "f8",
+                "key": "f8",
+                "command": "extension.CompileRunInExternalTerminal"
             },
             {
                 "mac": "cmd+t",

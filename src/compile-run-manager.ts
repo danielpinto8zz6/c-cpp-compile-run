@@ -1,7 +1,7 @@
 import { File } from './models/file';
 import { Compiler } from './compiler';
 import { Runner } from './runner';
-import { TextDocument, window } from 'vscode';
+import { window } from 'vscode';
 import { Configuration } from './configuration';
 import { parseFile } from './utils/file-utils';
 import { Result } from './enums/result';
@@ -17,17 +17,17 @@ export class CompileRunManager {
         await compiler.compile();
     }
 
-    public async run(shouldAskForArgs = false) {
+    public async run(shouldAskForArgs = false, shouldRunInExternalTerminal = false) {
         const file = await this.getFile();
         if (file === null) {
             return;
         }
 
         const runner = new Runner(file, shouldAskForArgs);
-        await runner.run();
+        await runner.run(shouldRunInExternalTerminal);
     }
 
-    public async compileRun(shouldAskForInputFlags = false, shouldAskForArgs = false) {
+    public async compileRun(shouldAskForInputFlags = false, shouldAskForArgs = false, shouldRunInExternalTerminal = false) {
         const file = await this.getFile();
         if (file === null) {
             return;
@@ -39,11 +39,11 @@ export class CompileRunManager {
 
         const compileResult = await compiler.compile();
         if (compileResult === Result.success) {
-            await runner.run();
+            await runner.run(shouldRunInExternalTerminal);
         }
     }
 
-    public async getFile(): Promise<File | null> {
+    public async getFile(): Promise<File> {
         if (!window || !window.activeTextEditor || !window.activeTextEditor.document) {
             window.showErrorMessage('Invalid document!');
 
@@ -57,6 +57,6 @@ export class CompileRunManager {
             return null;
         }
 
-        return parseFile(doc as TextDocument);
+        return parseFile(doc);
     }
 }

@@ -153,7 +153,7 @@ export async function toWslPath(filepath: string): Promise<string> {
     if (path.posix.isAbsolute(filepath)) {
         return filepath;
     }
-    
+
     try {
         return (await executeCommand('wsl', ['wslpath', '-u', `"${filepath.replace(/\\/g, '/')}"`])).trim();
     } catch (error) {

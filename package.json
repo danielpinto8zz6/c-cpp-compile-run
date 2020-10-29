@@ -157,6 +157,13 @@
         },
         "keybindings": [
             {
+                "mac": "cmd+6",
+                "win": "ctrl+6",
+                "linux": "ctrl+6",
+                "key": "ctrl+6",
+                "command": "extension.CompileRun"
+            },
+            {
                 "mac": "cmd+r",
                 "win": "f6",
                 "linux": "f6",

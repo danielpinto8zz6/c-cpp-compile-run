@@ -5,6 +5,7 @@ import { window } from 'vscode';
 import { Configuration } from './configuration';
 import { parseFile } from './utils/file-utils';
 import { Result } from './enums/result';
+import { Notification } from './notification';
 
 export class CompileRunManager {
     public async compile(shouldAskForInputFlags = false) {
@@ -45,14 +46,14 @@ export class CompileRunManager {
 
     public async getFile(): Promise<File> {
         if (!window || !window.activeTextEditor || !window.activeTextEditor.document) {
-            window.showErrorMessage('Invalid document!');
+           Notification.showErrorMessage('Invalid document!');
 
             return null;
         }
 
         const doc = window.activeTextEditor?.document;
         if (doc?.isUntitled && !Configuration.saveBeforeCompile()) {
-            window.showErrorMessage('Please save file first then try again!');
+            Notification.showErrorMessage('Please save file first then try again!');
 
             return null;
         }

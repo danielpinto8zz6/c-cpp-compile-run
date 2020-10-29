@@ -5,9 +5,9 @@ import { File } from './models/file';
 import { terminal, getRunPrefix } from './terminal';
 import { promptRunArguments } from './utils/prompt-utils';
 import { Result } from './enums/result';
-import { window } from 'vscode';
 import { isStringNullOrWhiteSpace } from './utils/string-utils';
 import { Configuration } from './configuration';
+import { Notification } from './notification';
 
 export class Runner {
     private file: File;
@@ -21,7 +21,7 @@ export class Runner {
 
     async run(shouldRunInExternalTerminal = false): Promise<Result> {
         if (!existsSync(this.file.path)) {
-            window.showErrorMessage(`"${this.file.path}" doesn't exists!`);
+            Notification.showErrorMessage(`"${this.file.path}" doesn't exists!`);
 
             return Result.error;
         }
@@ -61,7 +61,7 @@ export class Runner {
 
                 if (isStringNullOrWhiteSpace(linuxTerminal)
                     || isStringNullOrWhiteSpace(await lookpath(linuxTerminal))) {
-                    window.showErrorMessage(`${terminal} not found! Try to enter a valid terminal in 'terminal.external.linuxExec' `
+                    Notification.showErrorMessage(`${terminal} not found! Try to enter a valid terminal in 'terminal.external.linuxExec' `
                         + `settings!(gnome - terminal, xterm, konsole)`);
 
                     return null;
@@ -85,13 +85,13 @@ export class Runner {
                     case 'io.elementary.terminal':
                         return `${linuxTerminal} -e './"${this.file.executable}" ${this.arguments}'`;
                     default:
-                        window.showErrorMessage(`${linuxTerminal} isn't supported! Try to enter a supported terminal in `
+                        Notification.showErrorMessage(`${linuxTerminal} isn't supported! Try to enter a supported terminal in `
                             + `'terminal.external.linuxExec' settings! (gnome-terminal, xterm, konsole)`);
 
                         return null;
                 }
             default:
-                window.showErrorMessage('Unsupported platform!')
+                Notification.showErrorMessage('Unsupported platform!')
 
                 return null;
         }

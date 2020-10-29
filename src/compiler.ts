@@ -8,6 +8,7 @@ import { promptCompiler, promptFlags } from './utils/prompt-utils';
 import { commandExists, isProccessRunning } from './utils/common-utils';
 import { Result } from './enums/result';
 import { isStringNullOrWhiteSpace } from './utils/string-utils';
+import { Notification } from './notification';
 
 export class Compiler {
     private file: File;
@@ -31,7 +32,7 @@ export class Compiler {
         }
 
         if (await isProccessRunning(this.file.executable)) {
-            window.showErrorMessage(`${this.file.executable} is already runing! Please close it first to compile successfully!`);
+            Notification.showErrorMessage(`${this.file.executable} is already runing! Please close it first to compile successfully!`);
 
             return Result.error;
         }
@@ -61,11 +62,11 @@ export class Compiler {
         }
 
         if (proccess.status === 0) {
-            window.showInformationMessage('Compiled successfuly!');
+            Notification.showInformationMessage('Compiled successfuly!');
         } else {
             outputChannel.show();
 
-            window.showErrorMessage('Error compiling!');
+            Notification.showErrorMessage('Error compiling!');
 
             return Result.error;
         }
@@ -88,7 +89,7 @@ export class Compiler {
                 return Result.success;
             }
             default: {
-                window.showErrorMessage('Invalid File!');
+                Notification.showErrorMessage('Invalid File!');
 
                 return Result.error;
             }
@@ -108,10 +109,10 @@ export class Compiler {
             if (await this.isCompilerValid(this.compiler)) {
                 await Configuration.setCompiler(this.compiler, this.file.type);
             } else {
-                window.showErrorMessage('Compiler not found!');
+                Notification.showErrorMessage('Compiler not found!');
             }
         } else {
-            window.showErrorMessage('Compiler not set!');
+            Notification.showErrorMessage('Compiler not set!');
         }
     }
 }

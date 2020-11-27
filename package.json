@@ -170,28 +170,32 @@
                 "win": "ctrl+6",
                 "linux": "ctrl+6",
                 "key": "ctrl+6",
-                "command": "extension.CompileRun"
+                "command": "extension.CompileRun",
+                "when": "editorTextFocus && editorLangId == cpp || editorLangId == c"
             },
             {
                 "mac": "cmd+r",
                 "win": "f6",
                 "linux": "f6",
                 "key": "f6",
-                "command": "extension.CompileRun"
+                "command": "extension.CompileRun",
+                "when": "editorTextFocus && editorLangId == cpp || editorLangId == c"
             },
             {
                 "mac": "cmd+y",
                 "win": "f8",
                 "linux": "f8",
                 "key": "f8",
-                "command": "extension.CompileRunInExternalTerminal"
+                "command": "extension.CompileRunInExternalTerminal",
+                "when": "editorTextFocus && editorLangId == cpp || editorLangId == c"
             },
             {
                 "mac": "cmd+t",
                 "win": "f7",
                 "linux": "f7",
                 "key": "f7",
-                "command": "extension.CustomCompileRun"
+                "command": "extension.CustomCompileRun",
+                "when": "editorTextFocus && editorLangId == cpp || editorLangId == c"
             }
         ],
         "configuration": {

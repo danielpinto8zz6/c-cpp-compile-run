@@ -62,7 +62,7 @@ export class Compiler {
         }
 
         if (proccess.status === 0) {
-            Notification.showInformationMessage('Compiled successfuly!');
+            Notification.showInformationMessage('Compiled successfully!');
         } else {
             outputChannel.show();
 

@@ -1,11 +1,11 @@
-import { FileType } from '../enums/file-type';
+import { FileType } from "../enums/file-type";
 
 export function getFileType(extension: string): FileType {
-    if (extension === 'c' || extension === 'h') {
+    if (extension === "c" || extension === "h") {
         return FileType.c;
     }
 
-    if (extension === 'cpp' || extension === 'hpp') {
+    if (extension === "cpp" || extension === "hpp") {
         return FileType.cplusplus;
     }
 

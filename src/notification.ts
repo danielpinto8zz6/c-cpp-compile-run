@@ -1,6 +1,6 @@
-import { window } from 'vscode';
-import { Configuration } from './configuration';
-import { isStringNullOrWhiteSpace } from './utils/string-utils';
+import { window } from "vscode";
+import { Configuration } from "./configuration";
+import { isStringNullOrWhiteSpace } from "./utils/string-utils";
 
 export class Notification {
     static showErrorMessage(message: string) {

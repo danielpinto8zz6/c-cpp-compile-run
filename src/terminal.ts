@@ -1,11 +1,11 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license.
 
-import * as fse from 'fs-extra';
-import * as path from 'path';
-import * as vscode from 'vscode';
-import { outputChannel } from './output-channel';
-import { executeCommand } from './utils/cp-utils';
+import * as fse from "fs-extra";
+import * as path from "path";
+import * as vscode from "vscode";
+import { outputChannel } from "./output-channel";
+import { executeCommand } from "./utils/cp-utils";
 
 export interface ITerminalOptions {
     addNewLine?: boolean;
@@ -16,18 +16,18 @@ export interface ITerminalOptions {
 }
 
 enum ShellType {
-    CMD = 'Command Prompt',
-    POWERSHELL = 'PowerShell',
-    GIT_BASH = 'Git Bash',
-    WSL = 'WSL Bash',
-    OTHERS = 'Others'
+    cmd = "Command Prompt",
+    powerShell = "PowerShell",
+    gitBash = "Git Bash",
+    wsl = "WSL Bash",
+    others = "Others"
 }
 
 class Terminal implements vscode.Disposable {
     private readonly terminals: { [id: string]: vscode.Terminal } = {};
 
     public async runInTerminal(command: string, options: ITerminalOptions): Promise<vscode.Terminal> {
-        const defaultOptions: ITerminalOptions = { addNewLine: true, name: 'C/C++ Compile Run' };
+        const defaultOptions: ITerminalOptions = { addNewLine: true, name: "C/C++ Compile Run" };
         const { addNewLine, name, cwd, workspaceFolder } = Object.assign(defaultOptions, options);
         if (this.terminals[name] === undefined) {
             // Open terminal in workspaceFolder if provided
@@ -37,7 +37,7 @@ class Terminal implements vscode.Disposable {
             this.terminals[name] = vscode.window.createTerminal({ name, env, cwd: terminalCwd });
             // Workaround for WSL custom envs.
             // See: https://github.com/Microsoft/vscode/issues/71267
-            if (currentWindowsShell() === ShellType.WSL) {
+            if (currentWindowsShell() === ShellType.wsl) {
                 setupEnvForWSL(this.terminals[name], env);
             }
         }
@@ -51,17 +51,17 @@ class Terminal implements vscode.Disposable {
 
     // To Refactor: remove from here.
     public async formattedPathForTerminal(filepath: string): Promise<string> {
-        if (process.platform !== 'win32') {
+        if (process.platform !== "win32") {
             return filepath;
         }
 
         switch (currentWindowsShell()) {
-            case ShellType.WSL:
+            case ShellType.wsl:
                 return await toWslPath(filepath);
-            case ShellType.POWERSHELL: {
+            case ShellType.powerShell: {
                 // On Windows, append .cmd for `path/to/mvn` to prevent popup window
                 // See: https://github.com/microsoft/vscode-maven/pull/494#issuecomment-633869294
-                if (path.extname(filepath) === '') {
+                if (path.extname(filepath) === "") {
                     const amended = `${filepath}.cmd`;
                     if (await fse.pathExists(amended)) {
                         return amended;
@@ -88,7 +88,7 @@ class Terminal implements vscode.Disposable {
 }
 
 function getCommand(cmd: string): string {
-    if (currentWindowsShell() === ShellType.POWERSHELL) {
+    if (currentWindowsShell() === ShellType.powerShell) {
         return `& ${cmd}`;
     } else {
         return cmd;
@@ -96,18 +96,18 @@ function getCommand(cmd: string): string {
 }
 
 async function getCDCommand(cwd: string): Promise<string> {
-    if (process.platform === 'win32') {
+    if (process.platform === "win32") {
         switch (currentWindowsShell()) {
-            case ShellType.GIT_BASH:
-                return `cd "${cwd.replace(/\\+$/, '')}"`; // Git Bash: remove trailing '\'
-            case ShellType.POWERSHELL:
+            case ShellType.gitBash:
+                return `cd "${cwd.replace(/\\+$/, "")}"`; // Git Bash: remove trailing '\'
+            case ShellType.powerShell:
                 // Escape '[' and ']' in PowerShell
                 // See: https://github.com/microsoft/vscode-maven/issues/324
-                const escaped: string = cwd.replace(/([\[\]])/g, '``$1');
+                const escaped: string = cwd.replace(/([\[\]])/g, "``$1");
                 return `cd "${escaped}"`; // PowerShell
-            case ShellType.CMD:
+            case ShellType.cmd:
                 return `cd /d "${cwd}"`; // CMD
-            case ShellType.WSL:
+            case ShellType.wsl:
                 return `cd "${await toWslPath(cwd)}"`; // WSL
             default:
                 return `cd "${cwd}"`; // Unknown, try using common one.
@@ -121,31 +121,31 @@ function currentWindowsShell(): ShellType {
     const currentWindowsShellPath: string = vscode.env.shell;
     const binaryName: string = path.basename(currentWindowsShellPath);
     switch (binaryName) {
-        case 'cmd.exe':
-            return ShellType.CMD;
-        case 'pwsh.exe':
-        case 'powershell.exe':
-        case 'pwsh': // pwsh on mac/linux
-            return ShellType.POWERSHELL;
-        case 'bash.exe':
-        case 'wsl.exe':
-            if (currentWindowsShellPath.indexOf('Git') > 0) {
-                return ShellType.GIT_BASH;
+        case "cmd.exe":
+            return ShellType.cmd;
+        case "pwsh.exe":
+        case "powershell.exe":
+        case "pwsh": // pwsh on mac/linux
+            return ShellType.powerShell;
+        case "bash.exe":
+        case "wsl.exe":
+            if (currentWindowsShellPath.indexOf("Git") > 0) {
+                return ShellType.gitBash;
             }
-            return ShellType.WSL;
+            return ShellType.wsl;
         default:
-            return ShellType.OTHERS;
+            return ShellType.others;
     }
 }
 
 function toDefaultWslPath(p: string): string {
-    const arr: string[] = p.split(':\\');
+    const arr: string[] = p.split(":\\");
     if (arr.length === 2) {
         const drive: string = arr[0].toLowerCase();
-        const dir: string = arr[1].replace(/\\/g, '/');
+        const dir: string = arr[1].replace(/\\/g, "/");
         return `/mnt/${drive}/${dir}`;
     } else {
-        return p.replace(/\\/g, '/');
+        return p.replace(/\\/g, "/");
     }
 }
 
@@ -155,27 +155,27 @@ export async function toWslPath(filepath: string): Promise<string> {
     }
 
     try {
-        return (await executeCommand('wsl', ['wslpath', '-u', `"${filepath.replace(/\\/g, '/')}"`])).trim();
+        return (await executeCommand("wsl", ["wslpath", "-u", `"${filepath.replace(/\\/g, "/")}"`])).trim();
     } catch (error) {
-        outputChannel.appendLine(error, 'WSL');
+        outputChannel.appendLine(error, "WSL");
         return toDefaultWslPath(filepath);
     }
 }
 
 export async function toWinPath(filepath: string): Promise<string> {
-    return (await executeCommand('wsl', ['wslpath', '-w', `"${filepath}"`])).trim();
+    return (await executeCommand("wsl", ["wslpath", "-w", `"${filepath}"`])).trim();
 }
 
 export function getRunPrefix(): string {
-    if (process.platform === 'win32') {
+    if (process.platform === "win32") {
         const shell = currentWindowsShell();
 
-        if (shell === ShellType.CMD || shell === ShellType.POWERSHELL) {
-            return '.\\';
+        if (shell === ShellType.cmd || shell === ShellType.powerShell) {
+            return ".\\";
         }
     }
 
-    return './';
+    return "./";
 }
 
 export const terminal: Terminal = new Terminal();

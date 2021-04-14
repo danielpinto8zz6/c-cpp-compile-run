@@ -1,36 +1,36 @@
-import { ExtensionContext, commands, window, Terminal } from 'vscode';
-import { terminal } from './terminal';
-import { CompileRunManager } from './compile-run-manager';
-import { Configuration } from './configuration';
+import { ExtensionContext, commands, window, Terminal } from "vscode";
+import { terminal } from "./terminal";
+import { CompileRunManager } from "./compile-run-manager";
+import { Configuration } from "./configuration";
 
 export function activate(context: ExtensionContext) {
     const compileRunManager = new CompileRunManager();
 
-    const compile = commands.registerCommand('extension.Compile', async () => {
+    const compile = commands.registerCommand("extension.Compile", async () => {
         await compileRunManager.compile();
     });
 
-    const run = commands.registerCommand('extension.Run', async () => {
+    const run = commands.registerCommand("extension.Run", async () => {
         await compileRunManager.run(false, Configuration.runInExternalTerminal());
     });
 
-    const compileRun = commands.registerCommand('extension.CompileRun', async () => {
+    const compileRun = commands.registerCommand("extension.CompileRun", async () => {
         await compileRunManager.compileRun(false, false, Configuration.runInExternalTerminal());
     });
 
-    const customCompile = commands.registerCommand('extension.CustomCompile', async () => {
+    const customCompile = commands.registerCommand("extension.CustomCompile", async () => {
         await compileRunManager.compile(true);
     });
 
-    const customRun = commands.registerCommand('extension.CustomRun', async () => {
+    const customRun = commands.registerCommand("extension.CustomRun", async () => {
         await compileRunManager.compile(true);
     });
 
-    const customCompileRun = commands.registerCommand('extension.CustomCompileRun', async () => {
+    const customCompileRun = commands.registerCommand("extension.CustomCompileRun", async () => {
         await compileRunManager.compileRun(true, true, Configuration.runInExternalTerminal());
     });
 
-    const compileRunInExternalTerminal = commands.registerCommand('extension.CompileRunInExternalTerminal', async () => {
+    const compileRunInExternalTerminal = commands.registerCommand("extension.CompileRunInExternalTerminal", async () => {
         await compileRunManager.compileRun(false, false, true);
     });
 

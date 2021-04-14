@@ -1,14 +1,14 @@
-import { spawnSync } from 'child_process';
-import { window } from 'vscode';
-import { Configuration } from './configuration';
-import { FileType } from './enums/file-type';
-import { File } from './models/file';
-import { outputChannel } from './output-channel';
-import { promptCompiler, promptFlags } from './utils/prompt-utils';
-import { commandExists, isProccessRunning } from './utils/common-utils';
-import { Result } from './enums/result';
-import { isStringNullOrWhiteSpace } from './utils/string-utils';
-import { Notification } from './notification';
+import { spawnSync } from "child_process";
+import { window } from "vscode";
+import { Configuration } from "./configuration";
+import { FileType } from "./enums/file-type";
+import { File } from "./models/file";
+import { outputChannel } from "./output-channel";
+import { promptCompiler, promptFlags } from "./utils/prompt-utils";
+import { commandExists, isProccessRunning } from "./utils/common-utils";
+import { Result } from "./enums/result";
+import { isStringNullOrWhiteSpace } from "./utils/string-utils";
+import { Notification } from "./notification";
 
 export class Compiler {
     private file: File;
@@ -50,23 +50,23 @@ export class Compiler {
             }
         }
 
-        let compilerArgs = [`"${this.file.name}"`, '-o', `"${this.file.executable}"`];
+        let compilerArgs = [`"${this.file.name}"`, "-o", `"${this.file.executable}"`];
         if (this.inputFlags) {
-            compilerArgs = compilerArgs.concat(this.inputFlags.split(' '));
+            compilerArgs = compilerArgs.concat(this.inputFlags.split(" "));
         }
 
-        const proccess = spawnSync(`"${this.compiler}"`, compilerArgs, { cwd: this.file.directory, shell: true, encoding: 'utf-8' });
+        const proccess = spawnSync(`"${this.compiler}"`, compilerArgs, { cwd: this.file.directory, shell: true, encoding: "utf-8" });
 
         if (proccess.output.length > 0) {
             outputChannel.appendLine(proccess.output.toLocaleString(), this.file.name);
         }
 
         if (proccess.status === 0) {
-            Notification.showInformationMessage('Compiled successfully!');
+            Notification.showInformationMessage("Compiled successfully!");
         } else {
             outputChannel.show();
 
-            Notification.showErrorMessage('Error compiling!');
+            Notification.showErrorMessage("Error compiling!");
 
             return Result.error;
         }
@@ -89,7 +89,7 @@ export class Compiler {
                 return Result.success;
             }
             default: {
-                Notification.showErrorMessage('Invalid File!');
+                Notification.showErrorMessage("Invalid File!");
 
                 return Result.error;
             }
@@ -101,18 +101,18 @@ export class Compiler {
     }
 
     async compilerNotFound() {
-        const CHANGE_PATH = 'Change path';
-        const choiceForDetails = await window.showErrorMessage('Compiler not found, try to change path in settings!', CHANGE_PATH);
+        const CHANGE_PATH = "Change path";
+        const choiceForDetails = await window.showErrorMessage("Compiler not found, try to change path in settings!", CHANGE_PATH);
         if (choiceForDetails === CHANGE_PATH) {
             this.compiler = await promptCompiler();
 
             if (await this.isCompilerValid(this.compiler)) {
                 await Configuration.setCompiler(this.compiler, this.file.type);
             } else {
-                Notification.showErrorMessage('Compiler not found!');
+                Notification.showErrorMessage("Compiler not found!");
             }
         } else {
-            Notification.showErrorMessage('Compiler not set!');
+            Notification.showErrorMessage("Compiler not set!");
         }
     }
 }

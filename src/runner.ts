@@ -1,13 +1,13 @@
-import { exec } from 'child_process';
-import { existsSync } from 'fs';
-import { lookpath } from 'lookpath';
-import { File } from './models/file';
-import { terminal, getRunPrefix } from './terminal';
-import { promptRunArguments } from './utils/prompt-utils';
-import { Result } from './enums/result';
-import { isStringNullOrWhiteSpace } from './utils/string-utils';
-import { Configuration } from './configuration';
-import { Notification } from './notification';
+import { exec } from "child_process";
+import { existsSync } from "fs";
+import { lookpath } from "lookpath";
+import { File } from "./models/file";
+import { terminal, getRunPrefix } from "./terminal";
+import { promptRunArguments } from "./utils/prompt-utils";
+import { Result } from "./enums/result";
+import { isStringNullOrWhiteSpace } from "./utils/string-utils";
+import { Configuration } from "./configuration";
+import { Notification } from "./notification";
 
 export class Runner {
     private file: File;
@@ -41,7 +41,7 @@ export class Runner {
         }
         else {
             await terminal.runInTerminal(`${getRunPrefix()}"${this.file.executable}" ${this.arguments}`,
-                { name: 'C/C++ Compile Run', cwd: this.file.directory });
+                { name: "C/C++ Compile Run", cwd: this.file.directory });
         }
 
         return Result.success;
@@ -49,49 +49,49 @@ export class Runner {
 
     private async getExternalCommand(): Promise<string> {
         switch (process.platform) {
-            case 'win32':
+            case "win32":
                 return `start cmd /c ".\\\"${this.file.executable}\" ${this.arguments} & echo. & pause"`;
 
-            case 'darwin':
+            case "darwin":
                 return `osascript -e 'do shell script "open -a Terminal " & "${this.file.directory}"' -e 'delay 0.3' -e `
                     + `'tell application "Terminal" to do script ("./" & "${this.file.executable}") in first window'`;
 
-            case 'linux':
+            case "linux":
                 const linuxTerminal: string = Configuration.linuxTerminal();
 
                 if (isStringNullOrWhiteSpace(linuxTerminal)
                     || isStringNullOrWhiteSpace(await lookpath(linuxTerminal))) {
                     Notification.showErrorMessage(`${terminal} not found! Try to enter a valid terminal in 'terminal.external.linuxExec' `
-                        + `settings!(gnome - terminal, xterm, konsole)`);
+                        + "settings!(gnome - terminal, xterm, konsole)");
 
                     return null;
                 }
 
                 switch (linuxTerminal) {
-                    case 'xterm':
+                    case "xterm":
                         return `${linuxTerminal} -T ${this.file.title} -e './"${this.file.executable}" ${this.arguments}; `
-                            + `echo; read -n1 -p "Press any key to continue..."'`;
-                    case 'gnome-terminal':
-                    case 'tilix':
-                    case 'mate-terminal':
+                            + "echo; read -n1 -p \"Press any key to continue...\"'";
+                    case "gnome-terminal":
+                    case "tilix":
+                    case "mate-terminal":
                         return `${linuxTerminal} -t ${this.file.title} -x bash -c './"${this.file.executable}" ${this.arguments}; `
-                            + `echo; read -n1 -p "Press any key to continue..."'`;
-                    case 'xfce4-terminal':
+                            + "echo; read -n1 -p \"Press any key to continue...\"'";
+                    case "xfce4-terminal":
                         return `${linuxTerminal} --title ${this.file.title} -x bash -c './"${this.file.executable}" ${this.arguments}; `
-                            + `read -n1 -p "Press any key to continue..."'`;
-                    case 'konsole':
+                            + "read -n1 -p \"Press any key to continue...\"'";
+                    case "konsole":
                         return `${linuxTerminal} -p tabtitle='${this.file.title}' --noclose -e bash -c './"${this.file.executable}" `
                             + `${this.arguments}'`;
-                    case 'io.elementary.terminal':
+                    case "io.elementary.terminal":
                         return `${linuxTerminal} -e './"${this.file.executable}" ${this.arguments}'`;
                     default:
                         Notification.showErrorMessage(`${linuxTerminal} isn't supported! Try to enter a supported terminal in `
-                            + `'terminal.external.linuxExec' settings! (gnome-terminal, xterm, konsole)`);
+                            + "'terminal.external.linuxExec' settings! (gnome-terminal, xterm, konsole)");
 
                         return null;
                 }
             default:
-                Notification.showErrorMessage('Unsupported platform!')
+                Notification.showErrorMessage("Unsupported platform!");
 
                 return null;
         }

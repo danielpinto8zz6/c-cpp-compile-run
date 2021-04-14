@@ -6,7 +6,7 @@
     "publisher": "danielpinto8zz6",
     "icon": "resources/logo.png",
     "engines": {
-        "vscode": "^1.54.3"
+        "vscode": "^1.55.0"
     },
     "main": "./dist/extension.js",
     "categories": [
@@ -268,18 +268,18 @@
         "glob": "^7.1.6",
         "gulp": "^4.0.2",
         "mocha": "^8.3.2",
-        "release-it": "^14.5.1",
-        "typescript": "^4.2.3",
+        "release-it": "^14.6.1",
+        "typescript": "^4.2.4",
         "vscode-test": "^1.5.2",
-        "ts-loader": "^8.0.14",
-        "webpack": "^5.19.0",
-        "webpack-cli": "^4.4.0",
-        "eslint": "^7.19.0",
-        "@typescript-eslint/eslint-plugin": "^4.14.1",
-        "@typescript-eslint/parser": "^4.14.1"
+        "ts-loader": "^8.1.0",
+        "webpack": "^5.32.0",
+        "webpack-cli": "^4.6.0",
+        "eslint": "^7.24.0",
+        "@typescript-eslint/eslint-plugin": "^4.22.0",
+        "@typescript-eslint/parser": "^4.22.0"
     },
     "dependencies": {
-        "@types/fs-extra": "^9.0.10",
+        "@types/fs-extra": "^9.0.11",
         "find-process": "git+https://github.com/danielpinto8zz6/find-process.git",
         "fs-extra": "^9.1.0",
         "lookpath": "^1.2.0"

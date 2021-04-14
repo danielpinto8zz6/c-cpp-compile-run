@@ -15,15 +15,35 @@ Compile & Run C/C++ opened file directly from the command pallet or by pressing 
 
 ## Requirements
 
-* If you are on linux you must install gcc
-* If you are on window you must install mingw
-
+* If you are on linux you must install gcc ([see instructions](docs/COMPILER_SETUP.md#Linux))
+* If you are on window you must install mingw ([see instructions](docs/COMPILER_SETUP.md#Windows))
+* If you are on mac os you must install clang ([see instructions](docs/COMPILER_SETUP.md#MacOS))
 ## How to use
 Make sure you have .c or .cpp file open.
 Press "F6", this will compile and run the file using default arguments in settings.
 Or press "F7", this will use the arguments you specify for the program.
 If you want to register gcc/g++ path manually, you can set it under settings.
 You can also set to save file before compiling.
+
+## Configurations
+| Key | Description |
+| ------------ | ------------ |
+| c-cpp-compile-run.c-compiler | The C compiler path (e.g: /usr/bin/gcc or C:\\MinGW\\bin\\gcc.exe) |
+| c-cpp-compile-run.cpp-compiler | The Cpp compiler path (e.g: /usr/bin/g++ or C:\\MinGW\\bin\\g++.exe) |
+| c-cpp-compile-run.save-before-compile | Whether should save the file before compiling |
+| c-cpp-compile-run.c-flags | The C flags: e.g. -Wall. default: -Wall -Wextra |
+| c-cpp-compile-run.cpp-flags | The Cpp flags: e.g. -Wall. default: -Wall -Wextra |
+| c-cpp-compile-run.run-args | The run arguments |
+| c-cpp-compile-run.run-in-external-terminal | Whether should run in an external terminal |
+| c-cpp-compile-run.should-show-notifications | Whether should show notifications |
+
+## Keybindings
+| Linux  | Windows | Mac | Description  |
+| ------------ | ------------ | ------------ | ------------ |
+| f6  | f6 | cmd+r | Compiles and runs the file  |
+| crtl+6  | ctrl+6 | cmd+6 | Compiles and runs the file  |
+| f8  | f8 |	cmd+y  | Compiles and run the file in external console  |
+| f7 | f7 | cmd+t | Compiles and run the file specifying custom arguments and flags  |
 
 ## Release Notes
 

@@ -6,7 +6,7 @@
     "publisher": "danielpinto8zz6",
     "icon": "resources/logo.png",
     "engines": {
-        "vscode": "^1.54.3"
+        "vscode": "^1.55.0"
     },
     "main": "./dist/extension.js",
     "categories": [
@@ -200,48 +200,48 @@
                 "c-cpp-compile-run.c-compiler": {
                     "type": "string",
                     "default": "gcc",
-                    "description": "Set your c compiler if it is not working",
+                    "description": "The C compiler path (e.g: /usr/bin/gcc or C:\\MinGW\\bin\\gcc.exe)",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.cpp-compiler": {
                     "type": "string",
                     "default": "g++",
-                    "description": "Set your cpp compiler if it is not working",
+                    "description": "The Cpp compiler path (e.g: /usr/bin/g++ or C:\\MinGW\\bin\\g++.exe)",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.save-before-compile": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Saves the file before compilation",
+                    "description": "Whether should save the file before compiling",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.c-flags": {
                     "type": "string",
-                    "description": "Flags: e.g. -Wall. default: -Wall -Wextra",
+                    "description": "The C flags: e.g. -Wall. default: -Wall -Wextra",
                     "default": "-Wall -Wextra",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.cpp-flags": {
                     "type": "string",
-                    "description": "Flags: e.g. -Wall. default: -Wall -Wextra",
+                    "description": "The Cpp flags: e.g. -Wall. default: -Wall -Wextra",
                     "default": "-Wall -Wextra",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.run-args": {
                     "type": "string",
-                    "description": "Run arguments",
+                    "description": "Whether should run in an external terminal",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.run-in-external-terminal": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Run in a new external terminal",
+                    "description": "Whether should run in an external terminal",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.should-show-notifications": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Should show notifications",
+                    "description": "Whether should show notifications",
                     "scope": "resource"
                 }
             }
@@ -268,18 +268,18 @@
         "glob": "^7.1.6",
         "gulp": "^4.0.2",
         "mocha": "^8.3.2",
-        "release-it": "^14.5.1",
-        "typescript": "^4.2.3",
+        "release-it": "^14.6.1",
+        "typescript": "^4.2.4",
         "vscode-test": "^1.5.2",
-        "ts-loader": "^8.0.14",
-        "webpack": "^5.19.0",
-        "webpack-cli": "^4.4.0",
-        "eslint": "^7.19.0",
-        "@typescript-eslint/eslint-plugin": "^4.14.1",
-        "@typescript-eslint/parser": "^4.14.1"
+        "ts-loader": "^8.1.0",
+        "webpack": "^5.32.0",
+        "webpack-cli": "^4.6.0",
+        "eslint": "^7.24.0",
+        "@typescript-eslint/eslint-plugin": "^4.22.0",
+        "@typescript-eslint/parser": "^4.22.0"
     },
     "dependencies": {
-        "@types/fs-extra": "^9.0.10",
+        "@types/fs-extra": "^9.0.11",
         "find-process": "git+https://github.com/danielpinto8zz6/find-process.git",
         "fs-extra": "^9.1.0",
         "lookpath": "^1.2.0"

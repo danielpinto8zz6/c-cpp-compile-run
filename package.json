@@ -200,48 +200,48 @@
                 "c-cpp-compile-run.c-compiler": {
                     "type": "string",
                     "default": "gcc",
-                    "description": "Set your c compiler if it is not working",
+                    "description": "The C compiler path (e.g: /usr/bin/gcc or C:\\MinGW\\bin\\gcc.exe)",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.cpp-compiler": {
                     "type": "string",
                     "default": "g++",
-                    "description": "Set your cpp compiler if it is not working",
+                    "description": "The Cpp compiler path (e.g: /usr/bin/g++ or C:\\MinGW\\bin\\g++.exe)",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.save-before-compile": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Saves the file before compilation",
+                    "description": "Whether should save the file before compiling",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.c-flags": {
                     "type": "string",
-                    "description": "Flags: e.g. -Wall. default: -Wall -Wextra",
+                    "description": "The C flags: e.g. -Wall. default: -Wall -Wextra",
                     "default": "-Wall -Wextra",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.cpp-flags": {
                     "type": "string",
-                    "description": "Flags: e.g. -Wall. default: -Wall -Wextra",
+                    "description": "The Cpp flags: e.g. -Wall. default: -Wall -Wextra",
                     "default": "-Wall -Wextra",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.run-args": {
                     "type": "string",
-                    "description": "Run arguments",
+                    "description": "Whether should run in an external terminal",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.run-in-external-terminal": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Run in a new external terminal",
+                    "description": "Whether should run in an external terminal",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.should-show-notifications": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Should show notifications",
+                    "description": "Whether should show notifications",
                     "scope": "resource"
                 }
             }

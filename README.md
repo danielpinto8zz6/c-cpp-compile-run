@@ -7,11 +7,11 @@
 [![Rating](https://vsmarketplacebadge.apphb.com/rating-short/danielpinto8zz6.c-cpp-compile-run.svg)](https://marketplace.visualstudio.com/items?itemName=danielpinto8zz6.c-cpp-compile-run)
 
 
-An extension running on [Visual Studio Code](https://code.visualstudio.com) to **Compile & Run** single c/c++ files easly
+An extension running on [Visual Studio Code](https://code.visualstudio.com) to **Compile & Run** single c/c++ files easily
 
 ## Features
 
-Compile & Run C/C++ opened file directly from the command pallet or by pressing 'f6' or 'f7'
+Compile & Run C/C++ opened file directly from the command palette or by pressing 'f6' or 'f7'
 
 ## Requirements
 

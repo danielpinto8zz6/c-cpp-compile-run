@@ -23,7 +23,7 @@ export function activate(context: ExtensionContext) {
     });
 
     const customRun = commands.registerCommand("extension.CustomRun", async () => {
-        await compileRunManager.compile(true);
+        await compileRunManager.run(true);
     });
 
     const customCompileRun = commands.registerCommand("extension.CustomCompileRun", async () => {

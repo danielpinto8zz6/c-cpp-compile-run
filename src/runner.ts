@@ -31,17 +31,22 @@ export class Runner {
             this.arguments = await promptRunArguments(this.arguments);
         }
 
+        let outputLocation = Configuration.outputLocation();
+        if (!outputLocation) {
+            outputLocation = this.file.directory;
+        }
+
         if (shouldRunInExternalTerminal) {
             const command = await this.getExternalCommand();
             if (isStringNullOrWhiteSpace(command)) {
                 return Result.error;
             }
 
-            exec(command, { cwd: this.file.directory });
+            exec(command, { cwd: outputLocation });
         }
         else {
             await terminal.runInTerminal(`${getRunPrefix()}"${this.file.executable}" ${this.arguments}`,
-                { name: "C/C++ Compile Run", cwd: this.file.directory });
+                { name: "C/C++ Compile Run", cwd: outputLocation });
         }
 
         return Result.success;

@@ -243,6 +243,11 @@
                     "default": true,
                     "description": "Whether should show notifications",
                     "scope": "resource"
+                },
+                "c-cpp-compile-run.output-location": {
+                    "type": "string",
+                    "description": "Where output file should be located",
+                    "scope": "resource"
                 }
             }
         }

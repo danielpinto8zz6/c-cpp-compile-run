@@ -38,6 +38,10 @@ export class Configuration {
         return this.getSetting<boolean>("should-show-notifications") ?? true;
     }
 
+    static outputLocation(): string {
+        return this.getSetting<string>("output-location")?.trim();;
+    }
+
     static defaultWindowsShell(): string {
         return workspace.getConfiguration("terminal").get<string>("integrated.shell.windows")?.trim();
     }

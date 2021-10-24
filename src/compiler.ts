@@ -9,6 +9,7 @@ import { commandExists, isProccessRunning } from "./utils/common-utils";
 import { Result } from "./enums/result";
 import { isStringNullOrWhiteSpace } from "./utils/string-utils";
 import { Notification } from "./notification";
+import path = require("path");
 
 export class Compiler {
     private file: File;
@@ -50,7 +51,15 @@ export class Compiler {
             }
         }
 
-        let compilerArgs = [`"${this.file.name}"`, "-o", `"${this.file.executable}"`];
+        let compilerArgs;
+
+        let outputLocation = Configuration.outputLocation();
+        if (outputLocation) {
+            compilerArgs = [`"${this.file.name}"`, "-o", `"${outputLocation}${path.sep}${this.file.executable}"`];
+        } else {
+            compilerArgs = [`"${this.file.name}"`, "-o", `"${this.file.executable}"`];
+        }
+
         if (this.inputFlags) {
             compilerArgs = compilerArgs.concat(this.inputFlags.split(" "));
         }

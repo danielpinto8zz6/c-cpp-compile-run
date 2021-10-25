@@ -36,6 +36,7 @@ You can also set to save file before compiling.
 | c-cpp-compile-run.run-args | The run arguments |
 | c-cpp-compile-run.run-in-external-terminal | Whether should run in an external terminal |
 | c-cpp-compile-run.should-show-notifications | Whether should show notifications |
+| c-cpp-compile-run.output-location | Custom output location for the compiled file |
 
 ## Keybindings
 | Linux  | Windows | Mac | Description  |

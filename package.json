@@ -85,6 +85,23 @@
             }
         ],
         "menus": {
+            "editor/title/run": [
+                {
+					"command": "extension.CompileRun",
+					"when": "editorLangId ==  c",
+					"group": "navigation@0"
+				},
+				{
+					"command": "extension.CompileRun",
+					"when": "editorLangId ==  cpp",
+					"group": "navigation@0"
+				},
+                {
+					"command": "extension.CompileRun",
+					"when": "editorLangId ==  cc",
+					"group": "navigation@0"
+				}
+			],
             "commandPalette": [
                 {
                     "command": "extension.CompileRun",

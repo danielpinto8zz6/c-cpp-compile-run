@@ -57,7 +57,8 @@
         "commands": [
             {
                 "command": "extension.CompileRun",
-                "title": "CompileRun : Compile with default flags & Run with default arguments"
+                "title": "CompileRun : Compile with default flags & Run with default arguments",
+		"icon": "$(play)"
             },
             {
                 "command": "extension.CompileRunInExternalTerminal",

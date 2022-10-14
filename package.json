@@ -218,13 +218,13 @@
                 "c-cpp-compile-run.c-compiler": {
                     "type": "string",
                     "default": "gcc",
-                    "description": "The C compiler path (e.g: /usr/bin/gcc or C:\\MinGW\\bin\\gcc.exe)",
+                    "description": "The C compiler path (e.g: /usr/bin/gcc or C:\\TDM-GCC-64\\bin\\gcc.exe)",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.cpp-compiler": {
                     "type": "string",
                     "default": "g++",
-                    "description": "The Cpp compiler path (e.g: /usr/bin/g++ or C:\\MinGW\\bin\\g++.exe)",
+                    "description": "The Cpp compiler path (e.g: /usr/bin/g++ or C:\\TDM-GCC-64\\bin\\gcc.exe)",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.save-before-compile": {

@@ -16,7 +16,7 @@ Compile & Run C/C++ opened file directly from the command palette or by pressing
 ## Requirements
 
 * If you are on linux you must install gcc ([see instructions](docs/COMPILER_SETUP.md#Linux))
-* If you are on window you must install mingw ([see instructions](docs/COMPILER_SETUP.md#Windows))
+* If you are on window you must install tdm-gcc ([see instructions](docs/COMPILER_SETUP.md#Windows))
 * If you are on mac os you must install clang ([see instructions](docs/COMPILER_SETUP.md#MacOS))
 ## How to use
 Make sure you have .c or .cpp file open.
@@ -28,8 +28,8 @@ You can also set to save file before compiling.
 ## Configurations
 | Key | Description |
 | ------------ | ------------ |
-| c-cpp-compile-run.c-compiler | The C compiler path (e.g: /usr/bin/gcc or C:\\MinGW\\bin\\gcc.exe) |
-| c-cpp-compile-run.cpp-compiler | The Cpp compiler path (e.g: /usr/bin/g++ or C:\\MinGW\\bin\\g++.exe) |
+| c-cpp-compile-run.c-compiler | The C compiler path (e.g: /usr/bin/gcc or C:\\TDM-GCC-64\\bin\\gcc.exe) |
+| c-cpp-compile-run.cpp-compiler | The Cpp compiler path (e.g: /usr/bin/g++ C:\\TDM-GCC-64\\bin\\gcc.exe) |
 | c-cpp-compile-run.save-before-compile | Whether should save the file before compiling |
 | c-cpp-compile-run.c-flags | The C flags: e.g. -Wall. default: -Wall -Wextra |
 | c-cpp-compile-run.cpp-flags | The Cpp flags: e.g. -Wall. default: -Wall -Wextra |

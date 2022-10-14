@@ -6,7 +6,7 @@
     "publisher": "danielpinto8zz6",
     "icon": "resources/logo.png",
     "engines": {
-        "vscode": "^1.63.0"
+        "vscode": "^1.72.0"
     },
     "main": "./dist/extension.js",
     "categories": [

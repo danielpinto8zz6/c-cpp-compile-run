@@ -33,7 +33,7 @@ export class Compiler {
         }
 
         if (await isProccessRunning(this.file.executable)) {
-            Notification.showErrorMessage(`${this.file.executable} is already runing! Please close it first to compile successfully!`);
+            Notification.showErrorMessage(`${this.file.executable} is already running! Please close it first to compile successfully!`);
 
             return Result.error;
         }

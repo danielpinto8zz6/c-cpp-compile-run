@@ -58,8 +58,20 @@ export class Runner {
                 return `start cmd /c ".\\\"${this.file.executable}\" ${this.arguments} & echo. & pause"`;
 
             case "darwin":
-                return `osascript -e 'do shell script "open -a Terminal " & "${this.file.directory}"' -e 'delay 0.3' -e `
-                    + `'tell application "Terminal" to do script ("./" & "${this.file.executable}") in first window'`;
+                const osxTerminal: string = Configuration.osxTerminal();
+                switch (osxTerminal){
+                    case "iTerm.app":
+                        return "osascript -e 'tell application \"iTerm\"' "
+                        + "-e 'set newWindow to (create window with default profile)' "
+                        + "-e 'tell current session of newWindow' "
+                        + `-e 'write text "cd ${this.file.directory}"' `
+                        + `-e 'write text "./${this.file.executable}"' `
+                        + "-e 'end tell' "
+                        + "-e 'end tell' ";
+                    default:
+                        return `osascript -e 'do shell script "open -a Terminal " & "${this.file.directory}"' -e 'delay 0.3' -e `
+                         + `'tell application "Terminal" to do script ("./" & "${this.file.executable}") in first window'`;
+                }
 
             case "linux":
                 const linuxTerminal: string = Configuration.linuxTerminal();

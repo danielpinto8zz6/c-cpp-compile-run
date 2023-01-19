@@ -2,13 +2,13 @@
     "name": "c-cpp-compile-run",
     "displayName": "C/C++ Compile Run",
     "description": "Compile & Run single c/c++ files easly",
-    "version": "1.0.19",
+    "version": "1.0.20",
     "publisher": "danielpinto8zz6",
     "author": {
         "name": "Daniel Pinto",
         "email": "danielpinto@duck.com",
         "url": "https://danielpinto8zz6.github.io"
-      },
+    },
     "icon": "resources/logo.png",
     "engines": {
         "vscode": "^1.74.0"

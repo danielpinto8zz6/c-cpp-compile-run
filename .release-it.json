@@ -17,6 +17,6 @@
     "hooks": {
         "after:bump": "npx auto-changelog -p",
         "before:github:release": "npx vsce package",
-        "after:github:release": "npx vsce publish -p $VSCE_TOKEN"
+        "after:github:release": "npx vsce publish"
     }
 }

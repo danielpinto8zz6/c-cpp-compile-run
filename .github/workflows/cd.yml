@@ -35,10 +35,9 @@ jobs:
         id: publishToOpenVSX
         with:
           pat: ${{ secrets.OPEN_VSX_TOKEN }}
-          extensionFile: ./c-cpp-compile-run-*.vsix
       - name: Publish to Visual Studio Marketplace
         uses: HaaLeo/publish-vscode-extension@v1
         with:
           pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
           registryUrl: https://marketplace.visualstudio.com
-          extensionFile: ./c-cpp-compile-run-*.vsix
+          extensionFile: ${{ steps.publishToOpenVSX.outputs.vsixPath }}

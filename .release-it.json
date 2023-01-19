@@ -9,8 +9,7 @@
         "releaseName": "v${version}",
         "assets": [
             "c-cpp-compile-run-*.vsix"
-        ],
-        "requireBranch": "master"
+        ]
     },
     "npm": {
         "publish": false
@@ -18,6 +17,6 @@
     "hooks": {
         "after:bump": "npx auto-changelog -p",
         "before:github:release": "npx vsce package",
-        "after:github:release": "npx vsce publish"
+        "after:github:release": "npx vsce publish -p $VSCE_TOKEN"
     }
 }

@@ -3,8 +3,6 @@ name: Continuous deployment
 on:
   push:
     branches: [master]
-  pull_request:
-    branches: [master]
 
 jobs:
   build:
@@ -16,8 +14,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-          with:
-            ref: 'master'
+      - uses: peter-evans/create-pull-request@v3
+        with:
+          base: master
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:

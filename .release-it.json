@@ -10,7 +10,7 @@
         "assets": [
             "c-cpp-compile-run-*.vsix"
         ],
-        "releaseNotes": "npx auto-changelog --stdout -l false -u -p -t changelog-template.hbs --unreleased-only"
+        "releaseNotes": "npx auto-changelog --stdout -l false -u -p -t release-notes-template.hbs --unreleased-only"
     },
     "npm": {
         "publish": false

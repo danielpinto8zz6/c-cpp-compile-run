@@ -24,6 +24,7 @@ jobs:
       - shell: bash
         env:
           VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
+          RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           CI: true
         run: |
           npm ci

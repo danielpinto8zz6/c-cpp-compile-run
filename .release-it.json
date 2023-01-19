@@ -9,7 +9,8 @@
         "releaseName": "v${version}",
         "assets": [
             "c-cpp-compile-run-*.vsix"
-        ]
+        ],
+        "tokenRef": "RELEASE_TOKEN"
     },
     "npm": {
         "publish": false

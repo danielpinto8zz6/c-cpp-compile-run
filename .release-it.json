@@ -16,7 +16,6 @@
     },
     "hooks": {
         "after:bump": "npx auto-changelog -p",
-        "before:github:release": "npx @vscode/vsce package",
-        "after:github:release": "npx @vscode/vsce publish"
+        "before:github:release": "npx @vscode/vsce package"
     }
 }

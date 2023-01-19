@@ -1,7 +1,5 @@
 name: Continuous deployment
 
-name: 
-
 on:
   push:
     branches: [master]

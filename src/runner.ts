@@ -8,10 +8,10 @@ import { Result } from "./enums/result";
 import { isStringNullOrWhiteSpace } from "./utils/string-utils";
 import { Configuration } from "./configuration";
 import { Notification } from "./notification";
+import escape = require('escape-path-with-spaces');
 
 export class Runner {
     private file: File;
-    private arguments: string;
     private shouldAskForArgs: boolean;
 
     constructor(file: File, shouldAskForArgs = false) {
@@ -26,9 +26,9 @@ export class Runner {
             return Result.error;
         }
 
-        this.arguments = Configuration.runArgs();
+        let args = Configuration.runArgs();
         if (this.shouldAskForArgs) {
-            this.arguments = await promptRunArguments(this.arguments);
+            args = await promptRunArguments(args);
         }
 
         let outputLocation = Configuration.outputLocation();
@@ -36,8 +36,12 @@ export class Runner {
             outputLocation = this.file.directory;
         }
 
+        let customPrefix = Configuration.customRunPrefix();
+
+        const runCommand = this.buildRunCommand(this.file.executable, args, customPrefix);
+
         if (shouldRunInExternalTerminal) {
-            const command = await this.getExternalCommand();
+            const command = await this.getExternalCommand(runCommand);
             if (isStringNullOrWhiteSpace(command)) {
                 return Result.error;
             }
@@ -45,33 +49,32 @@ export class Runner {
             exec(command, { cwd: outputLocation });
         }
         else {
-            await terminal.runInTerminal(`${getRunPrefix()}"${this.file.executable}" ${this.arguments}`,
-                { name: "C/C++ Compile Run", cwd: outputLocation });
+            await terminal.runInTerminal(runCommand, { name: "C/C++ Compile Run", cwd: outputLocation });
         }
 
         return Result.success;
     }
 
-    private async getExternalCommand(): Promise<string> {
+    private async getExternalCommand(runCommand: string): Promise<string> {
         switch (process.platform) {
             case "win32":
-                return `start cmd /c ".\\\"${this.file.executable}\" ${this.arguments} & echo. & pause"`;
+                return `start cmd /c "${runCommand} & echo. & pause"`;
 
             case "darwin":
                 const osxTerminal: string = Configuration.osxTerminal();
-                switch (osxTerminal){
+                switch (osxTerminal) {
                     case "iTerm.app":
-                        return "osascript -e 'tell application \"iTerm\"' "
-                        + "-e 'set newWindow to (create window with default profile)' "
-                        + "-e 'tell current session of newWindow' "
-                        + `-e 'write text "cd ${this.file.directory}"' `
-                        + `-e 'write text "./${this.file.executable}"' `
-                        + "-e 'end tell' "
-                        + "-e 'end tell' ";
+                        return "osascript -e 'tell application \"iTerm\"'"
+                            + "-e 'set newWindow to (create window with default profile)'"
+                            + "-e 'tell current session of newWindow'"
+                            + `-e 'write text "cd ${this.file.directory}"'`
+                            + `-e 'write text "${runCommand}"'`
+                            + "-e 'end tell'"
+                            + "-e 'end tell'";
                     default:
                         return `osascript -e 'do shell script "open -a Terminal " & "${this.file.directory}"' -e 'delay 0.3' -e `
-                         + `'tell application "Terminal" to do script ("./" & "${this.file.executable}") in first window'`;
-                }
+                        + `'tell application "Terminal" to do script ("${runCommand}") in first window'`;
+                    }
 
             case "linux":
                 const linuxTerminal: string = Configuration.linuxTerminal();
@@ -86,21 +89,20 @@ export class Runner {
 
                 switch (linuxTerminal) {
                     case "xterm":
-                        return `${linuxTerminal} -T ${this.file.title} -e './"${this.file.executable}" ${this.arguments}; `
+                        return `${linuxTerminal} -T ${this.file.title} -e '${runCommand}'`
                             + "echo; read -n1 -p \"Press any key to continue...\"'";
                     case "gnome-terminal":
                     case "tilix":
                     case "mate-terminal":
-                        return `${linuxTerminal} -t ${this.file.title} -x bash -c './"${this.file.executable}" ${this.arguments}; `
+                        return `${linuxTerminal} -t ${this.file.title} -x bash -c '${runCommand}'`
                             + "echo; read -n1 -p \"Press any key to continue...\"'";
                     case "xfce4-terminal":
-                        return `${linuxTerminal} --title ${this.file.title} -x bash -c './"${this.file.executable}" ${this.arguments}; `
+                        return `${linuxTerminal} --title ${this.file.title} -x bash -c '${runCommand}'`
                             + "read -n1 -p \"Press any key to continue...\"'";
                     case "konsole":
-                        return `${linuxTerminal} -p tabtitle='${this.file.title}' --noclose -e bash -c './"${this.file.executable}" `
-                            + `${this.arguments}'`;
+                        return `${linuxTerminal} -p tabtitle='${this.file.title}' --noclose -e bash -c '${runCommand}'`;
                     case "io.elementary.terminal":
-                        return `${linuxTerminal} -e './"${this.file.executable}" ${this.arguments}'`;
+                        return `${linuxTerminal} -e '${runCommand}'`;
                     default:
                         Notification.showErrorMessage(`${linuxTerminal} isn't supported! Try to enter a supported terminal in `
                             + "'terminal.external.linuxExec' settings! (gnome-terminal, xterm, konsole)");
@@ -112,5 +114,12 @@ export class Runner {
 
                 return null;
         }
+    }
+
+    buildRunCommand(executable: string, args: string, customPrefix: string) {
+        if (customPrefix)
+            return `${customPrefix} ${getRunPrefix()}${escape(executable)} ${args}`.trim();
+
+        return `${getRunPrefix()}${(''+executable).replace(/(?=["\\])/g, '\\')} ${args}`.trim();
     }
 }

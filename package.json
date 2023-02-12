@@ -302,7 +302,7 @@
         "eslint": "^8.32.0",
         "git-cz": "^4.9.0",
         "glob": "^8.1.0",
-        "gulp": "^4.0.2",
+        "gulp": "^3.9.1",
         "mocha": "^10.2.0",
         "release-it": "^15.6.0",
         "ts-loader": "^9.4.2",
@@ -313,7 +313,6 @@
     },
     "dependencies": {
         "@types/fs-extra": "^11.0.1",
-        "escape-path-with-spaces": "^1.0.2",
         "find-process": "^1.4.7",
         "fs-extra": "^11.1.0",
         "lookpath": "^1.2.2"

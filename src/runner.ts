@@ -8,7 +8,6 @@ import { Result } from "./enums/result";
 import { isStringNullOrWhiteSpace } from "./utils/string-utils";
 import { Configuration } from "./configuration";
 import { Notification } from "./notification";
-import escape = require('escape-path-with-spaces');
 
 export class Runner {
     private file: File;
@@ -73,8 +72,8 @@ export class Runner {
                             + "-e 'end tell'";
                     default:
                         return `osascript -e 'do shell script "open -a Terminal " & "${this.file.directory}"' -e 'delay 0.3' -e `
-                        + `'tell application "Terminal" to do script ("${runCommand}") in first window'`;
-                    }
+                            + `'tell application "Terminal" to do script ("${runCommand}") in first window'`;
+                }
 
             case "linux":
                 const linuxTerminal: string = Configuration.linuxTerminal();
@@ -89,20 +88,17 @@ export class Runner {
 
                 switch (linuxTerminal) {
                     case "xterm":
-                        return `${linuxTerminal} -T ${this.file.title} -e '${runCommand}'`
-                            + "echo; read -n1 -p \"Press any key to continue...\"'";
+                        return `${linuxTerminal} -T '${this.file.title}' -e '${runCommand}; echo; read -n1 -p \"Press any key to continue...\"'`;
                     case "gnome-terminal":
                     case "tilix":
                     case "mate-terminal":
-                        return `${linuxTerminal} -t ${this.file.title} -x bash -c '${runCommand}'`
-                            + "echo; read -n1 -p \"Press any key to continue...\"'";
+                        return `${linuxTerminal} -t '${this.file.title}' -x bash -c '${runCommand}; echo; read -n1 -p \"Press any key to continue...\"'`;
                     case "xfce4-terminal":
-                        return `${linuxTerminal} --title ${this.file.title} -x bash -c '${runCommand}'`
-                            + "read -n1 -p \"Press any key to continue...\"'";
+                        return `${linuxTerminal} --title '${this.file.title}' -x bash -c '${runCommand}; echo; read -n1 -p \"Press any key to continue...\"'`;
                     case "konsole":
-                        return `${linuxTerminal} -p tabtitle='${this.file.title}' --noclose -e bash -c '${runCommand}'`;
+                        return `${linuxTerminal} -p tabtitle='${this.file.title}' --noclose -e bash -c '${runCommand}; echo;'`;
                     case "io.elementary.terminal":
-                        return `${linuxTerminal} -e '${runCommand}'`;
+                        return `${linuxTerminal} -n -w '${this.file.directory}' -x '${runCommand}'`;
                     default:
                         Notification.showErrorMessage(`${linuxTerminal} isn't supported! Try to enter a supported terminal in `
                             + "'terminal.external.linuxExec' settings! (gnome-terminal, xterm, konsole)");
@@ -117,9 +113,10 @@ export class Runner {
     }
 
     buildRunCommand(executable: string, args: string, customPrefix: string) {
-        if (customPrefix)
-            return `${customPrefix} ${getRunPrefix()}${escape(executable)} ${args}`.trim();
+        if (customPrefix) {
+            return `${customPrefix} ${getRunPrefix()}\"${executable}\" ${args}`.trim();
+        }
 
-        return `${getRunPrefix()}${(''+executable).replace(/(?=["\\])/g, '\\')} ${args}`.trim();
+        return `${getRunPrefix()}\"${executable}\" ${args}`.trim();
     }
 }

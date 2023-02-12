@@ -39,7 +39,7 @@ export class Configuration {
     }
 
     static outputLocation(): string {
-        return this.getSetting<string>("output-location")?.trim();;
+        return this.getSetting<string>("output-location")?.trim();
     }
 
     static defaultWindowsShell(): string {

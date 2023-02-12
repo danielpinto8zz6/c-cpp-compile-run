@@ -8,6 +8,7 @@ import { Result } from "./enums/result";
 import { isStringNullOrWhiteSpace } from "./utils/string-utils";
 import { Configuration } from "./configuration";
 import { Notification } from "./notification";
+import path = require("path");
 
 export class Runner {
     private file: File;
@@ -33,7 +34,7 @@ export class Runner {
 
         let outputLocation = Configuration.outputLocation();
         if (!outputLocation) {
-            outputLocation = this.file.directory;
+            outputLocation = path.join(this.file.directory, "output");
         }
 
         if (shouldRunInExternalTerminal) {

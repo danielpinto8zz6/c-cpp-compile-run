@@ -18,6 +18,8 @@
         "quotes": ["error", "double"]
     },
     "ignorePatterns": [
+        "out",
+        "dist",
         "**/*.d.ts"
     ]
 }

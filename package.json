@@ -11,7 +11,7 @@
     },
     "icon": "resources/logo.png",
     "engines": {
-        "vscode": "^1.74.0"
+        "vscode": "^1.75.0"
     },
     "main": "./dist/extension.js",
     "categories": [
@@ -34,15 +34,6 @@
         "type": "git",
         "url": "https://github.com/danielpinto8zz6/c-cpp-compile-run.git"
     },
-    "activationEvents": [
-        "onCommand:extension.CompileRun",
-        "onCommand:extension.CompileRunInExternalTerminal",
-        "onCommand:extension.CustomCompileRun",
-        "onCommand:extension.Compile",
-        "onCommand:extension.Run",
-        "onCommand:extension.CustomCompile",
-        "onCommand:extension.CustomRun"
-    ],
     "contributes": {
         "languages": [
             {
@@ -285,28 +276,29 @@
         "compile": "webpack",
         "watch": "webpack --watch",
         "package": "webpack --mode production --devtool hidden-source-map",
-        "test-compile": "tsc -p ./",
-        "test-watch": "tsc -watch -p ./",
-        "pretest": "npm run test-compile && npm run lint",
+        "compile-tests": "tsc -p . --outDir out",
+        "watch-tests": "tsc -p . -w --outDir out",
+        "pretest": "npm run compile-tests && npm run compile && npm run lint",
         "lint": "eslint src --ext ts",
         "test": "node ./out/test/runTest.js",
         "release": "release-it --disable-metrics --ci"
     },
     "devDependencies": {
-        "@types/glob": "^8.0.0",
+        "@types/glob": "^8.0.1",
         "@types/mocha": "^10.0.1",
-        "@types/node": "^18.11.18",
-        "@types/vscode": "^1.74.0",
-        "@typescript-eslint/eslint-plugin": "^5.48.2",
-        "@typescript-eslint/parser": "^5.48.2",
-        "eslint": "^8.32.0",
+        "@types/node": "^18.13.0",
+        "@types/vscode": "^1.75.0",
+        "@typescript-eslint/eslint-plugin": "^5.52.0",
+        "@typescript-eslint/parser": "^5.52.0",
+        "@vscode/test-electron": "^2.2.3",
+        "eslint": "^8.34.0",
         "git-cz": "^4.9.0",
         "glob": "^8.1.0",
-        "gulp": "^3.9.1",
+        "gulp": "^4.0.2",
         "mocha": "^10.2.0",
         "release-it": "^15.6.0",
         "ts-loader": "^9.4.2",
-        "typescript": "^4.9.4",
+        "typescript": "^4.9.5",
         "vscode-test": "^1.6.1",
         "webpack": "^5.75.0",
         "webpack-cli": "^5.0.1"

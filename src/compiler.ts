@@ -1,9 +1,7 @@
-import { spawnSync } from "child_process";
-import { ProcessExecution, Task, TaskGroup, tasks, TaskScope, window } from "vscode";
+import { ProcessExecution, Task, tasks, TaskScope, window } from "vscode";
 import { Configuration } from "./configuration";
 import { FileType } from "./enums/file-type";
 import { File } from "./models/file";
-import { outputChannel } from "./output-channel";
 import { promptCompiler, promptFlags } from "./utils/prompt-utils";
 import { commandExists, isProccessRunning } from "./utils/common-utils";
 import { Result } from "./enums/result";
@@ -67,7 +65,7 @@ export class Compiler {
             compilerArgs = compilerArgs.concat(this.inputFlags.split(" "));
         }
 
-        let execution = new ProcessExecution(
+        let processExecution = new ProcessExecution(
             this.compiler,
             compilerArgs,
             { cwd: this.file.directory }
@@ -84,25 +82,23 @@ export class Compiler {
             TaskScope.Workspace,
             "C/C++ Compile Run: Compile",
             "C/C++ Compile Run",
-            execution,
+            processExecution,
             problemMatcher
         );
 
-        await tasks.executeTask(task);
+        var execution = await tasks.executeTask(task);
 
         tasks.onDidEndTaskProcess(async e => {
-            outputChannel.appendLine(`${e.execution.task.name}: ${e.exitCode}`);
+            if (e.execution === execution) {
+                if (e.exitCode === 0) {
+                    Notification.showInformationMessage("Compiled successfully!");
 
-            if (e.exitCode === 0) {
-                Notification.showInformationMessage("Compiled successfully!");
-
-                if (runCallback){
-                    await runCallback();
+                    if (runCallback) {
+                        await runCallback();
+                    }
+                } else {
+                    Notification.showErrorMessage("Error compiling!");
                 }
-            } else {
-                outputChannel.show();
-
-                Notification.showErrorMessage("Error compiling!");
             }
         });
     }

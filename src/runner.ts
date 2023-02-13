@@ -5,7 +5,7 @@ import { File } from "./models/file";
 import { terminal, getRunPrefix } from "./terminal";
 import { promptRunArguments } from "./utils/prompt-utils";
 import { Result } from "./enums/result";
-import { isStringNullOrWhiteSpace } from "./utils/string-utils";
+import { escapeStringAppleScript, isStringNullOrWhiteSpace } from "./utils/string-utils";
 import { Configuration } from "./configuration";
 import { Notification } from "./notification";
 
@@ -63,16 +63,16 @@ export class Runner {
                 const osxTerminal: string = Configuration.osxTerminal();
                 switch (osxTerminal) {
                     case "iTerm.app":
-                        return "osascript -e 'tell application \"iTerm\"'"
-                            + "-e 'set newWindow to (create window with default profile)'"
-                            + "-e 'tell current session of newWindow'"
-                            + `-e 'write text "cd ${this.file.directory}"'`
-                            + `-e 'write text "${runCommand}"'`
-                            + "-e 'end tell'"
-                            + "-e 'end tell'";
+                        return "osascript -e 'tell application \"iTerm\"' "
+                            + "-e 'set newWindow to (create window with default profile)' "
+                            + "-e 'tell current session of newWindow' "
+                            + `-e 'write text "cd ${this.file.directory}"' `
+                            + `-e 'write text "${escapeStringAppleScript(runCommand)}"' `
+                            + "-e 'end tell' "
+                            + "-e 'end tell' ";
                     default:
                         return `osascript -e 'do shell script "open -a Terminal " & "${this.file.directory}"' -e 'delay 0.3' -e `
-                            + `'tell application "Terminal" to do script ("${runCommand}") in first window'`;
+                        + `'tell application "Terminal" to do script ("${escapeStringAppleScript(runCommand)}") in first window'`;
                 }
 
             case "linux":
@@ -114,7 +114,7 @@ export class Runner {
 
     buildRunCommand(executable: string, args: string, customPrefix: string) {
         if (customPrefix) {
-            return `${customPrefix} ${getRunPrefix()}\"${executable}\" ${args}`.trim();
+            return `${customPrefix} ${getRunPrefix()}"${executable}" ${args}`.trim();
         }
 
         return `${getRunPrefix()}\"${executable}\" ${args}`.trim();

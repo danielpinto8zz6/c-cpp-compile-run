@@ -41,7 +41,7 @@ export class Runner {
         const runCommand = this.buildRunCommand(this.file.executable, args, customPrefix);
 
         if (shouldRunInExternalTerminal) {
-            const command = await this.getExternalCommand(runCommand);
+            const command = await this.getExternalCommand(runCommand, outputLocation);
             if (isStringNullOrWhiteSpace(command)) {
                 return Result.error;
             }
@@ -55,7 +55,7 @@ export class Runner {
         return Result.success;
     }
 
-    private async getExternalCommand(runCommand: string): Promise<string> {
+    private async getExternalCommand(runCommand: string, outputLocation: string): Promise<string> {
         switch (process.platform) {
             case "win32":
                 return `start cmd /c "${runCommand} & echo. & pause"`;
@@ -67,12 +67,12 @@ export class Runner {
                         return "osascript -e 'tell application \"iTerm\"' "
                             + "-e 'set newWindow to (create window with default profile)' "
                             + "-e 'tell current session of newWindow' "
-                            + `-e 'write text "cd ${this.file.directory}"' `
+                            + `-e 'write text "cd ${outputLocation}"' `
                             + `-e 'write text "${escapeStringAppleScript(runCommand)}"' `
                             + "-e 'end tell' "
                             + "-e 'end tell' ";
                     default:
-                        return `osascript -e 'do shell script "open -a Terminal " & "${this.file.directory}"' -e 'delay 0.3' -e `
+                        return `osascript -e 'do shell script "open -a Terminal " & "${outputLocation}"' -e 'delay 0.3' -e `
                         + `'tell application "Terminal" to do script ("${escapeStringAppleScript(runCommand)}") in first window'`;
                 }
 
@@ -99,7 +99,7 @@ export class Runner {
                     case "konsole":
                         return `${linuxTerminal} -p tabtitle='${this.file.title}' --noclose -e bash -c '${runCommand}; echo;'`;
                     case "io.elementary.terminal":
-                        return `${linuxTerminal} -n -w '${this.file.directory}' -x '${runCommand}'`;
+                        return `${linuxTerminal} -n -w '${outputLocation}' -x '${runCommand}'`;
                     default:
                         Notification.showErrorMessage(`${linuxTerminal} isn't supported! Try to enter a supported terminal in `
                             + "'terminal.external.linuxExec' settings! (gnome-terminal, xterm, konsole)");

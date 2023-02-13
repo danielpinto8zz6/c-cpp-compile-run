@@ -271,6 +271,11 @@
                     "type": "string",
                     "description": "Where output file should be located",
                     "scope": "resource"
+                },
+                "c-cpp-compile-run.custom-run-prefix": {
+                    "type": "string",
+                    "description": "Prefix command before run (e.g: valgrind ./foobar)",
+                    "scope": "resource"
                 }
             }
         }
@@ -297,7 +302,7 @@
         "eslint": "^8.32.0",
         "git-cz": "^4.9.0",
         "glob": "^8.1.0",
-        "gulp": "^4.0.2",
+        "gulp": "^3.9.1",
         "mocha": "^10.2.0",
         "release-it": "^15.6.0",
         "ts-loader": "^9.4.2",

@@ -54,6 +54,10 @@ export class Configuration {
         return workspace.getConfiguration().get<string>("terminal.external.osxExec");
     }
 
+    static customRunPrefix(): string {
+        return this.getSetting<string>("custom-run-prefix");
+    }
+
     static async setCompiler(compiler: string, type: FileType) {
         const key = type === FileType.c ? "c-compiler" : "cpp-compiler";
         await workspace.getConfiguration("c-cpp-compile-run", null).update(key, compiler, ConfigurationTarget.Global);

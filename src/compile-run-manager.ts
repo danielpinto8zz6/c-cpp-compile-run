@@ -38,10 +38,7 @@ export class CompileRunManager {
 
         const runner = new Runner(file, shouldAskForArgs);
 
-        const compileResult = await compiler.compile();
-        if (compileResult === Result.success) {
-            await runner.run(shouldRunInExternalTerminal);
-        }
+        await compiler.compile(async () => await runner.run(shouldRunInExternalTerminal));
     }
 
     public async getFile(): Promise<File> {

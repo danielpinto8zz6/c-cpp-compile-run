@@ -39,7 +39,7 @@ export class Configuration {
     }
 
     static outputLocation(): string {
-        return this.getSetting<string>("output-location")?.trim();;
+        return this.getSetting<string>("output-location")?.trim();
     }
 
     static defaultWindowsShell(): string {
@@ -52,6 +52,14 @@ export class Configuration {
 
     static osxTerminal(): string {
         return workspace.getConfiguration().get<string>("terminal.external.osxExec");
+    }
+
+    static winTerminal(): string {
+        return workspace.getConfiguration().get<string>("terminal.external.windowsExec");
+    }
+
+    static customRunPrefix(): string {
+        return this.getSetting<string>("custom-run-prefix");
     }
 
     static async setCompiler(compiler: string, type: FileType) {

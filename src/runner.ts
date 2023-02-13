@@ -4,14 +4,13 @@ import { lookpath } from "lookpath";
 import { File } from "./models/file";
 import { terminal, getRunPrefix } from "./terminal";
 import { promptRunArguments } from "./utils/prompt-utils";
-import { Result } from "./enums/result";
-import { isStringNullOrWhiteSpace } from "./utils/string-utils";
+import { escapeStringAppleScript, isStringNullOrWhiteSpace } from "./utils/string-utils";
 import { Configuration } from "./configuration";
 import { Notification } from "./notification";
+import path = require("path");
 
 export class Runner {
     private file: File;
-    private arguments: string;
     private shouldAskForArgs: boolean;
 
     constructor(file: File, shouldAskForArgs = false) {
@@ -19,58 +18,66 @@ export class Runner {
         this.shouldAskForArgs = shouldAskForArgs;
     }
 
-    async run(shouldRunInExternalTerminal = false): Promise<Result> {
+    async run(shouldRunInExternalTerminal = false): Promise<void> {
         if (!existsSync(this.file.path)) {
             Notification.showErrorMessage(`"${this.file.path}" doesn't exists!`);
 
-            return Result.error;
+            return;
         }
 
-        this.arguments = Configuration.runArgs();
+        let args = Configuration.runArgs();
         if (this.shouldAskForArgs) {
-            this.arguments = await promptRunArguments(this.arguments);
+            args = await promptRunArguments(args);
         }
 
         let outputLocation = Configuration.outputLocation();
         if (!outputLocation) {
-            outputLocation = this.file.directory;
+            outputLocation = path.join(this.file.directory, "output");
         }
 
+        let customPrefix = Configuration.customRunPrefix();
+
+        const runCommand = this.buildRunCommand(this.file.executable, args, customPrefix);
+
         if (shouldRunInExternalTerminal) {
-            const command = await this.getExternalCommand();
+            const command = await this.getExternalCommand(runCommand, outputLocation);
             if (isStringNullOrWhiteSpace(command)) {
-                return Result.error;
+                return;
             }
 
             exec(command, { cwd: outputLocation });
         }
         else {
-            await terminal.runInTerminal(`${getRunPrefix()}"${this.file.executable}" ${this.arguments}`,
-                { name: "C/C++ Compile Run", cwd: outputLocation });
+            await terminal.runInTerminal(runCommand, { name: "C/C++ Compile Run", cwd: outputLocation });
         }
-
-        return Result.success;
     }
 
-    private async getExternalCommand(): Promise<string> {
+    private async getExternalCommand(runCommand: string, outputLocation: string): Promise<string> {
         switch (process.platform) {
             case "win32":
-                return `start cmd /c ".\\\"${this.file.executable}\" ${this.arguments} & echo. & pause"`;
+                const winTerminal: string = Configuration.winTerminal();
+                switch (winTerminal) {
+                    case "pwsh.exe":
+                    case "powershell.exe":
+                        return `start ${winTerminal} -Command "Set-Location ${outputLocation};${runCommand};Write-Host;Write-Host -NoNewLine 'Press any key to continue...';$Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');"`;
+                    default:
+                        return `start cmd /c "cd "${outputLocation}" & ${runCommand} & echo. & pause"`;
+                }
 
             case "darwin":
                 const osxTerminal: string = Configuration.osxTerminal();
-                switch (osxTerminal){
+                switch (osxTerminal) {
                     case "iTerm.app":
                         return "osascript -e 'tell application \"iTerm\"' "
-                        + "-e 'set newWindow to (create window with default profile)' "
-                        + "-e 'tell current session of newWindow' "
-                        + `-e 'write text "cd ${this.file.directory}"' `
-                        + `-e 'write text "./${this.file.executable}"' `
-                        + "-e 'end tell' "
-                        + "-e 'end tell' ";
+                            + "-e 'set newWindow to (create window with default profile)' "
+                            + "-e 'tell current session of newWindow' "
+                            + `-e 'write text "cd ${outputLocation}"' `
+                            + `-e 'write text "${escapeStringAppleScript(runCommand)}"' `
+                            + "-e 'end tell' "
+                            + "-e 'end tell' ";
                     default:
-                        return `osascript -e 'do shell script "open -a Terminal " & "${this.file.directory}"' -e 'delay 0.3' -e `
-                         + `'tell application "Terminal" to do script ("./" & "${this.file.executable}") in first window'`;
+                        return `osascript -e 'do shell script "open -a Terminal " & "${outputLocation}"' -e 'delay 0.3' -e `
+                            + `'tell application "Terminal" to do script ("${escapeStringAppleScript(runCommand)}") in first window'`;
                 }
 
             case "linux":
@@ -86,21 +93,17 @@ export class Runner {
 
                 switch (linuxTerminal) {
                     case "xterm":
-                        return `${linuxTerminal} -T ${this.file.title} -e './"${this.file.executable}" ${this.arguments}; `
-                            + "echo; read -n1 -p \"Press any key to continue...\"'";
+                        return `${linuxTerminal} -T '${this.file.title}' -e '${runCommand}; echo; read -n1 -p \"Press any key to continue...\"'`;
                     case "gnome-terminal":
                     case "tilix":
                     case "mate-terminal":
-                        return `${linuxTerminal} -t ${this.file.title} -x bash -c './"${this.file.executable}" ${this.arguments}; `
-                            + "echo; read -n1 -p \"Press any key to continue...\"'";
+                        return `${linuxTerminal} -t '${this.file.title}' -x bash -c '${runCommand}; echo; read -n1 -p \"Press any key to continue...\"'`;
                     case "xfce4-terminal":
-                        return `${linuxTerminal} --title ${this.file.title} -x bash -c './"${this.file.executable}" ${this.arguments}; `
-                            + "read -n1 -p \"Press any key to continue...\"'";
+                        return `${linuxTerminal} --title '${this.file.title}' -x bash -c '${runCommand}; echo; read -n1 -p \"Press any key to continue...\"'`;
                     case "konsole":
-                        return `${linuxTerminal} -p tabtitle='${this.file.title}' --noclose -e bash -c './"${this.file.executable}" `
-                            + `${this.arguments}'`;
+                        return `${linuxTerminal} -p tabtitle='${this.file.title}' --noclose -e bash -c '${runCommand}; echo;'`;
                     case "io.elementary.terminal":
-                        return `${linuxTerminal} -e './"${this.file.executable}" ${this.arguments}'`;
+                        return `${linuxTerminal} -n -w '${outputLocation}' -x '${runCommand}'`;
                     default:
                         Notification.showErrorMessage(`${linuxTerminal} isn't supported! Try to enter a supported terminal in `
                             + "'terminal.external.linuxExec' settings! (gnome-terminal, xterm, konsole)");
@@ -112,5 +115,13 @@ export class Runner {
 
                 return null;
         }
+    }
+
+    buildRunCommand(executable: string, args: string, customPrefix: string) {
+        if (customPrefix) {
+            return `${customPrefix} ${getRunPrefix()}"${executable}" ${args}`.trim();
+        }
+
+        return `${getRunPrefix()}\"${executable}\" ${args}`.trim();
     }
 }

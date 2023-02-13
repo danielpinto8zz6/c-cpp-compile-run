@@ -1,14 +1,13 @@
-import { spawnSync } from "child_process";
-import { window } from "vscode";
+import { ProcessExecution, Task, tasks, TaskScope, window } from "vscode";
 import { Configuration } from "./configuration";
 import { FileType } from "./enums/file-type";
 import { File } from "./models/file";
-import { outputChannel } from "./output-channel";
 import { promptCompiler, promptFlags } from "./utils/prompt-utils";
 import { commandExists, isProccessRunning } from "./utils/common-utils";
 import { Result } from "./enums/result";
 import { isStringNullOrWhiteSpace } from "./utils/string-utils";
 import { Notification } from "./notification";
+import * as fse from "fs-extra";
 import path = require("path");
 
 export class Compiler {
@@ -22,10 +21,10 @@ export class Compiler {
         this.shouldAskForInputFlags = shouldAskForInputFlags;
     }
 
-    async compile(): Promise<Result> {
+    async compile(runCallback: () => Promise<void> = null): Promise<void> {
         const setCompilerResult = this.setCompiler();
         if (setCompilerResult === Result.error) {
-            return Result.error;
+            return;
         }
 
         if (Configuration.saveBeforeCompile()) {
@@ -35,13 +34,13 @@ export class Compiler {
         if (await isProccessRunning(this.file.executable)) {
             Notification.showErrorMessage(`${this.file.executable} is already running! Please close it first to compile successfully!`);
 
-            return Result.error;
+            return;
         }
 
         if (!this.isCompilerValid(this.compiler)) {
             await this.compilerNotFound();
 
-            return Result.error;
+            return;
         }
 
         if (this.shouldAskForInputFlags) {
@@ -51,36 +50,57 @@ export class Compiler {
             }
         }
 
-        let compilerArgs;
-
         let outputLocation = Configuration.outputLocation();
-        if (outputLocation) {
-            compilerArgs = [`"${this.file.name}"`, "-o", `"${outputLocation}${path.sep}${this.file.executable}"`];
-        } else {
-            compilerArgs = [`"${this.file.name}"`, "-o", `"${this.file.executable}"`];
+        if (!outputLocation) {
+            outputLocation = path.join(this.file.directory, "output");
         }
+
+        if (!fse.existsSync(outputLocation)) {
+            fse.mkdirSync(outputLocation);
+        }
+
+        let compilerArgs = [this.file.name, "-o", path.join(outputLocation, this.file.executable)];
 
         if (this.inputFlags) {
             compilerArgs = compilerArgs.concat(this.inputFlags.split(" "));
         }
 
-        const proccess = spawnSync(`"${this.compiler}"`, compilerArgs, { cwd: this.file.directory, shell: true, encoding: "utf-8" });
+        let processExecution = new ProcessExecution(
+            this.compiler,
+            compilerArgs,
+            { cwd: this.file.directory }
+        );
 
-        if (proccess.output.length > 0) {
-            outputChannel.appendLine(proccess.output.toLocaleString(), this.file.name);
-        }
+        const definition = {
+            type: "Compile"
+        };
 
-        if (proccess.status === 0) {
-            Notification.showInformationMessage("Compiled successfully!");
-        } else {
-            outputChannel.show();
+        const problemMatcher = ["$gcc"];
 
-            Notification.showErrorMessage("Error compiling!");
+        const task = new Task(
+            definition,
+            TaskScope.Workspace,
+            "C/C++ Compile Run: Compile",
+            "C/C++ Compile Run",
+            processExecution,
+            problemMatcher
+        );
 
-            return Result.error;
-        }
+        var execution = await tasks.executeTask(task);
 
-        return Result.success;
+        tasks.onDidEndTaskProcess(async e => {
+            if (e.execution === execution) {
+                if (e.exitCode === 0) {
+                    Notification.showInformationMessage("Compiled successfully!");
+
+                    if (runCallback) {
+                        await runCallback();
+                    }
+                } else {
+                    Notification.showErrorMessage("Error compiling!");
+                }
+            }
+        });
     }
 
     setCompiler(): Result {

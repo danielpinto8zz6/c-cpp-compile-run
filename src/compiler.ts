@@ -77,7 +77,7 @@ export class Compiler {
             type: "Compile"
         };
 
-        const problemMatcher = ['$gcc'];
+        const problemMatcher = ["$gcc"];
 
         const task = new Task(
             definition,

@@ -54,6 +54,10 @@ export class Configuration {
         return workspace.getConfiguration().get<string>("terminal.external.osxExec");
     }
 
+    static winTerminal(): string {
+        return workspace.getConfiguration().get<string>("terminal.external.windowsExec");
+    }
+
     static customRunPrefix(): string {
         return this.getSetting<string>("custom-run-prefix");
     }

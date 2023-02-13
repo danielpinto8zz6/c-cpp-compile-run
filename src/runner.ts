@@ -58,7 +58,14 @@ export class Runner {
     private async getExternalCommand(runCommand: string, outputLocation: string): Promise<string> {
         switch (process.platform) {
             case "win32":
-                return `start cmd /c "${runCommand} & echo. & pause"`;
+                const winTerminal: string = Configuration.winTerminal();
+                switch (winTerminal) {
+                    case "pwsh.exe":
+                    case "powershell.exe":
+                        return `start ${winTerminal} -Command "Set-Location ${outputLocation};${runCommand};Write-Host;Write-Host -NoNewLine 'Press any key to continue...';$Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');"`;
+                    default:
+                        return `start cmd /c "cd "${outputLocation}" & ${runCommand} & echo. & pause"`;
+                }
 
             case "darwin":
                 const osxTerminal: string = Configuration.osxTerminal();
@@ -73,7 +80,7 @@ export class Runner {
                             + "-e 'end tell' ";
                     default:
                         return `osascript -e 'do shell script "open -a Terminal " & "${outputLocation}"' -e 'delay 0.3' -e `
-                        + `'tell application "Terminal" to do script ("${escapeStringAppleScript(runCommand)}") in first window'`;
+                            + `'tell application "Terminal" to do script ("${escapeStringAppleScript(runCommand)}") in first window'`;
                 }
 
             case "linux":

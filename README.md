@@ -4,10 +4,12 @@
 <a href="https://www.buymeacoffee.com/danielpinto8zz6" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 [![Support via PayPal](resources/paypal-donate-button.png)](https://www.paypal.me/danielpinto8zz6/)
 
-[![Marketplace Version](https://vsmarketplacebadges.dev/version-short/danielpinto8zz6.c-cpp-compile-run.png)](https://marketplace.visualstudio.com/items?itemName=danielpinto8zz6.c-cpp-compile-run)
-[![Downloads](https://vsmarketplacebadges.dev/downloads-short/danielpinto8zz6.c-cpp-compile-run.png)](https://marketplace.visualstudio.com/items?itemName=danielpinto8zz6.c-cpp-compile-run)
-[![Rating](https://vsmarketplacebadges.dev/rating-short/danielpinto8zz6.c-cpp-compile-run.png)](https://marketplace.visualstudio.com/items?itemName=danielpinto8zz6.c-cpp-compile-run)
-
+![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/danielpinto8zz6.c-cpp-compile-run)
+![Visual Studio Marketplace Downloads](https://img.shields.io/visual-studio-marketplace/d/danielpinto8zz6.c-cpp-compile-run)
+![Visual Studio Marketplace Rating](https://img.shields.io/visual-studio-marketplace/r/danielpinto8zz6.c-cpp-compile-run)
+![Open VSX Version](https://img.shields.io/open-vsx/v/danielpinto8zz6/c-cpp-compile-run)
+![Open VSX Downloads](https://img.shields.io/open-vsx/dt/danielpinto8zz6/c-cpp-compile-run)
+![Open VSX Rating](https://img.shields.io/open-vsx/rating/danielpinto8zz6/c-cpp-compile-run)
 
 An extension running on [Visual Studio Code](https://code.visualstudio.com) to **Compile & Run** single c/c++ files easily
 

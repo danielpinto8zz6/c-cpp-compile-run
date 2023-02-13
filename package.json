@@ -34,6 +34,15 @@
         "type": "git",
         "url": "https://github.com/danielpinto8zz6/c-cpp-compile-run.git"
     },
+    "activationEvents": [
+        "onCommand:extension.CompileRun",
+        "onCommand:extension.CompileRunInExternalTerminal",
+        "onCommand:extension.CustomCompileRun",
+        "onCommand:extension.Compile",
+        "onCommand:extension.Run",
+        "onCommand:extension.CustomCompile",
+        "onCommand:extension.CustomRun"
+    ],
     "contributes": {
         "languages": [
             {

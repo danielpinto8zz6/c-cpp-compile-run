@@ -4,7 +4,6 @@ import { lookpath } from "lookpath";
 import { File } from "./models/file";
 import { terminal, getRunPrefix } from "./terminal";
 import { promptRunArguments } from "./utils/prompt-utils";
-import { Result } from "./enums/result";
 import { escapeStringAppleScript, isStringNullOrWhiteSpace } from "./utils/string-utils";
 import { Configuration } from "./configuration";
 import { Notification } from "./notification";
@@ -19,11 +18,11 @@ export class Runner {
         this.shouldAskForArgs = shouldAskForArgs;
     }
 
-    async run(shouldRunInExternalTerminal = false): Promise<Result> {
+    async run(shouldRunInExternalTerminal = false): Promise<void> {
         if (!existsSync(this.file.path)) {
             Notification.showErrorMessage(`"${this.file.path}" doesn't exists!`);
 
-            return Result.error;
+            return;
         }
 
         let args = Configuration.runArgs();
@@ -43,7 +42,7 @@ export class Runner {
         if (shouldRunInExternalTerminal) {
             const command = await this.getExternalCommand(runCommand, outputLocation);
             if (isStringNullOrWhiteSpace(command)) {
-                return Result.error;
+                return;
             }
 
             exec(command, { cwd: outputLocation });
@@ -51,8 +50,6 @@ export class Runner {
         else {
             await terminal.runInTerminal(runCommand, { name: "C/C++ Compile Run", cwd: outputLocation });
         }
-
-        return Result.success;
     }
 
     private async getExternalCommand(runCommand: string, outputLocation: string): Promise<string> {

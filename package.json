@@ -235,6 +235,13 @@
                 "linux": "f7",
                 "key": "f7",
                 "command": "extension.CustomCompileRun"
+            },
+            {
+                "mac": "cmd+5",
+                "win": "f5",
+                "linux": "f5",
+                "key": "f5",
+                "command": "extension.Debug"
             }
         ],
         "configuration": {

@@ -26,6 +26,15 @@ Install Tdm-gcc via the website. Click [ Tdm-gcc](https://jmeubank.github.io/tdm
 	`sudo apt-get install build-essential gdb`
 
 ### MacOS
+On MacOS you can use gcc or clang, choose the one you prefer.
+
+#### gcc
+- Install [Homebrew]("https://brew.sh/").
+- After Homebrew installs, type in the terminal:
+
+`brew install gcc gdb`
+
+#### Clang
 - Ensure Clang is installed
 - Clang may already be installed on your Mac. To verify that it is, open a macOS Terminal window and enter the following command:
 

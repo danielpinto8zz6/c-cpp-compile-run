@@ -31,6 +31,7 @@ export class Debugger {
             stopAtEntry: false,
             cwd: this.file.directory,
             externalConsole: false,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             MIMode: "gdb",
             miDebuggerPath: "gdb",
             program: path.join(outputLocation, this.file.executable)

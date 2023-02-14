@@ -5,7 +5,7 @@ export async function promptCompiler(): Promise<string> {
 }
 
 export async function promptFlags(defaultFlags: string): Promise<string> {
-    return await window.showInputBox({ prompt: "Flags", placeHolder: "-Wall -Wextra", value: defaultFlags });
+    return await window.showInputBox({ prompt: "Flags", placeHolder: "-Wall -Wextra -g3", value: defaultFlags });
 }
 
 export async function promptRunArguments(defaultArgs: string): Promise<string> {

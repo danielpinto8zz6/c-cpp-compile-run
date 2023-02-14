@@ -182,7 +182,7 @@ export function getRunPrefix(): string {
     if (process.platform === "win32") {
         const shell = currentWindowsShell();
 
-        if (shell === ShellType.cmd) {
+        if (shell === ShellType.cmd || shell === ShellType.powerShell) {
             return ".\\";
         }
     }

@@ -118,10 +118,12 @@ export class Runner {
     }
 
     buildRunCommand(executable: string, args: string, customPrefix: string) {
+        const winTerminal: string = Configuration.winTerminal();
+        const prefix = process.platform === "win32" && winTerminal !== "powershell.exe" && winTerminal !== "pwsh.exe" ? ".\\": "./";
         if (customPrefix) {
-            return `${customPrefix} ${getRunPrefix()}"${executable}" ${args}`.trim();
+            return `${customPrefix} ${prefix}"${executable}" ${args}`.trim();
         }
 
-        return `${getRunPrefix()}\"${executable}\" ${args}`.trim();
+        return `${prefix}\"${executable}\" ${args}`.trim();
     }
 }

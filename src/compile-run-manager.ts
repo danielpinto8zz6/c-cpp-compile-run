@@ -4,8 +4,8 @@ import { Runner } from "./runner";
 import { window } from "vscode";
 import { Configuration } from "./configuration";
 import { parseFile } from "./utils/file-utils";
-import { Result } from "./enums/result";
 import { Notification } from "./notification";
+import { Debugger } from "./debugger";
 
 export class CompileRunManager {
     public async compile(shouldAskForInputFlags = false) {
@@ -28,6 +28,19 @@ export class CompileRunManager {
         await runner.run(shouldRunInExternalTerminal);
     }
 
+    public async debug() {
+        const file = await this.getFile();
+        if (file === null) {
+            return;
+        }
+
+        const compiler = new Compiler(file);
+
+        const dbg = new Debugger(file);
+
+        await compiler.compile(async () => await dbg.debug());
+    }
+
     public async compileRun(shouldAskForInputFlags = false, shouldAskForArgs = false, shouldRunInExternalTerminal = false) {
         const file = await this.getFile();
         if (file === null) {
@@ -43,7 +56,7 @@ export class CompileRunManager {
 
     public async getFile(): Promise<File> {
         if (!window || !window.activeTextEditor || !window.activeTextEditor.document) {
-           Notification.showErrorMessage("Invalid document!");
+            Notification.showErrorMessage("Invalid document!");
 
             return null;
         }

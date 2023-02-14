@@ -82,6 +82,11 @@
                 "title": "CompileRun : Run with default arguments"
             },
             {
+                "command": "extension.Debug",
+                "title": "CompileRun : Debug",
+                "icon": "$(bug)"
+            },
+            {
                 "command": "extension.CustomCompile",
                 "title": "CompileRun : Compile with custom flags"
             },
@@ -106,6 +111,21 @@
                     "command": "extension.CompileRun",
                     "when": "editorLangId ==  cc",
                     "group": "navigation@0"
+                },
+                {
+                    "command": "extension.Debug",
+                    "when": "editorLangId ==  c",
+                    "group": "navigation@1"
+                },
+                {
+                    "command": "extension.Debug",
+                    "when": "editorLangId ==  cpp",
+                    "group": "navigation@1"
+                },
+                {
+                    "command": "extension.Debug",
+                    "when": "editorLangId ==  cc",
+                    "group": "navigation@1"
                 }
             ],
             "commandPalette": [
@@ -241,13 +261,13 @@
                 "c-cpp-compile-run.c-flags": {
                     "type": "string",
                     "description": "The C flags: e.g. -Wall. default: -Wall -Wextra",
-                    "default": "-Wall -Wextra",
+                    "default": "-Wall -Wextra -g3",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.cpp-flags": {
                     "type": "string",
                     "description": "The Cpp flags: e.g. -Wall. default: -Wall -Wextra",
-                    "default": "-Wall -Wextra",
+                    "default": "-Wall -Wextra -g3",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.run-args": {

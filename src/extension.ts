@@ -14,6 +14,10 @@ export function activate(context: ExtensionContext) {
         await compileRunManager.run(false, Configuration.runInExternalTerminal());
     });
 
+    const debug = commands.registerCommand("extension.Debug", async () => {
+        await compileRunManager.debug();
+    });
+
     const compileRun = commands.registerCommand("extension.CompileRun", async () => {
         await compileRunManager.compileRun(false, false, Configuration.runInExternalTerminal());
     });
@@ -36,6 +40,7 @@ export function activate(context: ExtensionContext) {
 
     context.subscriptions.push(compile);
     context.subscriptions.push(run);
+    context.subscriptions.push(debug);
     context.subscriptions.push(compileRun);
     context.subscriptions.push(customCompile);
     context.subscriptions.push(customRun);

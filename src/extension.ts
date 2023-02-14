@@ -1,7 +1,10 @@
-import { ExtensionContext, commands, window, Terminal } from "vscode";
-import { terminal } from "./terminal";
+import { commands, ExtensionContext, Terminal, window } from "vscode";
 import { CompileRunManager } from "./compile-run-manager";
 import { Configuration } from "./configuration";
+import { FileType } from "./enums/file-type";
+import { StatusBar } from "./status-bar";
+import { terminal } from "./terminal";
+import { getFileType } from "./utils/file-type-utils";
 
 export function activate(context: ExtensionContext) {
     const compileRunManager = new CompileRunManager();
@@ -53,6 +56,18 @@ export function activate(context: ExtensionContext) {
             terminal.dispose(closedTerminal.name);
         })
     );
+
+    const statusBar = new StatusBar(context);
+    statusBar.showAll();
+
+    context.subscriptions.push(window.onDidChangeActiveTextEditor(() => {
+        const activeFileType = getFileType(window.activeTextEditor?.document?.languageId);
+        if (activeFileType === FileType.c || activeFileType === FileType.cplusplus) {
+            statusBar.showAll();
+        } else {
+            statusBar.hideAll();
+        }
+    }));
 }
 
 export function deactivate() {

@@ -11,11 +11,11 @@
 ![Open VSX Downloads](https://img.shields.io/open-vsx/dt/danielpinto8zz6/c-cpp-compile-run)
 ![Open VSX Rating](https://img.shields.io/open-vsx/rating/danielpinto8zz6/c-cpp-compile-run)
 
-An extension running on [Visual Studio Code](https://code.visualstudio.com) to **Compile & Run** single c/c++ files easily
+An extension running on [Visual Studio Code](https://code.visualstudio.com) to **Compile, Run & Debug** single c/c++ files easily
 
 ## Features
 
-Compile & Run C/C++ opened file directly from the command palette or by pressing 'f6' or 'f7'
+Compile, Run & Debug C/C++ opened file directly from the command palette or by pressing 'f6' or 'f7'
 
 ## Requirements
 

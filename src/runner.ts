@@ -10,6 +10,7 @@ import { promptRunArguments } from "./utils/prompt-utils";
 import { currentWindowsShell, getPath, getRunPrefix, parseShell } from "./utils/shell-utils";
 import { escapeStringAppleScript, isStringNullOrWhiteSpace } from "./utils/string-utils";
 import path = require("path");
+import { basename, extname } from "path";
 
 export class Runner {
     private file: File;
@@ -65,7 +66,6 @@ export class Runner {
                 switch (shell) {
                     case ShellType.powerShell:
                         return `start ${terminal} -Command "cd ${outputLocation};${runCommand};Write-Host;Write-Host -NoNewLine 'Press any key to continue...';$Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');"`;
-                    case ShellType.cmd:
                     default:
                         return `start cmd /c "cd ${outputLocation} & ${runCommand} & echo. & pause"`;
                 }
@@ -137,7 +137,7 @@ export class Runner {
         if (runInExternalTerminal) {
             switch (process.platform) {
                 case "win32":
-                    const terminal: string = Configuration.winTerminal();
+                    const terminal = basename(Configuration.winTerminal());
                     return parseShell(terminal);
                 default:
                     return ShellType.others;

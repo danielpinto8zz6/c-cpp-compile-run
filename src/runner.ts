@@ -59,7 +59,7 @@ export class Runner {
                 switch (winTerminal) {
                     case "pwsh.exe":
                     case "powershell.exe":
-                        return `start ${winTerminal} -Command "Set-Location ${outputLocation};${runCommand};Write-Host;Write-Host -NoNewLine 'Press any key to continue...';$Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');"`;
+                        return `start ${winTerminal} -Command "Set-Location '${outputLocation}';${runCommand};Write-Host;Write-Host -NoNewLine 'Press any key to continue...';$Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');"`;
                     default:
                         return `start cmd /c "cd "${outputLocation}" & ${runCommand} & echo. & pause"`;
                 }
@@ -119,13 +119,14 @@ export class Runner {
 
     buildRunCommand(executable: string, args: string, customPrefix: string) {
         const winTerminal: string = Configuration.winTerminal();
-
-        const prefix = process.platform === "win32" && winTerminal !== "powershell.exe" && winTerminal !== "pwsh.exe" ? ".\\": "./";
+        const isPowershell = process.platform === "win32" && (winTerminal === "powershell.exe" || winTerminal === "pwsh.exe");
+        const prefix = process.platform === "win32" ? ".\\" : "./";
+        const executableEscaped = isPowershell ? `'${executable}'` : JSON.stringify(executable);
         
         if (customPrefix) {
-            return `${customPrefix} ${prefix}"${executable}" ${args}`.trim();
+            return [customPrefix, " ", prefix, executableEscaped, " ", args].join("").trim();
         }
 
-        return `${prefix}\"${executable}\" ${args}`.trim();
+        return [prefix, executableEscaped, " ", args].join("").trim();
     }
 }

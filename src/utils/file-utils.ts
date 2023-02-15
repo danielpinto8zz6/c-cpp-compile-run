@@ -11,7 +11,7 @@ export function parseFile(doc: TextDocument): File {
         directory: dirname(doc.fileName),
         type: getFileType(doc.languageId),
         executable: process.platform === "win32"
-            ? `${basename(doc.fileName, extname(doc.fileName))}.exe`
+            ? basename(doc.fileName, extname(doc.fileName)) + ".exe"
             : basename(doc.fileName, extname(doc.fileName))
     };
 

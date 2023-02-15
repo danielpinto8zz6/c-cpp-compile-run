@@ -1,12 +1,14 @@
 import { exec } from "child_process";
 import { existsSync } from "fs";
 import { lookpath } from "lookpath";
-import { File } from "./models/file";
-import { terminal, getRunPrefix } from "./terminal";
-import { promptRunArguments } from "./utils/prompt-utils";
-import { escapeStringAppleScript, isStringNullOrWhiteSpace } from "./utils/string-utils";
 import { Configuration } from "./configuration";
+import { ShellType } from "./enums/shell-type";
+import { File } from "./models/file";
 import { Notification } from "./notification";
+import { terminal } from "./terminal";
+import { promptRunArguments } from "./utils/prompt-utils";
+import { currentWindowsShell, getPath, getRunPrefix, parseShell } from "./utils/shell-utils";
+import { escapeStringAppleScript, isStringNullOrWhiteSpace } from "./utils/string-utils";
 import path = require("path");
 
 export class Runner {
@@ -37,10 +39,15 @@ export class Runner {
 
         let customPrefix = Configuration.customRunPrefix();
 
-        const runCommand = this.buildRunCommand(this.file.executable, args, customPrefix);
+        const shell = this.getShell(shouldRunInExternalTerminal);
+
+        const parsedOutputLocation = await getPath(outputLocation, shell);
+        const parsedExecutable = await getPath(this.file.executable, shell);
+
+        const runCommand = this.buildRunCommand(parsedExecutable, args, customPrefix, shell);
 
         if (shouldRunInExternalTerminal) {
-            const command = await this.getExternalCommand(runCommand, outputLocation);
+            const command = await this.getExternalCommand(runCommand, parsedOutputLocation, shell);
             if (isStringNullOrWhiteSpace(command)) {
                 return;
             }
@@ -52,16 +59,15 @@ export class Runner {
         }
     }
 
-    private async getExternalCommand(runCommand: string, outputLocation: string): Promise<string> {
+    private async getExternalCommand(runCommand: string, outputLocation: string, shell: ShellType): Promise<string> {
         switch (process.platform) {
             case "win32":
-                const winTerminal: string = Configuration.winTerminal();
-                switch (winTerminal) {
-                    case "pwsh.exe":
-                    case "powershell.exe":
-                        return `start ${winTerminal} -Command "Set-Location '${outputLocation}';${runCommand};Write-Host;Write-Host -NoNewLine 'Press any key to continue...';$Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');"`;
+                switch (shell) {
+                    case ShellType.powerShell:
+                        return `start ${terminal} -Command "cd ${outputLocation};${runCommand};Write-Host;Write-Host -NoNewLine 'Press any key to continue...';$Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');"`;
+                    case ShellType.cmd:
                     default:
-                        return `start cmd /c "cd "${outputLocation}" & ${runCommand} & echo. & pause"`;
+                        return `start cmd /c "cd ${outputLocation} & ${runCommand} & echo. & pause"`;
                 }
 
             case "darwin":
@@ -117,16 +123,29 @@ export class Runner {
         }
     }
 
-    buildRunCommand(executable: string, args: string, customPrefix: string) {
-        const winTerminal: string = Configuration.winTerminal();
-        const isPowershell = process.platform === "win32" && (winTerminal === "powershell.exe" || winTerminal === "pwsh.exe");
-        const prefix = process.platform === "win32" ? ".\\" : "./";
-        const executableEscaped = isPowershell ? `'${executable}'` : JSON.stringify(executable);
-        
+    buildRunCommand(executable: string, args: string, customPrefix: string, shell: ShellType) {
+        const prefix = getRunPrefix(shell);
+
         if (customPrefix) {
-            return [customPrefix, " ", prefix, executableEscaped, " ", args].join("").trim();
+            return [customPrefix, " ", prefix, executable, " ", args].join("").trim();
         }
 
-        return [prefix, executableEscaped, " ", args].join("").trim();
+        return [prefix, executable, " ", args].join("").trim();
+    }
+
+    getShell(runInExternalTerminal: boolean): ShellType {
+        if (runInExternalTerminal) {
+            switch (process.platform) {
+                case "win32":
+                    const terminal: string = Configuration.winTerminal();
+                    return parseShell(terminal);
+                default:
+                    return ShellType.others;
+            }
+        } else {
+            return currentWindowsShell();
+        }
     }
 }
+
+

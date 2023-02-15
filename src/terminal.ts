@@ -3,8 +3,7 @@
 
 import * as vscode from "vscode";
 import { ShellType } from "./enums/shell-type";
-import { executeCommand } from "./utils/cp-utils";
-import { currentWindowsShell, getCDCommand, getCommand } from "./utils/shell-utils";
+import { currentShell, getCDCommand, getCommand } from "./utils/shell-utils";
 
 export interface ITerminalOptions {
     addNewLine?: boolean;
@@ -20,6 +19,8 @@ class Terminal implements vscode.Disposable {
     public async runInTerminal(command: string, options: ITerminalOptions): Promise<vscode.Terminal> {
         const defaultOptions: ITerminalOptions = { addNewLine: true, name: "C/C++ Compile Run" };
         const { addNewLine, name, cwd, workspaceFolder } = Object.assign(defaultOptions, options);
+        const shell : ShellType = currentShell();
+
         if (this.terminals[name] === undefined) {
             // Open terminal in workspaceFolder if provided
             // See: https://github.com/microsoft/vscode-maven/issues/467#issuecomment-584544090
@@ -28,15 +29,15 @@ class Terminal implements vscode.Disposable {
             this.terminals[name] = vscode.window.createTerminal({ name, env, cwd: terminalCwd });
             // Workaround for WSL custom envs.
             // See: https://github.com/Microsoft/vscode/issues/71267
-            if (currentWindowsShell() === ShellType.wsl) {
+            if (shell === ShellType.wsl) {
                 setupEnvForWSL(this.terminals[name], env);
             }
         }
         this.terminals[name].show();
         if (cwd) {
-            this.terminals[name].sendText(await getCDCommand(cwd, currentWindowsShell()), true);
+            this.terminals[name].sendText(await getCDCommand(cwd, shell), true);
         }
-        this.terminals[name].sendText(getCommand(command, currentWindowsShell()), addNewLine);
+        this.terminals[name].sendText(getCommand(command, shell), addNewLine);
         return this.terminals[name];
     }
 
@@ -51,10 +52,6 @@ class Terminal implements vscode.Disposable {
             delete this.terminals[terminalName];
         }
     }
-}
-
-export async function toWinPath(filepath: string): Promise<string> {
-    return (await executeCommand("wsl", ["wslpath", "-w", `"${filepath}"`])).trim();
 }
 
 export const terminal: Terminal = new Terminal();

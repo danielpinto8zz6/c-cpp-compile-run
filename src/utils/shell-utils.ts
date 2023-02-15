@@ -4,7 +4,7 @@ import { ShellType } from "../enums/shell-type";
 import { outputChannel } from "../output-channel";
 import { executeCommand } from "./cp-utils";
 
-export function parseShell(executable: string) : ShellType {
+export function parseShell(executable: string): ShellType {
     switch (executable.toLowerCase()) {
         case "cmd.exe":
             return ShellType.cmd;
@@ -88,17 +88,15 @@ function toDefaultWslPath(p: string): string {
 }
 
 export function getRunPrefix(shell: ShellType): string {
-    if (process.platform === "win32") {
-        if (shell === ShellType.cmd || shell === ShellType.powerShell) {
-            return ".\\";
-        }
+    if (shell === ShellType.cmd || shell === ShellType.powerShell) {
+        return ".\\";
     }
 
     return "./";
 }
 
-export function currentWindowsShell(): ShellType {
-    const currentWindowsShellPath: string = env.shell;
-    const executable: string = path.basename(currentWindowsShellPath);
+export function currentShell(): ShellType {
+    const currentShellPath: string = env.shell;
+    const executable: string = path.basename(currentShellPath);
     return parseShell(executable);
 }

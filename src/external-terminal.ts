@@ -37,12 +37,12 @@ class ExternalTerminal {
                         return "osascript -e 'tell application \"iTerm\"' "
                             + "-e 'set newWindow to (create window with default profile)' "
                             + "-e 'tell current session of newWindow' "
-                            + `-e 'write text "cd ${outputLocation}"' `
+                            + `-e 'write text "cd ${escapeStringAppleScript(outputLocation)}"' `
                             + `-e 'write text "${escapeStringAppleScript(runCommand)}"' `
                             + "-e 'end tell' "
                             + "-e 'end tell' ";
                     default:
-                        return `osascript -e 'do shell script "open -a Terminal " & "${outputLocation}"' -e 'delay 0.3' -e `
+                        return `osascript -e 'do shell script "open -a Terminal " & "${escapeStringAppleScript(outputLocation)}"' -e 'delay 0.3' -e `
                             + `'tell application "Terminal" to do script ("${escapeStringAppleScript(runCommand)}") in first window'`;
                 }
 

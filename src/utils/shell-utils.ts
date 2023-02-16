@@ -87,8 +87,8 @@ function toDefaultWslPath(p: string): string {
     }
 }
 
-export function getRunPrefix(shell: ShellType): string {
-    if (shell === ShellType.cmd || shell === ShellType.powerShell) {
+export function getRunPrefix(): string {
+    if (process.platform === "win32") {
         return ".\\";
     }
 

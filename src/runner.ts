@@ -7,7 +7,6 @@ import { Notification } from "./notification";
 import { terminal } from "./terminal";
 import { promptRunArguments } from "./utils/prompt-utils";
 import { currentShell, getPath, getRunPrefix, parseShell } from "./utils/shell-utils";
-import { isStringNullOrWhiteSpace } from "./utils/string-utils";
 import path = require("path");
 import { basename } from "path";
 import { externalTerminal } from "./external-terminal";
@@ -44,7 +43,7 @@ export class Runner {
 
         const parsedExecutable = await getPath(this.file.executable, shell);
 
-        const runCommand = this.getRunCommand(parsedExecutable, args, customPrefix, shell);
+        const runCommand = this.getRunCommand(parsedExecutable, args, customPrefix);
 
         if (shouldRunInExternalTerminal) {
             await externalTerminal.runInExternalTerminal(runCommand, outputLocation, shell);
@@ -54,8 +53,8 @@ export class Runner {
         }
     }
 
-    getRunCommand(executable: string, args: string, customPrefix: string, shell: ShellType) {
-        const prefix = getRunPrefix(shell);
+    getRunCommand(executable: string, args: string, customPrefix: string) {
+        const prefix = getRunPrefix();
 
         if (customPrefix) {
             return [customPrefix, " ", prefix, executable, " ", args].join("").trim();

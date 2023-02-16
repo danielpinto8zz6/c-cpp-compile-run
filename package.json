@@ -348,6 +348,7 @@
         "@types/fs-extra": "^11.0.1",
         "find-process": "^1.4.7",
         "fs-extra": "^11.1.0",
+        "is-wsl": "^2.2.0",
         "lookpath": "^1.2.2"
     },
     "config": {

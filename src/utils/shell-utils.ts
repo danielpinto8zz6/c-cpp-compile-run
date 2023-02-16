@@ -50,7 +50,7 @@ export async function getPath(cwd: string, shellType: ShellType): Promise<string
                 // Escape '[' and ']' in PowerShell
                 // See: https://github.com/microsoft/vscode-maven/issues/324
                 const escaped: string = cwd.replace(/([\[\]])/g, "``$1");
-                return `"${escaped}"`; // PowerShell
+                return `'${escaped}'`; // PowerShell
             case ShellType.cmd:
                 return `"${cwd}"`; // CMD
             case ShellType.wsl:

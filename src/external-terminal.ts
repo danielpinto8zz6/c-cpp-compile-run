@@ -24,7 +24,8 @@ class ExternalTerminal {
             case "win32":
                 switch (shell) {
                     case ShellType.powerShell:
-                        return `start ${terminal} -Command "cd ${outputLocation};${runCommand};Write-Host;Write-Host -NoNewLine 'Press any key to continue...';$Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');"`;
+                        const winTerminal: string = Configuration.winTerminal();
+                        return `start ${winTerminal} -Command "cd ${outputLocation};${runCommand};Write-Host;Write-Host -NoNewLine 'Press any key to continue...';$Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');"`;
                     default:
                         return `start cmd /c "cd ${outputLocation} & ${runCommand} & echo. & pause"`;
                 }

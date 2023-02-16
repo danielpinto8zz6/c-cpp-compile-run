@@ -46,8 +46,8 @@ export class Runner {
 
         const runCommand = this.getRunCommand(parsedExecutable, args, customPrefix, shell);
 
-        if (shouldRunInExternalTerminal && isWsl){
-            Notification.showInformationMessage("Wsl detected, running in vscode terminal!");
+        if (shouldRunInExternalTerminal === true && isWsl === true){
+            Notification.showWarningMessage("Wsl detected, running in vscode terminal!");
 
             shouldRunInExternalTerminal = false;
         }

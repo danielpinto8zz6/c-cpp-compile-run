@@ -26,4 +26,16 @@ export class Notification {
 
         window.showInformationMessage(message);
     }
+
+    static showWarningMessage(message: string) {
+        if (!Configuration.shouldShowNotifications()) {
+            return;
+        }
+
+        if (isStringNullOrWhiteSpace(message)) {
+            return;
+        }
+
+        window.showWarningMessage(message);
+    }
 }

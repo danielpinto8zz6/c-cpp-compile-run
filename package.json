@@ -213,35 +213,40 @@
                 "win": "ctrl+6",
                 "linux": "ctrl+6",
                 "key": "ctrl+6",
-                "command": "extension.CompileRun"
+                "command": "extension.CompileRun",
+                "when": "editorLangId == c || editorLangId == cpp || editorLangId == cc"
             },
             {
-                "mac": "cmd+r",
+                "mac": "f6",
                 "win": "f6",
                 "linux": "f6",
                 "key": "f6",
-                "command": "extension.CompileRun"
+                "command": "extension.CompileRun",
+                "when": "editorLangId == c || editorLangId == cpp || editorLangId == cc"
             },
             {
-                "mac": "cmd+y",
+                "mac": "f8",
                 "win": "f8",
                 "linux": "f8",
                 "key": "f8",
-                "command": "extension.CompileRunInExternalTerminal"
+                "command": "extension.CompileRunInExternalTerminal",
+                "when": "editorLangId == c || editorLangId == cpp || editorLangId == cc"
             },
             {
-                "mac": "cmd+t",
+                "mac": "f7",
                 "win": "f7",
                 "linux": "f7",
                 "key": "f7",
-                "command": "extension.CustomCompileRun"
+                "command": "extension.CustomCompileRun",
+                "when": "editorLangId == c || editorLangId == cpp || editorLangId == cc"
             },
             {
-                "mac": "cmd+5",
+                "mac": "f5",
                 "win": "f5",
                 "linux": "f5",
                 "key": "f5",
-                "command": "extension.Debug"
+                "command": "extension.Debug",
+                "when": "editorLangId == c || editorLangId == cpp || editorLangId == cc"
             }
         ],
         "configuration": {

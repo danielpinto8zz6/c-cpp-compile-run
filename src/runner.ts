@@ -43,7 +43,7 @@ export class Runner {
 
         const parsedExecutable = await getPath(this.file.executable, shell);
 
-        const runCommand = this.getRunCommand(parsedExecutable, args, customPrefix);
+        const runCommand = this.getRunCommand(parsedExecutable, args, customPrefix, shell);
 
         if (shouldRunInExternalTerminal) {
             await externalTerminal.runInExternalTerminal(runCommand, outputLocation, shell);
@@ -53,8 +53,8 @@ export class Runner {
         }
     }
 
-    getRunCommand(executable: string, args: string, customPrefix: string) {
-        const prefix = getRunPrefix();
+    getRunCommand(executable: string, args: string, customPrefix: string, shell: ShellType) {
+        const prefix = getRunPrefix(shell);
 
         if (customPrefix) {
             return [customPrefix, " ", prefix, executable, " ", args].join("").trim();
@@ -68,7 +68,8 @@ export class Runner {
             switch (process.platform) {
                 case "win32":
                     const terminal = basename(Configuration.winTerminal());
-                    return parseShell(terminal);
+                    const shell = parseShell(terminal);
+                    return shell === ShellType.powerShell ? ShellType.powerShell : ShellType.cmd;
                 default:
                     return ShellType.others;
             }

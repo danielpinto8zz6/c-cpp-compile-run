@@ -7,8 +7,8 @@ import { commandExists, isProccessRunning } from "./utils/common-utils";
 import { Result } from "./enums/result";
 import { isStringNullOrWhiteSpace } from "./utils/string-utils";
 import { Notification } from "./notification";
-import * as fse from "fs-extra";
 import path = require("path");
+import { getOutputLocation } from "./utils/file-utils";
 
 export class Compiler {
     private file: File;
@@ -50,14 +50,7 @@ export class Compiler {
             }
         }
 
-        let outputLocation = Configuration.outputLocation();
-        if (!outputLocation) {
-            outputLocation = path.join(this.file.directory, "output");
-        }
-
-        if (!fse.existsSync(outputLocation)) {
-            fse.mkdirSync(outputLocation);
-        }
+        const outputLocation = getOutputLocation(this.file, true);
 
         let compilerArgs = [this.file.name, "-o", path.join(outputLocation, this.file.executable)];
 

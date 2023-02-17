@@ -2,6 +2,9 @@ import { File } from "../models/file";
 import { TextDocument } from "vscode";
 import { basename, extname, dirname } from "path";
 import { getFileType } from "./file-type-utils";
+import * as fse from "fs-extra";
+import { Configuration } from "../configuration";
+import path = require("path");
 
 export function parseFile(doc: TextDocument): File {
     const file: File = {
@@ -16,4 +19,19 @@ export function parseFile(doc: TextDocument): File {
     };
 
     return file;
+}
+
+export function getOutputLocation(file: File, createIfNotExists: boolean = false): string {
+    let outputLocation = Configuration.outputLocation();
+    if (!outputLocation) {
+        outputLocation = file.directory;
+    } else if (!path.isAbsolute(outputLocation)) {
+        outputLocation = path.join(file.directory, outputLocation);
+    }
+
+    if (createIfNotExists === true && !fse.existsSync(outputLocation)) {
+        fse.mkdirSync(outputLocation);
+    }
+
+    return outputLocation;
 }

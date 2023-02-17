@@ -1,4 +1,3 @@
-import { exec } from "child_process";
 import { existsSync } from "fs";
 import { Configuration } from "./configuration";
 import { ShellType } from "./enums/shell-type";
@@ -7,10 +6,10 @@ import { Notification } from "./notification";
 import { terminal } from "./terminal";
 import { promptRunArguments } from "./utils/prompt-utils";
 import { currentShell, getPath, getRunPrefix, parseShell } from "./utils/shell-utils";
-import path = require("path");
 import { basename } from "path";
 import { externalTerminal } from "./external-terminal";
 import isWsl = require("is-wsl");
+import { getOutputLocation } from "./utils/file-utils";
 
 export class Runner {
     private file: File;
@@ -33,10 +32,7 @@ export class Runner {
             args = await promptRunArguments(args);
         }
 
-        let outputLocation = Configuration.outputLocation();
-        if (!outputLocation) {
-            outputLocation = path.join(this.file.directory, "output");
-        }
+        const outputLocation = getOutputLocation(this.file);
 
         let customPrefix = Configuration.customRunPrefix();
 
@@ -51,7 +47,7 @@ export class Runner {
 
             shouldRunInExternalTerminal = false;
         }
-        
+
         if (shouldRunInExternalTerminal) {
             await externalTerminal.runInExternalTerminal(runCommand, outputLocation, shell);
         }

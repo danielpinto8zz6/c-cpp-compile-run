@@ -4,6 +4,7 @@ import { Configuration } from "./configuration";
 import { Notification } from "./notification";
 import path = require("path");
 import { debug, DebugConfiguration, Uri, workspace } from "vscode";
+import { getOutputLocation } from "./utils/file-utils";
 
 export class Debugger {
     private file: File;
@@ -19,10 +20,7 @@ export class Debugger {
             return;
         }
 
-        let outputLocation = Configuration.outputLocation();
-        if (!outputLocation) {
-            outputLocation = path.join(this.file.directory, "output");
-        }
+        const outputLocation = getOutputLocation(this.file);
 
         const debugConfiguration: DebugConfiguration = {
             name: "C/C++ Compile Run: Debug",

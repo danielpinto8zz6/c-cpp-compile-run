@@ -55,7 +55,7 @@ export class Compiler {
         let compilerArgs = [this.file.name, "-o", path.join(outputLocation, this.file.executable)];
 
         if (this.inputFlags) {
-            compilerArgs = compilerArgs.concat(this.inputFlags.split(" "));
+            compilerArgs = this.inputFlags.split(" ").concat(compilerArgs);
         }
 
         let processExecution = new ProcessExecution(

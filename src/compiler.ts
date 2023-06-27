@@ -52,7 +52,7 @@ export class Compiler {
 
         const outputLocation = getOutputLocation(this.file, true);
 
-        let compilerArgs = [this.file.name, "-o", path.join(outputLocation, this.file.executable)];
+        let compilerArgs = [this.file.path, "-o", path.join(outputLocation, this.file.executable)];
 
         if (this.inputFlags) {
             compilerArgs = this.inputFlags.split(" ").concat(compilerArgs);

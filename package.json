@@ -272,13 +272,13 @@
                 },
                 "c-cpp-compile-run.c-flags": {
                     "type": "string",
-                    "description": "The C flags: e.g. -Wall. default: -Wall -Wextra",
+                    "description": "The C flags: e.g. -Wall. default: -Wall -Wextra -g3",
                     "default": "-Wall -Wextra -g3",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.cpp-flags": {
                     "type": "string",
-                    "description": "The Cpp flags: e.g. -Wall. default: -Wall -Wextra",
+                    "description": "The Cpp flags: e.g. -Wall. default: -Wall -Wextra -g3",
                     "default": "-Wall -Wextra -g3",
                     "scope": "resource"
                 },

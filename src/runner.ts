@@ -8,7 +8,6 @@ import { promptRunArguments } from "./utils/prompt-utils";
 import { currentShell, getPath, getRunPrefix, parseShell } from "./utils/shell-utils";
 import { basename } from "path";
 import { externalTerminal } from "./external-terminal";
-import isWsl = require("is-wsl");
 import { getOutputLocation } from "./utils/file-utils";
 
 export class Runner {
@@ -42,7 +41,8 @@ export class Runner {
 
         const runCommand = this.getRunCommand(parsedExecutable, args, customPrefix, shell);
 
-        if (shouldRunInExternalTerminal === true && isWsl === true){
+        const isWsl = require("is-wsl");
+        if (shouldRunInExternalTerminal === true && isWsl){
             Notification.showWarningMessage("Wsl detected, running in vscode terminal!");
 
             shouldRunInExternalTerminal = false;

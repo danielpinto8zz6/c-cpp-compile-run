@@ -1,6 +1,7 @@
 import find from "find-process";
 import { lookpath } from "lookpath";
 import { isStringNullOrWhiteSpace } from "./string-utils";
+const isWsl = require("is-wsl");
 
 export async function commandExists(command: string): Promise<boolean> {
     const result = await lookpath(command);
@@ -9,7 +10,6 @@ export async function commandExists(command: string): Promise<boolean> {
 
 export async function isProccessRunning(proccess: string): Promise<boolean> {
     // Temporary workaround for wsl
-    const isWsl = require("is-wsl");
     if (isWsl){
         return false;
     }

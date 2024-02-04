@@ -9,7 +9,7 @@ import { currentShell, getPath, getRunPrefix, parseShell } from "./utils/shell-u
 import { basename } from "path";
 import { externalTerminal } from "./external-terminal";
 import { getOutputLocation } from "./utils/file-utils";
-const isWsl = require("is-wsl");
+import isWsl = require("is-wsl");
 
 export class Runner {
     private file: File;

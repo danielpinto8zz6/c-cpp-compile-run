@@ -15,7 +15,7 @@ export async function isProccessRunning(proccess: string): Promise<boolean> {
     }
 
     // Temporary workaround for wsl
-    if (isWsl) {
+    if (Boolean(isWsl) === true) {
         return false;
     }
 

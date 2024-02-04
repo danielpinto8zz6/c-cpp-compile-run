@@ -2,7 +2,7 @@
     "name": "c-cpp-compile-run",
     "displayName": "C/C++ Compile Run",
     "description": "Compile & Run single c/c++ files easly",
-    "version": "1.0.57",
+    "version": "1.0.58",
     "publisher": "danielpinto8zz6",
     "author": {
         "name": "Daniel Pinto",

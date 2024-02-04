@@ -9,7 +9,7 @@ import { currentShell, getPath, getRunPrefix, parseShell } from "./utils/shell-u
 import { basename } from "path";
 import { externalTerminal } from "./external-terminal";
 import { getOutputLocation } from "./utils/file-utils";
-import isWsl = require("is-wsl");
+import isWsl from "is-wsl";
 
 export class Runner {
     private file: File;
@@ -42,7 +42,7 @@ export class Runner {
 
         const runCommand = this.getRunCommand(parsedExecutable, args, customPrefix, shell);
 
-        if (shouldRunInExternalTerminal === true && Boolean(isWsl) === true){
+        if (shouldRunInExternalTerminal === true && isWsl === true){
             Notification.showWarningMessage("Wsl detected, running in vscode terminal!");
 
             shouldRunInExternalTerminal = false;

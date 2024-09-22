@@ -1,6 +1,5 @@
 import { existsSync } from "fs";
 import { File } from "./models/file";
-import { Configuration } from "./configuration";
 import { Notification } from "./notification";
 import path = require("path");
 import { debug, DebugConfiguration, Uri, workspace } from "vscode";
@@ -29,7 +28,6 @@ export class Debugger {
             stopAtEntry: false,
             cwd: this.file.directory,
             externalConsole: false,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             MIMode: "gdb",
             miDebuggerPath: "gdb",
             program: path.join(outputLocation, this.file.executable)

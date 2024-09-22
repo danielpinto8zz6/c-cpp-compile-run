@@ -41,7 +41,9 @@ You can also set to save file before compiling.
 | c-cpp-compile-run.cpp-compiler              | The Cpp compiler path (e.g: /usr/bin/g++ C:\\TDM-GCC-64\\bin\\gcc.exe)  |
 | c-cpp-compile-run.save-before-compile       | Whether should save the file before compiling                           |
 | c-cpp-compile-run.c-flags                   | The C flags: e.g. -Wall. default: -Wall -Wextra -g3                     |
+| c-cpp-compile-run.c-linker-flags            | The C linker flags: e.g. -lm                                            |
 | c-cpp-compile-run.cpp-flags                 | The Cpp flags: e.g. -Wall. default: -Wall -Wextra -g3                   |
+| c-cpp-compile-run.cpp-linker-flags          | The Cpp linker flags: e.g. -lm                                          |
 | c-cpp-compile-run.run-args                  | The run arguments                                                       |
 | c-cpp-compile-run.run-in-external-terminal  | Whether should run in an external terminal                              |
 | c-cpp-compile-run.should-show-notifications | Whether should show notifications                                       |

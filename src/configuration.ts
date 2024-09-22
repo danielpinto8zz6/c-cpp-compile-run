@@ -14,12 +14,20 @@ export class Configuration {
         return this.getSetting<string>("c-flags")?.trim();
     }
 
+    static cLinkerFlags(): string {
+        return this.getSetting<string>("c-linker-flags")?.trim();
+    }
+
     static cppCompiler(): string {
         return this.getSetting<string>("cpp-compiler")?.trim();
     }
 
     static cppFlags(): string {
         return this.getSetting<string>("cpp-flags")?.trim();
+    }
+
+    static cppLinkerFlags(): string {
+        return this.getSetting<string>("cpp-linker-flags")?.trim();
     }
 
     static saveBeforeCompile(): boolean {

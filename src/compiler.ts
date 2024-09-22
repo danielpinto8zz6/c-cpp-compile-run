@@ -14,6 +14,7 @@ export class Compiler {
     private file: File;
     private compiler?: string;
     private inputFlags?: string;
+    private linkerFlags?: string;
     private shouldAskForInputFlags: boolean;
 
     constructor(file: File, shouldAskForInputFlags: boolean = false) {
@@ -56,6 +57,10 @@ export class Compiler {
 
         if (this.inputFlags) {
             compilerArgs = this.inputFlags.split(" ").concat(compilerArgs);
+        }
+
+        if (this.linkerFlags) {
+            compilerArgs = compilerArgs.concat(this.linkerFlags.split(" "));
         }
 
         let processExecution = new ProcessExecution(
@@ -101,12 +106,14 @@ export class Compiler {
             case FileType.c: {
                 this.compiler = Configuration.cCompiler();
                 this.inputFlags = Configuration.cFlags();
+                this.linkerFlags = Configuration.cLinkerFlags();
 
                 return Result.success;
             }
             case FileType.cplusplus: {
                 this.compiler = Configuration.cppCompiler();
                 this.inputFlags = Configuration.cppFlags();
+                this.linkerFlags = Configuration.cLinkerFlags();
 
                 return Result.success;
             }

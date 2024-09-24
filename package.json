@@ -11,7 +11,7 @@
     },
     "icon": "resources/logo.png",
     "engines": {
-        "vscode": "^1.85.0"
+        "vscode": "^1.93.0"
     },
     "main": "./dist/extension.js",
     "categories": [

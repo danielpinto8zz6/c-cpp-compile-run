@@ -1,7 +1,7 @@
 {
     "name": "c-cpp-compile-run",
     "displayName": "C/C++ Compile Run",
-    "description": "Compile & Run single c/c++ files easly",
+    "description": "Easily compile, run, and debug single C/C++ files in VS Code.",
     "version": "1.0.63",
     "publisher": "danielpinto8zz6",
     "author": {
@@ -21,8 +21,14 @@
     "keywords": [
         "c",
         "cpp",
+        "c++",
         "compile",
-        "run"
+        "run",
+        "debug",
+        "build",
+        "gcc",
+        "g++",
+        "clang"
     ],
     "bugs": {
         "url": "https://github.com/danielpinto8zz6/c-cpp-compile-run/issues",
@@ -62,24 +68,24 @@
         "commands": [
             {
                 "command": "extension.CompileRun",
-                "title": "C/C++: Compile & Run (Default)",
+                "title": "C/C++: Compile & Run",
                 "icon": "$(play)"
             },
             {
                 "command": "extension.CompileRunInExternalTerminal",
-                "title": "C/C++: Compile & Run in External Terminal"
+                "title": "C/C++: Compile & Run (External Terminal)"
             },
             {
                 "command": "extension.CustomCompileRun",
-                "title": "C/C++: Compile & Run (Custom Flags & Args)"
+                "title": "C/C++: Compile & Run (Custom)"
             },
             {
                 "command": "extension.Compile",
-                "title": "C/C++: Compile (Default Flags)"
+                "title": "C/C++: Compile"
             },
             {
                 "command": "extension.Run",
-                "title": "C/C++: Run (Default Arguments)"
+                "title": "C/C++: Run"
             },
             {
                 "command": "extension.Debug",
@@ -88,122 +94,122 @@
             },
             {
                 "command": "extension.CustomCompile",
-                "title": "C/C++: Compile (Custom Flags)"
+                "title": "C/C++: Compile (Custom)"
             },
             {
                 "command": "extension.CustomRun",
-                "title": "C/C++: Run (Custom Arguments)"
+                "title": "C/C++: Run (Custom)"
             }
         ],
         "menus": {
             "editor/title/run": [
                 {
                     "command": "extension.CompileRun",
-                    "when": "editorLangId ==  c",
+                    "when": "editorLangId == c",
                     "group": "navigation@0"
                 },
                 {
                     "command": "extension.CompileRun",
-                    "when": "editorLangId ==  cpp",
+                    "when": "editorLangId == cpp",
                     "group": "navigation@0"
                 },
                 {
                     "command": "extension.CompileRun",
-                    "when": "editorLangId ==  cc",
+                    "when": "editorLangId == cc",
                     "group": "navigation@0"
                 },
                 {
                     "command": "extension.Debug",
-                    "when": "editorLangId ==  c",
+                    "when": "editorLangId == c",
                     "group": "navigation@1"
                 },
                 {
                     "command": "extension.Debug",
-                    "when": "editorLangId ==  cpp",
+                    "when": "editorLangId == cpp",
                     "group": "navigation@1"
                 },
                 {
                     "command": "extension.Debug",
-                    "when": "editorLangId ==  cc",
+                    "when": "editorLangId == cc",
                     "group": "navigation@1"
                 }
             ],
             "commandPalette": [
                 {
                     "command": "extension.CompileRun",
-                    "when": "editorLangId ==  c"
+                    "when": "editorLangId == c"
                 },
                 {
                     "command": "extension.CompileRun",
-                    "when": "editorLangId ==  cpp"
+                    "when": "editorLangId == cpp"
                 },
                 {
                     "command": "extension.CompileRun",
-                    "when": "editorLangId ==  cc"
+                    "when": "editorLangId == cc"
                 },
                 {
                     "command": "extension.CompileRunInExternalTerminal",
-                    "when": "editorLangId ==  cpp"
+                    "when": "editorLangId == cpp"
                 },
                 {
                     "command": "extension.CompileRunInExternalTerminal",
-                    "when": "editorLangId ==  cc"
+                    "when": "editorLangId == cc"
                 },
                 {
                     "command": "extension.CustomCompileRun",
-                    "when": "editorLangId ==  cpp"
+                    "when": "editorLangId == cpp"
                 },
                 {
                     "command": "extension.CustomCompileRun",
-                    "when": "editorLangId ==  cc"
+                    "when": "editorLangId == cc"
                 },
                 {
                     "command": "extension.Compile",
-                    "when": "editorLangId ==  c"
+                    "when": "editorLangId == c"
                 },
                 {
                     "command": "extension.Compile",
-                    "when": "editorLangId ==  cpp"
+                    "when": "editorLangId == cpp"
                 },
                 {
                     "command": "extension.Compile",
-                    "when": "editorLangId ==  cc"
+                    "when": "editorLangId == cc"
                 },
                 {
                     "command": "extension.Run",
-                    "when": "editorLangId ==  c"
+                    "when": "editorLangId == c"
                 },
                 {
                     "command": "extension.Run",
-                    "when": "editorLangId ==  cpp"
+                    "when": "editorLangId == cpp"
                 },
                 {
                     "command": "extension.Run",
-                    "when": "editorLangId ==  cc"
+                    "when": "editorLangId == cc"
                 },
                 {
                     "command": "extension.CustomCompile",
-                    "when": "editorLangId ==  c"
+                    "when": "editorLangId == c"
                 },
                 {
                     "command": "extension.CustomCompile",
-                    "when": "editorLangId ==  cpp"
+                    "when": "editorLangId == cpp"
                 },
                 {
                     "command": "extension.CustomCompile",
-                    "when": "editorLangId ==  cc"
+                    "when": "editorLangId == cc"
                 },
                 {
                     "command": "extension.CustomRun",
-                    "when": "editorLangId ==  c"
+                    "when": "editorLangId == c"
                 },
                 {
                     "command": "extension.CustomRun",
-                    "when": "editorLangId ==  cpp"
+                    "when": "editorLangId == cpp"
                 },
                 {
                     "command": "extension.CustomRun",
-                    "when": "editorLangId ==  cc"
+                    "when": "editorLangId == cc"
                 }
             ]
         },
@@ -250,76 +256,76 @@
             }
         ],
         "configuration": {
-            "title": "Compile Run configuration",
+            "title": "C/C++ Compile Run Configuration",
             "properties": {
                 "c-cpp-compile-run.c-compiler": {
                     "type": "string",
                     "default": "gcc",
-                    "description": "The C compiler path (e.g: /usr/bin/gcc or C:\\TDM-GCC-64\\bin\\gcc.exe)",
+                    "description": "Path to the C compiler (e.g. /usr/bin/gcc or C:\\TDM-GCC-64\\bin\\gcc.exe)",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.cpp-compiler": {
                     "type": "string",
                     "default": "g++",
-                    "description": "The Cpp compiler path (e.g: /usr/bin/g++ or C:\\TDM-GCC-64\\bin\\gcc.exe)",
+                    "description": "Path to the C++ compiler (e.g. /usr/bin/g++ or C:\\TDM-GCC-64\\bin\\g++.exe)",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.save-before-compile": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Whether should save the file before compiling",
+                    "description": "Save the file before compiling",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.c-flags": {
                     "type": "string",
-                    "description": "The C flags: e.g. -Wall. default: -Wall -Wextra -g3",
+                    "description": "C compiler flags (default: -Wall -Wextra -g3)",
                     "default": "-Wall -Wextra -g3",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.c-linker-flags": {
                     "type": "string",
-                    "description": "Compilation linker flags (e.g: -lm)",
+                    "description": "C linker flags (e.g. -lm)",
                     "default": "",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.cpp-flags": {
                     "type": "string",
-                    "description": "The Cpp flags: e.g. -Wall. default: -Wall -Wextra -g3",
+                    "description": "C++ compiler flags (default: -Wall -Wextra -g3)",
                     "default": "-Wall -Wextra -g3",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.cpp-linker-flags": {
                     "type": "string",
-                    "description": "Compilation linker flags (e.g: -lm)",
+                    "description": "C++ linker flags (e.g. -lm)",
                     "default": "",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.run-args": {
                     "type": "string",
-                    "description": "Whether should run in an external terminal",
+                    "description": "Arguments to pass when running the program",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.run-in-external-terminal": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Whether should run in an external terminal",
+                    "description": "Run the program in an external terminal",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.should-show-notifications": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Whether should show notifications",
+                    "description": "Show notifications after compile/run actions",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.output-location": {
                     "type": "string",
-                    "description": "Where output file should be located",
+                    "description": "Output file location (relative path or directory)",
                     "scope": "resource",
                     "default": "output"
                 },
                 "c-cpp-compile-run.custom-run-prefix": {
                     "type": "string",
-                    "description": "Prefix command before run (e.g: valgrind ./foobar)",
+                    "description": "Prefix command before run (e.g. valgrind ./foobar)",
                     "scope": "resource"
                 }
             }

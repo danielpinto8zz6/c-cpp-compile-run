@@ -62,37 +62,37 @@
         "commands": [
             {
                 "command": "extension.CompileRun",
-                "title": "CompileRun : Compile with default flags & Run with default arguments",
+                "title": "C/C++: Compile & Run (Default)",
                 "icon": "$(play)"
             },
             {
                 "command": "extension.CompileRunInExternalTerminal",
-                "title": "CompileRun : Compile with default flags & Run with default arguments in external terminal"
+                "title": "C/C++: Compile & Run in External Terminal"
             },
             {
                 "command": "extension.CustomCompileRun",
-                "title": "CompileRun : Compile with custom flags & Run with custom arguments"
+                "title": "C/C++: Compile & Run (Custom Flags & Args)"
             },
             {
                 "command": "extension.Compile",
-                "title": "CompileRun : Compile with default flags"
+                "title": "C/C++: Compile (Default Flags)"
             },
             {
                 "command": "extension.Run",
-                "title": "CompileRun : Run with default arguments"
+                "title": "C/C++: Run (Default Arguments)"
             },
             {
                 "command": "extension.Debug",
-                "title": "CompileRun : Debug",
+                "title": "C/C++: Debug",
                 "icon": "$(bug)"
             },
             {
                 "command": "extension.CustomCompile",
-                "title": "CompileRun : Compile with custom flags"
+                "title": "C/C++: Compile (Custom Flags)"
             },
             {
                 "command": "extension.CustomRun",
-                "title": "CompileRun : Run with custom arguments"
+                "title": "C/C++: Run (Custom Arguments)"
             }
         ],
         "menus": {

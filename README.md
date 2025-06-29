@@ -1,6 +1,7 @@
 ![Logo](resources/logo.png)
 
-# C/C++ Compile Run extension
+# C/C++ Compile Run Extension
+
 <a href="https://www.buymeacoffee.com/danielpinto8zz6" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 [![Support via PayPal](resources/paypal-donate-button.png)](https://www.paypal.me/danielpinto8zz6/)
 
@@ -11,54 +12,60 @@
 [![Open VSX Downloads](https://img.shields.io/open-vsx/dt/danielpinto8zz6/c-cpp-compile-run)](https://open-vsx.org/extension/danielpinto8zz6/c-cpp-compile-run)
 [![Open VSX Rating](https://img.shields.io/open-vsx/rating/danielpinto8zz6/c-cpp-compile-run)](https://open-vsx.org/extension/danielpinto8zz6/c-cpp-compile-run/reviews)
 
-An extension running on [Visual Studio Code](https://code.visualstudio.com) to **Compile, Run & Debug** single c/c++ files easily
+A Visual Studio Code extension to **compile, run, and debug** single C/C++ files easily.
 
-![Extension](resources/extension.png)
+![Extension Screenshot](resources/extension.png)
 
 ## Features
 
-Compile, Run & Debug C/C++ opened file directly from the command palette, by pressing 'f6', 'f7', 'f5', or by using status bar/menu icons.
+- Compile, run, and debug C/C++ files directly from the command palette, status bar, or menu icons.
+- Quick access via keybindings: `F6`, `F7`, `F5`, and more.
+- Supports custom compiler paths, flags, and run arguments.
+- Option to run in an external terminal.
 
 ## Requirements
 
-* If you are on linux you must install gcc ([see instructions](docs/COMPILER_SETUP.md#Linux))
-* If you are on window you must install tdm-gcc ([see instructions](docs/COMPILER_SETUP.md#Windows))
-* If you are on mac os you must install clang/gcc ([see instructions](docs/COMPILER_SETUP.md#MacOS))
+- **Linux:** Install `gcc` ([setup instructions](docs/COMPILER_SETUP.md#Linux))
+- **Windows:** Install `tdm-gcc` ([setup instructions](docs/COMPILER_SETUP.md#Windows))
+- **macOS:** Install `clang` or `gcc` ([setup instructions](docs/COMPILER_SETUP.md#MacOS))
 
-## How to use
-Make sure you have .c or .cpp file open.
-Press "F6", this will compile and run the file using default arguments in settings.
-If you press "F7", this will use the arguments you specify for the program.
-You can also debug by pressing "F5". Or you can use the status bar/menu items.
+## Getting Started
 
-If you want to register gcc/g++ path manually, you can set it under settings.
-You can also set to save file before compiling.
+1. Open a `.c` or `.cpp` file in VS Code.
+2. Press **F6** to compile and run the file with default settings.
+3. Press **F7** to specify custom arguments before running.
+4. Press **F5** to debug (includes compilation).
+5. Use the status bar or menu icons for quick access.
 
-## Configurations
+> **Tip:** You can configure compiler paths, flags, and other options in the extension settings. Enable "Save Before Compile" to automatically save files before building.
+
+## Configuration
+
 | Key                                         | Description                                                             |
 | ------------------------------------------- | ----------------------------------------------------------------------- |
-| c-cpp-compile-run.c-compiler                | The C compiler path (e.g: /usr/bin/gcc or C:\\TDM-GCC-64\\bin\\gcc.exe) |
-| c-cpp-compile-run.cpp-compiler              | The Cpp compiler path (e.g: /usr/bin/g++ C:\\TDM-GCC-64\\bin\\gcc.exe)  |
-| c-cpp-compile-run.save-before-compile       | Whether should save the file before compiling                           |
-| c-cpp-compile-run.c-flags                   | The C flags: e.g. -Wall. default: -Wall -Wextra -g3                     |
-| c-cpp-compile-run.c-linker-flags            | The C linker flags: e.g. -lm                                            |
-| c-cpp-compile-run.cpp-flags                 | The Cpp flags: e.g. -Wall. default: -Wall -Wextra -g3                   |
-| c-cpp-compile-run.cpp-linker-flags          | The Cpp linker flags: e.g. -lm                                          |
-| c-cpp-compile-run.run-args                  | The run arguments                                                       |
-| c-cpp-compile-run.run-in-external-terminal  | Whether should run in an external terminal                              |
-| c-cpp-compile-run.should-show-notifications | Whether should show notifications                                       |
+| c-cpp-compile-run.c-compiler                | The C compiler path (e.g. `/usr/bin/gcc` or `C:\TDM-GCC-64\bin\gcc.exe`)|
+| c-cpp-compile-run.cpp-compiler              | The C++ compiler path (e.g. `/usr/bin/g++` or `C:\TDM-GCC-64\bin\g++.exe`)|
+| c-cpp-compile-run.save-before-compile       | Save the file before compiling                                          |
+| c-cpp-compile-run.c-flags                   | C compiler flags (default: `-Wall -Wextra -g3`)                         |
+| c-cpp-compile-run.c-linker-flags            | C linker flags (e.g. `-lm`)                                             |
+| c-cpp-compile-run.cpp-flags                 | C++ compiler flags (default: `-Wall -Wextra -g3`)                       |
+| c-cpp-compile-run.cpp-linker-flags          | C++ linker flags (e.g. `-lm`)                                           |
+| c-cpp-compile-run.run-args                  | Program arguments when running                                          |
+| c-cpp-compile-run.run-in-external-terminal  | Run in an external terminal                                             |
+| c-cpp-compile-run.should-show-notifications | Show notifications                                                      |
 | c-cpp-compile-run.output-location           | Custom output location for the compiled file                            |
-| c-cpp-compile-run.custom-run-prefix         | Prefix command before run (e.g: valgrind ./foobar)                      |
+| c-cpp-compile-run.custom-run-prefix         | Prefix command before run (e.g. `valgrind ./foobar`)                    |
 
 ## Keybindings
+
 | Linux  | Windows | Mac   | Description                                                     |
 | ------ | ------- | ----- | --------------------------------------------------------------- |
-| f6     | f6      | cmd+r | Compiles and runs the file                                      |
-| crtl+6 | ctrl+6  | cmd+6 | Compiles and runs the file                                      |
-| f8     | f8      | cmd+y | Compiles and run the file in external console                   |
-| f7     | f7      | cmd+t | Compiles and run the file specifying custom arguments and flags |
-| f5     | f5      | cmd+5 | Debugs the file (includes compile)                              |
+| F6     | F6      | Cmd+R | Compile and run the file                                        |
+| Ctrl+6 | Ctrl+6  | Cmd+6 | Compile and run the file                                        |
+| F8     | F8      | Cmd+Y | Compile and run the file in an external console                 |
+| F7     | F7      | Cmd+T | Compile and run the file with custom arguments and flags         |
+| F5     | F5      | Cmd+5 | Debug the file (includes compile)                               |
 
 ## Release Notes
 
-Refer to [CHANGELOG](CHANGELOG.md)
+See the [CHANGELOG](CHANGELOG.md) for details.

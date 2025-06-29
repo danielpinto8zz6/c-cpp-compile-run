@@ -1,62 +1,87 @@
-# GCC Setup
+# Compiler Setup Guide
+
 ## Table of Contents
-1. [Windows](#Windows)
-2. [Linux](#Linux)
-3. [MacOS](#MacOs)
-4. [WSL Example](#WSL)
+1. [Windows](#windows)
+2. [Linux](#linux)
+3. [macOS](#macos)
+4. [WSL (Windows Subsystem for Linux)](#wsl)
+
+---
 
 ### Windows
-Install Tdm-gcc via the website. Click [ Tdm-gcc](https://jmeubank.github.io/tdm-gcc/download/ " Tdm-gcc") to download the Windows Tdm-gcc installer.
-- Run the installer.
-- Select create a new install
-- Choose your **Architecture** and then select **Next** until complete.
-- Restart your vscode
+
+To compile and debug C/C++ code on Windows, install **TDM-GCC**:
+
+1. Download the installer from the [TDM-GCC website](https://jmeubank.github.io/tdm-gcc/download/).
+2. Run the installer.
+3. Select **Create a new install**.
+4. Choose your system **Architecture** (e.g., 64-bit), then proceed with the default options until installation is complete.
+5. Restart Visual Studio Code.
+
+---
 
 ### Linux
-- First, check to see whether GCC is already installed. To verify whether it is, open a Terminal window and enter the following command:
 
-	`gcc -v`
+Most Linux distributions provide GCC and GDB via their package manager.
 
-- If GCC isn't installed, run the following command from the terminal window to update the **Ubuntu** package lists. An out-of-date Linux distribution can sometimes interfere with attempts to install new packages.
+1. **Check if GCC is installed:**
+   ```sh
+   gcc -v
+   ```
+2. **If not installed, update your package lists:**
+   ```sh
+   sudo apt-get update
+   ```
+3. **Install GCC, G++ and GDB:**
+   ```sh
+   sudo apt-get install build-essential gdb
+   ```
 
-	`sudo apt-get update`
+---
 
-- Next install the GNU compiler tools and the GDB debugger with this command:
+### macOS
 
-	`sudo apt-get install build-essential gdb`
+You can use either **GCC** or **Clang** on macOS.
 
-### MacOS
-On MacOS you can use gcc or clang, choose the one you prefer.
+#### Using GCC
 
-#### gcc
-- Install [Homebrew]("https://brew.sh/").
-- After Homebrew installs, type in the terminal:
+1. Install [Homebrew](https://brew.sh/) if you haven't already.
+2. In the Terminal, run:
+   ```sh
+   brew install gcc gdb
+   ```
 
-`brew install gcc gdb`
+#### Using Clang
 
-#### Clang
-- Ensure Clang is installed
-- Clang may already be installed on your Mac. To verify that it is, open a macOS Terminal window and enter the following command:
+1. **Check if Clang is installed:**
+   ```sh
+   clang --version
+   ```
+2. **If not installed, install Xcode Command Line Tools:**
+   ```sh
+   xcode-select --install
+   ```
 
-	`clang --version`
+---
 
-- If Clang isn't installed, enter the following command to install the command line developer tools:
+### WSL (Windows Subsystem for Linux)
 
-	`xcode-select --install`
+You can use GCC and GDB inside WSL for a Linux-like development environment on Windows.
 
-### WSL
+1. Open your WSL terminal (e.g., Ubuntu, Debian).
+2. **Update package lists:**
+   ```sh
+   sudo apt-get update
+   ```
+3. *(Optional)* Upgrade system packages:
+   ```sh
+   sudo apt-get dist-upgrade
+   ```
+4. **Install GCC, G++ and GDB:**
+   ```sh
+   sudo apt-get install build-essential gdb
+   ```
 
-- Open the Bash shell for WSL. If you installed an Ubuntu distro, type "Ubuntu" in the Windows search box and then click on it in the result list. For Debian, type "Debian", and so on.
-- The shell appears with a command prompt that by default consists of your user name and computer name, and puts you in your home directory. For Ubuntu it looks like this:
-- Although you will be using VS Code to edit your source code, you'll be compiling the source code on Linux using the gcc or g++ compiler.
-- From the WSL command prompt, first run apt-get update to update the Ubuntu package lists. An out-of-date distro can sometimes interfere with attempts to install new packages.
+---
 
-	`    sudo apt-get update
-	`
-
-- If you like, you can run sudo apt-get update && sudo apt-get dist-upgrade to also download the latest versions of the system packages, but this can take significantly longer depending on your connection speed.
-- From the command prompt, install the GNU compiler tools by typing:
-
-	`    sudo apt-get install build-essential gdb
-	`
-
+> **Tip:** After installing the compiler and debugger, restart VS Code to ensure the extension detects

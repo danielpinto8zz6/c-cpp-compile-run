@@ -70,7 +70,7 @@ export class Compiler {
         );
 
         const definition = {
-            type: "Compile"
+            type: "process"
         };
 
         const problemMatcher = ["$gcc"];

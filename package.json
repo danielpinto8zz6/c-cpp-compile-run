@@ -2,7 +2,7 @@
     "name": "c-cpp-compile-run",
     "displayName": "C/C++ Compile Run",
     "description": "Compile & Run single c/c++ files easly",
-    "version": "1.101.1",
+    "version": "1.0.60",
     "publisher": "danielpinto8zz6",
     "author": {
         "name": "Daniel Pinto",
@@ -11,7 +11,7 @@
     },
     "icon": "resources/logo.png",
     "engines": {
-        "vscode": "^1.93.0"
+        "vscode": "^1.101.0"
     },
     "main": "./dist/extension.js",
     "categories": [

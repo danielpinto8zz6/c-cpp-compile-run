@@ -67,8 +67,15 @@ export class Compiler {
             }
         }
 
+        const includePaths = [
+            ...Configuration.additionalIncludePaths(),
+            ...Configuration.includePathsFromCppProperties()
+        ];
+        const includeFlags = includePaths.flatMap(dir => ["-I", dir]);
+
         let compilerArgs = [
             ...(this.inputFlags ? this.inputFlags.split(" ") : []),
+            ...includeFlags,
             this.file.path,
             "-o",
             outputPath,

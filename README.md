@@ -55,6 +55,7 @@ A Visual Studio Code extension to **compile, run, and debug** single C/C++ files
 | c-cpp-compile-run.should-show-notifications | Show notifications                                                      |
 | c-cpp-compile-run.output-location           | Custom output location for the compiled file. Supports `${workspaceFolder}` and `${pwd}` variables. See [Output Folder Mirroring](#output-folder-mirroring) |
 | c-cpp-compile-run.custom-run-prefix         | Prefix command before run (e.g. `valgrind ./foobar`)                    |
+| c-cpp-compile-run.additional-include-paths | Additional directories to add to the compiler's include path (e.g. ["${workspaceFolder}/include"]) |
 
 ## Output Folder Mirroring
 

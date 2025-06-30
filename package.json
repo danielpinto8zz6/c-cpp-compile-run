@@ -327,6 +327,15 @@
                     "type": "string",
                     "description": "Prefix command before run (e.g. valgrind ./foobar)",
                     "scope": "resource"
+                },
+                "c-cpp-compile-run.additional-include-paths": {
+                    "type": "array",
+                    "description": "Additional directories to add to the compiler's include path (e.g. [\"${workspaceFolder}/include\", \"${workspaceFolder}/libs\"]).",
+                    "default": [],
+                    "items": {
+                        "type": "string"
+                    },
+                    "scope": "resource"
                 }
             }
         }

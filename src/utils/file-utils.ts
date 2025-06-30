@@ -1,6 +1,6 @@
 import { File } from "../models/file";
-import { TextDocument } from "vscode";
-import { basename, extname, dirname, isAbsolute, join } from "path";
+import { TextDocument, workspace } from "vscode";
+import { basename, extname, dirname, isAbsolute, join, relative } from "path";
 import { getFileType } from "./file-type-utils";
 import * as fse from "fs-extra";
 import { Configuration } from "../configuration";
@@ -30,15 +30,18 @@ export function parseFile(doc: TextDocument): File {
 export function getOutputLocation(file: File, createIfNotExists: boolean = false): string {
     let outputLocation = Configuration.outputLocation();
 
-    if (!outputLocation) {
-        outputLocation = file.directory;
-    } else if (!isAbsolute(outputLocation)) {
-        outputLocation = join(file.directory, outputLocation);
+    // Resolve workspaceFolder or pwd
+    const workspaceFolder = workspace.workspaceFolders?.[0]?.uri.fsPath ?? process.cwd();
+    outputLocation = outputLocation
+        .replace("${workspaceFolder}", workspaceFolder)
+        .replace("${pwd}", process.cwd());
+
+    // Always use the outputLocation as the base directory
+    let finalOutputDir = outputLocation;
+
+    if (createIfNotExists && !fse.existsSync(finalOutputDir)) {
+        fse.mkdirpSync(finalOutputDir);
     }
 
-    if (createIfNotExists && !fse.existsSync(outputLocation)) {
-        fse.mkdirpSync(outputLocation);
-    }
-
-    return outputLocation;
+    return finalOutputDir;
 }

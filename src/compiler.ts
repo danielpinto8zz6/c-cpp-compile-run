@@ -49,11 +49,12 @@ export class Compiler {
         }
 
         const outputLocation = getOutputLocation(this.file, true);
+        const outputPath = path.join(outputLocation, this.file.executable);
         let compilerArgs = [
             ...(this.inputFlags ? this.inputFlags.split(" ") : []),
             this.file.path,
             "-o",
-            path.join(outputLocation, this.file.executable),
+            outputPath,
             ...(this.linkerFlags ? this.linkerFlags.split(" ") : [])
         ].filter(Boolean);
 

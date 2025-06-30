@@ -53,8 +53,49 @@ A Visual Studio Code extension to **compile, run, and debug** single C/C++ files
 | c-cpp-compile-run.run-args                  | Program arguments when running                                          |
 | c-cpp-compile-run.run-in-external-terminal  | Run in an external terminal                                             |
 | c-cpp-compile-run.should-show-notifications | Show notifications                                                      |
-| c-cpp-compile-run.output-location           | Custom output location for the compiled file                            |
+| c-cpp-compile-run.output-location           | Custom output location for the compiled file. Supports `${workspaceFolder}` and `${pwd}` variables. See [Output Folder Mirroring](#output-folder-mirroring) |
 | c-cpp-compile-run.custom-run-prefix         | Prefix command before run (e.g. `valgrind ./foobar`)                    |
+
+## Output Folder Mirroring
+
+You can configure the extension to mirror your source folder structure in a separate output directory.  
+For example, if your project is organized as:
+
+```
+myproj/
+├── src/
+│   ├── basics/
+│   │   └── HelloWorld.cpp
+│   └── functions/
+│       └── Math.cpp
+└── out/
+```
+
+And you set in your `.vscode/settings.json`:
+
+```json
+{
+    "c-cpp-compile-run.output-location": "${workspaceFolder}/out"
+}
+```
+
+When you compile `src/basics/HelloWorld.cpp`, the executable will be placed at:
+
+```
+out/basics/HelloWorld.exe
+```
+
+The subfolder structure under `src` is mirrored under `out`, so both source and output files stay in the same relative location.
+
+- `${workspaceFolder}` will be replaced with your project's root folder.
+- `${pwd}` will be replaced with your current working directory.
+
+**Example:**  
+If your file is `D:/myproj/src/functions/Math.cpp`,  
+the output will be `D:/myproj/out/functions/Math.exe`.
+
+This makes it easy to keep your build artifacts organized and separate from your source code, similar to Gradle/Java project layouts.
+
 
 ## Keybindings
 

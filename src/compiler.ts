@@ -9,6 +9,7 @@ import { isStringNullOrWhiteSpace } from "./utils/string-utils";
 import { Notification } from "./notification";
 import path = require("path");
 import { getOutputLocation } from "./utils/file-utils";
+import { existsSync, statSync } from "fs";
 
 export class Compiler {
     private file: File;
@@ -50,6 +51,22 @@ export class Compiler {
 
         const outputLocation = getOutputLocation(this.file, true);
         const outputPath = path.join(outputLocation, this.file.executable);
+
+        // --- Up-to-date check ---
+        if (existsSync(outputPath)) {
+            try {
+                const exeStat = statSync(outputPath);
+                const srcStat = statSync(this.file.path);
+                if (exeStat.mtimeMs >= srcStat.mtimeMs) {
+                    Notification.showInformationMessage("Executable is up-to-date. Skipping compilation.");
+                    if (runCallback) { await runCallback(); }
+                    return;
+                }
+            } catch (err) {
+                // If stat fails, fall through to compile
+            }
+        }
+
         let compilerArgs = [
             ...(this.inputFlags ? this.inputFlags.split(" ") : []),
             this.file.path,

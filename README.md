@@ -96,7 +96,6 @@ the output will be `D:/myproj/out/functions/Math.exe`.
 
 This makes it easy to keep your build artifacts organized and separate from your source code, similar to Gradle/Java project layouts.
 
-
 ## Keybindings
 
 | Linux  | Windows | Mac   | Description                                                     |

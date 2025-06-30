@@ -3,7 +3,7 @@ import { Configuration } from "./configuration";
 import { FileType } from "./enums/file-type";
 import { File } from "./models/file";
 import { promptCompiler, promptFlags } from "./utils/prompt-utils";
-import { commandExists, isProccessRunning } from "./utils/common-utils";
+import { commandExists, isProcessRunning } from "./utils/common-utils";
 import { Result } from "./enums/result";
 import { isStringNullOrWhiteSpace } from "./utils/string-utils";
 import { Notification } from "./notification";
@@ -22,25 +22,22 @@ export class Compiler {
         this.shouldAskForInputFlags = shouldAskForInputFlags;
     }
 
-    async compile(runCallback: () => Promise<void> = null): Promise<void> {
-        const setCompilerResult = this.setCompiler();
-        if (setCompilerResult === Result.error) {
-            return;
-        }
+    async compile(runCallback: (() => Promise<void>) | null = null): Promise<void> {
+        if (this.setCompiler() === Result.error) { return; }
 
         if (Configuration.saveBeforeCompile()) {
             await window.activeTextEditor?.document.save();
         }
 
-        if (await isProccessRunning(this.file.executable)) {
-            Notification.showErrorMessage(`${this.file.executable} is already running! Please close it first to compile successfully!`);
-
+        if (await isProcessRunning(this.file.executable)) {
+            Notification.showErrorMessage(
+                `The program "${this.file.executable}" is already running. Please close it before compiling again.`
+            );
             return;
         }
 
-        if (!this.isCompilerValid(this.compiler)) {
+        if (!await this.isCompilerValid(this.compiler)) {
             await this.compilerNotFound();
-
             return;
         }
 
@@ -52,50 +49,38 @@ export class Compiler {
         }
 
         const outputLocation = getOutputLocation(this.file, true);
+        let compilerArgs = [
+            ...(this.inputFlags ? this.inputFlags.split(" ") : []),
+            this.file.path,
+            "-o",
+            path.join(outputLocation, this.file.executable),
+            ...(this.linkerFlags ? this.linkerFlags.split(" ") : [])
+        ].filter(Boolean);
 
-        let compilerArgs = [this.file.path, "-o", path.join(outputLocation, this.file.executable)];
-
-        if (this.inputFlags) {
-            compilerArgs = this.inputFlags.split(" ").concat(compilerArgs);
-        }
-
-        if (this.linkerFlags) {
-            compilerArgs = compilerArgs.concat(this.linkerFlags.split(" "));
-        }
-
-        let processExecution = new ProcessExecution(
-            this.compiler,
+        const processExecution = new ProcessExecution(
+            this.compiler!,
             compilerArgs,
             { cwd: this.file.directory }
         );
 
-        const definition = {
-            type: "process"
-        };
-
-        const problemMatcher = ["$gcc"];
-
         const task = new Task(
-            definition,
+            { type: "process" },
             TaskScope.Workspace,
             "C/C++ Compile Run: Compile",
             "C/C++ Compile Run",
             processExecution,
-            problemMatcher
+            ["$gcc"]
         );
 
-        var execution = await tasks.executeTask(task);
+        const execution = await tasks.executeTask(task);
 
         tasks.onDidEndTaskProcess(async e => {
             if (e.execution === execution) {
                 if (e.exitCode === 0) {
-                    Notification.showInformationMessage("Compiled successfully!");
-
-                    if (runCallback) {
-                        await runCallback();
-                    }
+                    Notification.showInformationMessage("Compilation successful.");
+                    if (runCallback) { await runCallback(); }
                 } else {
-                    Notification.showErrorMessage("Error compiling!");
+                    Notification.showErrorMessage("Compilation failed. Please check the output for errors.");
                 }
             }
         });
@@ -103,25 +88,19 @@ export class Compiler {
 
     setCompiler(): Result {
         switch (this.file.type) {
-            case FileType.c: {
+            case FileType.c:
                 this.compiler = Configuration.cCompiler();
                 this.inputFlags = Configuration.cFlags();
                 this.linkerFlags = Configuration.cLinkerFlags();
-
                 return Result.success;
-            }
-            case FileType.cplusplus: {
+            case FileType.cplusplus:
                 this.compiler = Configuration.cppCompiler();
                 this.inputFlags = Configuration.cppFlags();
-                this.linkerFlags = Configuration.cLinkerFlags();
-
+                this.linkerFlags = Configuration.cppLinkerFlags();
                 return Result.success;
-            }
-            default: {
-                Notification.showErrorMessage("Invalid File!");
-
+            default:
+                Notification.showErrorMessage("Unsupported file type. Only C and C++ files are supported.");
                 return Result.error;
-            }
         }
     }
 
@@ -129,19 +108,21 @@ export class Compiler {
         return !isStringNullOrWhiteSpace(compiler) && await commandExists(compiler);
     }
 
-    async compilerNotFound() {
-        const CHANGE_PATH = "Change path";
-        const choiceForDetails = await window.showErrorMessage("Compiler not found, try to change path in settings!", CHANGE_PATH);
-        if (choiceForDetails === CHANGE_PATH) {
+    async compilerNotFound(): Promise<void> {
+        const CHANGE_PATH = "Change compiler path";
+        const choice = await window.showErrorMessage(
+            "Compiler executable not found. Would you like to update the compiler path in settings?",
+            CHANGE_PATH
+        );
+        if (choice === CHANGE_PATH) {
             this.compiler = await promptCompiler();
-
             if (await this.isCompilerValid(this.compiler)) {
                 await Configuration.setCompiler(this.compiler, this.file.type);
             } else {
-                Notification.showErrorMessage("Compiler not found!");
+                Notification.showErrorMessage("The specified compiler was not found. Please check the path and try again.");
             }
         } else {
-            Notification.showErrorMessage("Compiler not set!");
+            Notification.showErrorMessage("Compiler is not set. Compilation aborted.");
         }
     }
 }

@@ -1,36 +1,43 @@
 import { File } from "../models/file";
 import { TextDocument } from "vscode";
-import { basename, extname, dirname } from "path";
+import { basename, extname, dirname, isAbsolute, join } from "path";
 import { getFileType } from "./file-type-utils";
 import * as fse from "fs-extra";
 import { Configuration } from "../configuration";
-import path = require("path");
 
+/**
+ * Parses a VS Code TextDocument into a File object used by the extension.
+ */
 export function parseFile(doc: TextDocument): File {
-    const file: File = {
-        path: doc.fileName,
-        name: basename(doc.fileName),
-        title: basename(doc.fileName, extname(doc.fileName)),
-        directory: dirname(doc.fileName),
-        type: getFileType(doc.languageId),
-        executable: process.platform === "win32"
-            ? basename(doc.fileName, extname(doc.fileName)) + ".exe"
-            : basename(doc.fileName, extname(doc.fileName))
-    };
+    const fileName = doc.fileName;
+    const fileTitle = basename(fileName, extname(fileName));
+    const fileType = getFileType(doc.languageId);
 
-    return file;
+    return {
+        path: fileName,
+        name: basename(fileName),
+        title: fileTitle,
+        directory: dirname(fileName),
+        type: fileType,
+        executable: process.platform === "win32" ? `${fileTitle}.exe` : fileTitle
+    };
 }
 
+/**
+ * Returns the output directory for the compiled file.
+ * If createIfNotExists is true, ensures the directory exists.
+ */
 export function getOutputLocation(file: File, createIfNotExists: boolean = false): string {
     let outputLocation = Configuration.outputLocation();
+
     if (!outputLocation) {
         outputLocation = file.directory;
-    } else if (!path.isAbsolute(outputLocation)) {
-        outputLocation = path.join(file.directory, outputLocation);
+    } else if (!isAbsolute(outputLocation)) {
+        outputLocation = join(file.directory, outputLocation);
     }
 
-    if (createIfNotExists === true && !fse.existsSync(outputLocation)) {
-        fse.mkdirSync(outputLocation);
+    if (createIfNotExists && !fse.existsSync(outputLocation)) {
+        fse.mkdirpSync(outputLocation);
     }
 
     return outputLocation;

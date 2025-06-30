@@ -9,66 +9,41 @@ import { getFileType } from "./utils/file-type-utils";
 export function activate(context: ExtensionContext) {
     const compileRunManager = new CompileRunManager();
 
-    const compile = commands.registerCommand("extension.Compile", async () => {
-        await compileRunManager.compile();
-    });
+    // Helper to register and push commands
+    function register(cmd: string, handler: () => Promise<void>) {
+        context.subscriptions.push(commands.registerCommand(cmd, handler));
+    }
 
-    const run = commands.registerCommand("extension.Run", async () => {
-        await compileRunManager.run(false, Configuration.runInExternalTerminal());
-    });
+    register("extension.Compile", () => compileRunManager.compile());
+    register("extension.Run", () => compileRunManager.run(false, Configuration.runInExternalTerminal()));
+    register("extension.Debug", () => compileRunManager.debug());
+    register("extension.CompileRun", () => compileRunManager.compileRun(false, false, Configuration.runInExternalTerminal()));
+    register("extension.CustomCompile", () => compileRunManager.compile(true));
+    register("extension.CustomRun", () => compileRunManager.run(true));
+    register("extension.CustomCompileRun", () => compileRunManager.compileRun(true, true, Configuration.runInExternalTerminal()));
+    register("extension.CompileRunInExternalTerminal", () => compileRunManager.compileRun(false, false, true));
 
-    const debug = commands.registerCommand("extension.Debug", async () => {
-        await compileRunManager.debug();
-    });
-
-    const compileRun = commands.registerCommand("extension.CompileRun", async () => {
-        await compileRunManager.compileRun(false, false, Configuration.runInExternalTerminal());
-    });
-
-    const customCompile = commands.registerCommand("extension.CustomCompile", async () => {
-        await compileRunManager.compile(true);
-    });
-
-    const customRun = commands.registerCommand("extension.CustomRun", async () => {
-        await compileRunManager.run(true);
-    });
-
-    const customCompileRun = commands.registerCommand("extension.CustomCompileRun", async () => {
-        await compileRunManager.compileRun(true, true, Configuration.runInExternalTerminal());
-    });
-
-    const compileRunInExternalTerminal = commands.registerCommand("extension.CompileRunInExternalTerminal", async () => {
-        await compileRunManager.compileRun(false, false, true);
-    });
-
-    context.subscriptions.push(compile);
-    context.subscriptions.push(run);
-    context.subscriptions.push(debug);
-    context.subscriptions.push(compileRun);
-    context.subscriptions.push(customCompile);
-    context.subscriptions.push(customRun);
-    context.subscriptions.push(customCompileRun);
-    context.subscriptions.push(compileRunInExternalTerminal);
-
-    // Free resources when manually closing a terminal
+    // Dispose terminal resources when closed
     context.subscriptions.push(
         window.onDidCloseTerminal((closedTerminal: Terminal) => {
             terminal.dispose(closedTerminal.name);
         })
     );
 
+    // Status bar management
     const statusBar = new StatusBar(context);
     statusBar.showAll();
 
-    context.subscriptions.push(window.onDidChangeActiveTextEditor(() => {
-        const activeFileType = getFileType(window.activeTextEditor?.document?.languageId);
-        if (activeFileType === FileType.c || activeFileType === FileType.cplusplus) {
-            statusBar.showAll();
-        } else {
-            statusBar.hideAll();
-        }
-    }));
+    context.subscriptions.push(
+        window.onDidChangeActiveTextEditor(() => {
+            const activeFileType = getFileType(window.activeTextEditor?.document?.languageId);
+            if (activeFileType === FileType.c || activeFileType === FileType.cplusplus) {
+                statusBar.showAll();
+            } else {
+                statusBar.hideAll();
+            }
+        })
+    );
 }
 
-export function deactivate() {
-}
+export function deactivate() {}

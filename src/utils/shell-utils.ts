@@ -71,7 +71,7 @@ export async function toWslPath(filepath: string): Promise<string> {
     try {
         return (await executeCommand("wsl", ["wslpath", "-u", `"${filepath.replace(/\\/g, "/")}"`])).trim();
     } catch (error) {
-        outputChannel.appendLine(error, "WSL");
+        outputChannel.appendLine(String(error), "WSL");
         return toDefaultWslPath(filepath);
     }
 }

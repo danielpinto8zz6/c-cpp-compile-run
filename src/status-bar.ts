@@ -1,47 +1,29 @@
 import { ExtensionContext, StatusBarAlignment, StatusBarItem, window } from "vscode";
 
 export class StatusBar {
-    statusBarItems: StatusBarItem[] = [this.compileRun(), this.compile(), this.debug()];
+    private statusBarItems: StatusBarItem[];
 
     constructor(context: ExtensionContext) {
-        this.statusBarItems.forEach((item) => {
-            context.subscriptions.push(item);
-        });
+        this.statusBarItems = [
+            this.createStatusBarItem("$(play) Compile & Run", "extension.CompileRun", 0),
+            this.createStatusBarItem("$(gear) Compile", "extension.Compile", 1),
+            this.createStatusBarItem("$(bug) Debug", "extension.Debug", 2)
+        ];
+        this.statusBarItems.forEach(item => context.subscriptions.push(item));
     }
 
-    compileRun(): StatusBarItem {
-        const item: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left, 0);
-        item.text = "$(play) Compile & Run";
-        item.command = "extension.CompileRun";
-
+    private createStatusBarItem(text: string, command: string, priority: number): StatusBarItem {
+        const item = window.createStatusBarItem(StatusBarAlignment.Left, priority);
+        item.text = text;
+        item.command = command;
         return item;
     }
 
-    compile(): StatusBarItem {
-        const item: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left, 0);
-        item.text = "$(gear) Compile";
-        item.command = "extension.Compile";
-
-        return item;
+    public showAll(): void {
+        this.statusBarItems.forEach(item => item.show());
     }
 
-    debug(): StatusBarItem {
-        const item: StatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left, 0);
-        item.text = "$(bug) Debug";
-        item.command = "extension.Debug";
-
-        return item;
-    }
-
-    public showAll() {
-        this.statusBarItems.forEach((item) => {
-            item.show();
-        });
-    }
-
-    public hideAll() {
-        this.statusBarItems.forEach((item) => {
-            item.hide();
-        });
+    public hideAll(): void {
+        this.statusBarItems.forEach(item => item.hide());
     }
 }

@@ -22,8 +22,7 @@ export class Runner {
 
     async run(shouldRunInExternalTerminal = false): Promise<void> {
         if (!existsSync(this.file.path)) {
-            Notification.showErrorMessage(`"${this.file.path}" doesn't exists!`);
-
+            Notification.showErrorMessage(`Source file "${this.file.path}" does not exist.`);
             return;
         }
 
@@ -33,25 +32,19 @@ export class Runner {
         }
 
         const outputLocation = getOutputLocation(this.file);
-
-        let customPrefix = Configuration.customRunPrefix();
-
+        const customPrefix = Configuration.customRunPrefix();
         const shell = this.getShell(shouldRunInExternalTerminal);
-
         const parsedExecutable = await getPath(this.file.executable, shell);
-
         const runCommand = this.getRunCommand(parsedExecutable, args, customPrefix, shell);
 
-        if (shouldRunInExternalTerminal === true && isWsl === true){
-            Notification.showWarningMessage("Wsl detected, running in vscode terminal!");
-
+        if (shouldRunInExternalTerminal && isWsl) {
+            Notification.showWarningMessage("WSL detected. Running in VS Code integrated terminal instead of an external terminal.");
             shouldRunInExternalTerminal = false;
         }
 
         if (shouldRunInExternalTerminal) {
             await externalTerminal.runInExternalTerminal(runCommand, outputLocation, shell);
-        }
-        else {
+        } else {
             await terminal.runInTerminal(runCommand, { name: "C/C++ Compile Run", cwd: outputLocation });
         }
     }
@@ -68,18 +61,13 @@ export class Runner {
 
     getShell(runInExternalTerminal: boolean): ShellType {
         if (runInExternalTerminal) {
-            switch (process.platform) {
-                case "win32":
+            if (process.platform === "win32") {
                     const terminal = basename(Configuration.winTerminal());
                     const shell = parseShell(terminal);
                     return shell === ShellType.powerShell ? ShellType.powerShell : ShellType.cmd;
-                default:
-                    return ShellType.others;
             }
-        } else {
-            return currentShell();
+            return ShellType.others;
         }
+        return currentShell();
     }
 }
-
-

@@ -14,12 +14,17 @@ export class Debugger {
 
     async debug(): Promise<void> {
         if (!existsSync(this.file.path)) {
-            Notification.showErrorMessage(`"${this.file.path}" doesn't exists!`);
-
+            Notification.showErrorMessage(`Source file "${this.file.path}" does not exist.`);
             return;
         }
 
         const outputLocation = getOutputLocation(this.file);
+        const executablePath = path.join(outputLocation, this.file.executable);
+
+        if (!existsSync(executablePath)) {
+            Notification.showErrorMessage(`Executable "${executablePath}" not found. Please compile before debugging.`);
+            return;
+        }
 
         const debugConfiguration: DebugConfiguration = {
             name: "C/C++ Compile Run: Debug",
@@ -30,14 +35,14 @@ export class Debugger {
             externalConsole: false,
             MIMode: "gdb",
             miDebuggerPath: "gdb",
-            program: path.join(outputLocation, this.file.executable)
+            program: executablePath
         };
 
         const workspaceFolder = workspace.getWorkspaceFolder(Uri.file(this.file.directory));
 
-        await debug.startDebugging(
-            workspaceFolder,
-            debugConfiguration,
-        );
+        const started = await debug.startDebugging(workspaceFolder, debugConfiguration);
+        if (!started) {
+            Notification.showErrorMessage("Failed to start debugging session.");
+        }
     }
 }

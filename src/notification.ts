@@ -3,39 +3,25 @@ import { Configuration } from "./configuration";
 import { isStringNullOrWhiteSpace } from "./utils/string-utils";
 
 export class Notification {
-    static showErrorMessage(message: string) {
-        if (!Configuration.shouldShowNotifications()) {
-            return;
-        }
-
-        if (isStringNullOrWhiteSpace(message)) {
-            return;
-        }
-
-        window.showErrorMessage(message);
+    private static shouldNotify(message: string): boolean {
+        return Configuration.shouldShowNotifications() && !isStringNullOrWhiteSpace(message);
     }
 
-    static showInformationMessage(message: string) {
-        if (!Configuration.shouldShowNotifications()) {
-            return;
+    static showErrorMessage(message: string): void {
+        if (this.shouldNotify(message)) {
+            window.showErrorMessage(message);
         }
-
-        if (isStringNullOrWhiteSpace(message)) {
-            return;
-        }
-
-        window.showInformationMessage(message);
     }
 
-    static showWarningMessage(message: string) {
-        if (!Configuration.shouldShowNotifications()) {
-            return;
+    static showInformationMessage(message: string): void {
+        if (this.shouldNotify(message)) {
+            window.showInformationMessage(message);
         }
+    }
 
-        if (isStringNullOrWhiteSpace(message)) {
-            return;
+    static showWarningMessage(message: string): void {
+        if (this.shouldNotify(message)) {
+            window.showWarningMessage(message);
         }
-
-        window.showWarningMessage(message);
     }
 }

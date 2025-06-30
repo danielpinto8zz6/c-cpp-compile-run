@@ -2,40 +2,44 @@ import { workspace, ConfigurationTarget } from "vscode";
 import { FileType } from "./enums/file-type";
 
 export class Configuration {
-    static getSetting<T>(name: string): T {
+    private static getSetting<T>(name: string): T | undefined {
         return workspace.getConfiguration("c-cpp-compile-run", null).get<T>(name);
     }
 
+    private static getStringSetting(name: string): string {
+        return this.getSetting<string>(name)?.trim() ?? "";
+    }
+
     static cCompiler(): string {
-        return this.getSetting<string>("c-compiler")?.trim();
+        return this.getStringSetting("c-compiler");
     }
 
     static cFlags(): string {
-        return this.getSetting<string>("c-flags")?.trim();
+        return this.getStringSetting("c-flags");
     }
 
     static cLinkerFlags(): string {
-        return this.getSetting<string>("c-linker-flags")?.trim();
+        return this.getStringSetting("c-linker-flags");
     }
 
     static cppCompiler(): string {
-        return this.getSetting<string>("cpp-compiler")?.trim();
+        return this.getStringSetting("cpp-compiler");
     }
 
     static cppFlags(): string {
-        return this.getSetting<string>("cpp-flags")?.trim();
+        return this.getStringSetting("cpp-flags");
     }
 
     static cppLinkerFlags(): string {
-        return this.getSetting<string>("cpp-linker-flags")?.trim();
+        return this.getStringSetting("cpp-linker-flags");
     }
 
     static saveBeforeCompile(): boolean {
-        return this.getSetting<boolean>("save-before-compile");
+        return this.getSetting<boolean>("save-before-compile") ?? true;
     }
 
     static runArgs(): string {
-        return this.getSetting<string>("run-args")?.trim();
+        return this.getStringSetting("run-args");
     }
 
     static runInExternalTerminal(): boolean {
@@ -47,30 +51,30 @@ export class Configuration {
     }
 
     static outputLocation(): string {
-        return this.getSetting<string>("output-location")?.trim();
+        return this.getStringSetting("output-location");
     }
 
     static defaultWindowsShell(): string {
-        return workspace.getConfiguration("terminal").get<string>("integrated.shell.windows")?.trim();
+        return workspace.getConfiguration("terminal").get<string>("integrated.shell.windows")?.trim() ?? "";
     }
 
     static linuxTerminal(): string {
-        return workspace.getConfiguration().get<string>("terminal.external.linuxExec");
+        return workspace.getConfiguration().get<string>("terminal.external.linuxExec") ?? "";
     }
 
     static osxTerminal(): string {
-        return workspace.getConfiguration().get<string>("terminal.external.osxExec");
+        return workspace.getConfiguration().get<string>("terminal.external.osxExec") ?? "";
     }
 
     static winTerminal(): string {
-        return workspace.getConfiguration().get<string>("terminal.external.windowsExec");
+        return workspace.getConfiguration().get<string>("terminal.external.windowsExec") ?? "";
     }
 
     static customRunPrefix(): string {
-        return this.getSetting<string>("custom-run-prefix");
+        return this.getStringSetting("custom-run-prefix");
     }
 
-    static async setCompiler(compiler: string, type: FileType) {
+    static async setCompiler(compiler: string, type: FileType): Promise<void> {
         const key = type === FileType.c ? "c-compiler" : "cpp-compiler";
         await workspace.getConfiguration("c-cpp-compile-run", null).update(key, compiler, ConfigurationTarget.Global);
     }

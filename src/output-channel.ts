@@ -3,21 +3,21 @@ import * as vscode from "vscode";
 class OutputChannel implements vscode.Disposable {
     private readonly channel: vscode.OutputChannel = vscode.window.createOutputChannel("C/C++ Compile Run");
 
-    public appendLine(message: any, title?: string): void {
+    public appendLine(message: string, title?: string): void {
         if (title) {
-            const simplifiedTime: string = (new Date()).toISOString().replace(/z|t/gi, " ").trim(); // YYYY-MM-DD HH:mm:ss.sss
-            const hightlightingTitle = `[${title} ${simplifiedTime}]`;
-            this.channel.appendLine(hightlightingTitle);
+            const timestamp = new Date().toLocaleString();
+            const header = `[${title} - ${timestamp}]`;
+            this.channel.appendLine(header);
         }
         this.channel.appendLine(message);
     }
 
-    public append(message: any): void {
+    public append(message: string): void {
         this.channel.append(message);
     }
 
-    public show(): void {
-        this.channel.show();
+    public show(preserveFocus: boolean = false): void {
+        this.channel.show(preserveFocus);
     }
 
     public dispose(): void {
@@ -29,4 +29,4 @@ class OutputChannel implements vscode.Disposable {
     }
 }
 
-export const outputChannel: OutputChannel = new OutputChannel();
+export const outputChannel = new OutputChannel();

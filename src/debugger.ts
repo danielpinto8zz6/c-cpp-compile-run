@@ -2,8 +2,10 @@ import { existsSync } from "fs";
 import { File } from "./models/file";
 import { Notification } from "./notification";
 import path = require("path");
-import { debug, DebugConfiguration, Uri, workspace } from "vscode";
+import { debug, DebugConfiguration, Uri, workspace, extensions, window, commands } from "vscode";
 import { getOutputLocation } from "./utils/file-utils";
+
+const CPPTOLS_EXTENSION_ID = "ms-vscode.cpptools";
 
 export class Debugger {
     private file: File;
@@ -23,6 +25,19 @@ export class Debugger {
 
         if (!existsSync(executablePath)) {
             Notification.showErrorMessage(`Executable "${executablePath}" not found. Please compile before debugging.`);
+            return;
+        }
+
+        // Check if cpptools extension is installed
+        if (!extensions.getExtension(CPPTOLS_EXTENSION_ID)) {
+            const install = "Install C/C++ Extension";
+            const choice = await window.showErrorMessage(
+                "C/C++ Debugger (cpptools) extension is not installed. Debugging is not available.",
+                install
+            );
+            if (choice === install) {
+                await commands.executeCommand("workbench.extensions.installExtension", CPPTOLS_EXTENSION_ID);
+            }
             return;
         }
 

@@ -362,7 +362,7 @@
         "@vscode/test-electron": "^2.5.2",
         "eslint": "^9.30.0",
         "git-cz": "^4.9.0",
-        "glob": "^11.0.3",
+        "glob": "^11.1.0",
         "gulp": "^5.0.1",
         "mocha": "^11.7.1",
         "release-it": "^19.0.3",

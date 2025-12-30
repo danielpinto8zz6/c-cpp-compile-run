@@ -66,6 +66,8 @@ class ExternalTerminal {
                         return `${linuxTerminal} -t 'C/C++ Compile Run' -x bash -c '${runCommand}; echo; read -n1 -p \"Press any key to continue...\"'`;
                     case "xfce4-terminal":
                         return `${linuxTerminal} --title 'C/C++ Compile Run' -x bash -c '${runCommand}; echo; read -n1 -p \"Press any key to continue...\"'`;
+                    case "ptyxis":
+                        return `${linuxTerminal} -T 'C/C++ Compile Run' -- bash -c '${runCommand}; echo; read -n1 -p \"Press any key to continue...\"'`;
                     case "konsole":
                         return `${linuxTerminal} -p tabtitle='C/C++ Compile Run' --noclose -e bash -c '${runCommand}; echo;'`;
                     case "io.elementary.terminal":
@@ -85,3 +87,4 @@ class ExternalTerminal {
 }
 
 export const externalTerminal: ExternalTerminal = new ExternalTerminal();
+

@@ -38,7 +38,7 @@ export function getOutputLocation(createIfNotExists: boolean = false, baseDir?: 
     }
 
     outputLocation = outputLocation
-        .replace("${workspaceFolder}", root)
+        .replace("${workspaceFolder}", workspaceFolder ?? process.cwd())
         .replace("${pwd}", process.cwd());
 
     if (!isAbsolute(outputLocation)) {

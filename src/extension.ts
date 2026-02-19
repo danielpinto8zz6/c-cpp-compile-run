@@ -19,7 +19,7 @@ export function activate(context: ExtensionContext) {
     register("extension.Debug", () => compileRunManager.debug());
     register("extension.CompileRun", () => compileRunManager.compileRun(false, false, Configuration.runInExternalTerminal()));
     register("extension.CustomCompile", () => compileRunManager.compile(true));
-    register("extension.CustomRun", () => compileRunManager.run(true));
+    register("extension.CustomRun", () => compileRunManager.run(true, Configuration.runInExternalTerminal()));
     register("extension.CustomCompileRun", () => compileRunManager.compileRun(true, true, Configuration.runInExternalTerminal()));
     register("extension.CompileRunInExternalTerminal", () => compileRunManager.compileRun(false, false, true));
 

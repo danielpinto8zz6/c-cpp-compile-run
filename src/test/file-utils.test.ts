@@ -29,6 +29,6 @@ suite("File Utils Test Suite", () => {
     test("parseFile should handle files without extensions", () => {
         const mockDoc = { fileName: "Makefile", languageId: "makefile" } as vscode.TextDocument;
         const file = parseFile(mockDoc);
-        assert.strictEqual(file.type, FileType.unkown);
+        assert.strictEqual(file.type, FileType.unknown);
     });
 });

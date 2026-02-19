@@ -56,10 +56,6 @@ export class Configuration {
         return this.getStringSetting("output-location");
     }
 
-    static defaultWindowsShell(): string {
-        return workspace.getConfiguration("terminal").get<string>("integrated.shell.windows")?.trim() ?? "";
-    }
-
     static linuxTerminal(): string {
         return workspace.getConfiguration().get<string>("terminal.external.linuxExec") ?? "";
     }

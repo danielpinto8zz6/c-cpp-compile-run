@@ -27,7 +27,8 @@ export function splitArgs(input: string | undefined): string[] {
             continue;
         }
 
-        if (ch === "\\") {
+        // Only treat backslash as escape inside quotes (preserves Windows paths)
+        if (ch === "\\" && quote !== null) {
             escaped = true;
             continue;
         }

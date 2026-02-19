@@ -100,9 +100,11 @@ export class Compiler {
             ["$gcc"]
         );
 
-        const execution = await tasks.executeTask(task);
+        // Register listener before executing to avoid race condition
+        const executionPromise = tasks.executeTask(task);
 
         const endListener = tasks.onDidEndTaskProcess(async e => {
+            const execution = await executionPromise;
             if (e.execution === execution) {
                 endListener.dispose();
                 if (e.exitCode === 0) {
@@ -113,6 +115,8 @@ export class Compiler {
                 }
             }
         });
+
+        await executionPromise;
     }
 
     setCompiler(): Result {

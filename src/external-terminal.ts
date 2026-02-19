@@ -15,7 +15,10 @@ class ExternalTerminal {
             return;
         }
 
-        exec(externalCommand, { cwd: cwd });
+        const child = exec(externalCommand, { cwd: cwd });
+        child.on("error", (err) => {
+            Notification.showErrorMessage(`Failed to launch external terminal: ${err.message}`);
+        });
     }
 
     private async getExternalCommand(runCommand: string, outputLocation: string, shell: ShellType): Promise<string> {

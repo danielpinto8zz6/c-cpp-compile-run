@@ -12,20 +12,8 @@ class OutputChannel implements vscode.Disposable {
         this.channel.appendLine(message);
     }
 
-    public append(message: string): void {
-        this.channel.append(message);
-    }
-
-    public show(preserveFocus: boolean = false): void {
-        this.channel.show(preserveFocus);
-    }
-
     public dispose(): void {
         this.channel.dispose();
-    }
-
-    public clear(): void {
-        this.channel.clear();
     }
 }
 

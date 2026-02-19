@@ -19,8 +19,8 @@ suite("File Type Utils Test Suite", () => {
     });
 
     test("Should return unknown for other types", () => {
-        assert.strictEqual(getFileType("java"), FileType.unkown);
-        assert.strictEqual(getFileType("txt"), FileType.unkown);
-        assert.strictEqual(getFileType(""), FileType.unkown);
+        assert.strictEqual(getFileType("java"), FileType.unknown);
+        assert.strictEqual(getFileType("txt"), FileType.unknown);
+        assert.strictEqual(getFileType(""), FileType.unknown);
     });
 });

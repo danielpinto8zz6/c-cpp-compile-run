@@ -15,5 +15,5 @@ export function getFileType(extensionOrLangId: string): FileType {
         return FileType.cplusplus;
     }
 
-    return FileType.unkown;
+    return FileType.unknown;
 }

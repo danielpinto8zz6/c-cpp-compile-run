@@ -146,11 +146,19 @@
                 },
                 {
                     "command": "extension.CompileRunInExternalTerminal",
+                    "when": "editorLangId == c"
+                },
+                {
+                    "command": "extension.CompileRunInExternalTerminal",
                     "when": "editorLangId == cpp"
                 },
                 {
                     "command": "extension.CompileRunInExternalTerminal",
                     "when": "editorLangId == cc"
+                },
+                {
+                    "command": "extension.CustomCompileRun",
+                    "when": "editorLangId == c"
                 },
                 {
                     "command": "extension.CustomCompileRun",
@@ -300,6 +308,7 @@
                 "c-cpp-compile-run.run-args": {
                     "type": "string",
                     "description": "Arguments to pass when running the program",
+                    "default": "",
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.run-in-external-terminal": {
@@ -333,6 +342,19 @@
                         "type": "string"
                     },
                     "scope": "resource"
+                },
+                "c-cpp-compile-run.debugger-mimode": {
+                    "type": "string",
+                    "default": "gdb",
+                    "description": "The MI debugger to use (gdb or lldb)",
+                    "enum": ["gdb", "lldb"],
+                    "scope": "resource"
+                },
+                "c-cpp-compile-run.debugger-path": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Path to the debugger executable (e.g. /usr/bin/gdb)",
+                    "scope": "resource"
                 }
             }
         }
@@ -350,6 +372,7 @@
         "release": "release-it --disable-metrics --ci"
     },
     "devDependencies": {
+        "@types/fs-extra": "^11.0.4",
         "@types/glob": "^9.0.0",
         "@types/mocha": "^10.0.10",
         "@types/node": "^25.3.0",
@@ -370,7 +393,6 @@
         "webpack-cli": "^6.0.1"
     },
     "dependencies": {
-        "@types/fs-extra": "^11.0.4",
         "find-process": "^2.0.0",
         "fs-extra": "^11.3.3",
         "is-wsl": "^3.1.1",

@@ -85,6 +85,22 @@ export class Configuration {
         await workspace.getConfiguration("c-cpp-compile-run", null).update(key, compiler, ConfigurationTarget.Global);
     }
 
+    static useMake(): boolean {
+        return this.getSetting<boolean>("use-make") ?? false;
+    }
+
+    static makePath(): string {
+        return this.getStringSetting("make-path") || "make";
+    }
+
+    static makeBuildTarget(): string {
+        return this.getStringSetting("make-build-target");
+    }
+
+    static makeRunTarget(): string {
+        return this.getStringSetting("make-run-target");
+    }
+
     static additionalIncludePaths(): string[] {
         const workspaceFolder = workspace.workspaceFolders?.[0]?.uri.fsPath ?? process.cwd();
         const paths = workspace.getConfiguration("c-cpp-compile-run", null).get<string[]>("additional-include-paths") ?? [];

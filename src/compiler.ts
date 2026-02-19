@@ -3,7 +3,7 @@ import { Configuration } from "./configuration";
 import { FileType } from "./enums/file-type";
 import { File } from "./models/file";
 import { promptCompiler, promptFlags } from "./utils/prompt-utils";
-import { commandExists, isProcessRunning } from "./utils/common-utils";
+import { commandExists, isProcessRunning, isWindows } from "./utils/common-utils";
 import { Result } from "./enums/result";
 import { isStringNullOrWhiteSpace, splitArgs } from "./utils/string-utils";
 import { Notification } from "./notification";
@@ -85,10 +85,14 @@ export class Compiler {
             ...splitArgs(this.linkerFlags)
         ].filter(Boolean);
 
+        const execEnv: { [key: string]: string } | undefined = isWindows()
+            ? { LANG: "C.UTF-8", LC_ALL: "C.UTF-8" }
+            : undefined;
+
         const processExecution = new ProcessExecution(
             this.compiler!,
             compilerArgs,
-            { cwd: this.file.directory }
+            { cwd: this.file.directory, env: execEnv }
         );
 
         const task = new Task(

@@ -76,6 +76,8 @@ export class Compiler {
         let compilerArgs = [
             ...(this.inputFlags ? this.inputFlags.split(" ") : []),
             ...includeFlags,
+            "-finput-charset=UTF-8",
+            "-fexec-charset=UTF-8",
             this.file.path,
             "-o",
             outputPath,

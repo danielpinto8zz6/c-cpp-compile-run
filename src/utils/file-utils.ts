@@ -39,6 +39,13 @@ export function getOutputLocation(file: File, createIfNotExists: boolean = false
     // Always use the outputLocation as the base directory
     let finalOutputDir = outputLocation;
 
+    if (outputLocation) {
+        const relativePath = relative(workspaceFolder, file.directory);
+        if (!relativePath.startsWith("..") && !isAbsolute(relativePath)) {
+            finalOutputDir = join(outputLocation, relativePath);
+        }
+    }
+
     if (createIfNotExists && !fse.existsSync(finalOutputDir)) {
         fse.mkdirpSync(finalOutputDir);
     }

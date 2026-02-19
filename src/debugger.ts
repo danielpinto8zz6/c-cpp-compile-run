@@ -51,7 +51,7 @@ export class Debugger {
             request: "launch",
             stopAtEntry: false,
             cwd: this.file.directory,
-            externalConsole: false,
+            externalConsole: Configuration.runInExternalTerminal(),
             MIMode: Configuration.debuggerMIMode(),
             program: executablePath
         };

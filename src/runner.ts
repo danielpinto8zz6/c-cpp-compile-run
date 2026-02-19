@@ -1,4 +1,5 @@
 import { existsSync } from "fs";
+import { commands, window, workspace } from "vscode";
 import { Configuration } from "./configuration";
 import { ShellType } from "./enums/shell-type";
 import { File } from "./models/file";
@@ -10,6 +11,7 @@ import { basename } from "path";
 import { externalTerminal } from "./external-terminal";
 import { getOutputLocation } from "./utils/file-utils";
 import isWsl from "is-wsl";
+import { ensureWorkspaceIsTrusted } from "./utils/workspace-utils";
 
 export class Runner {
     private file: File;
@@ -21,6 +23,8 @@ export class Runner {
     }
 
     async run(shouldRunInExternalTerminal = false): Promise<void> {
+        if (!await ensureWorkspaceIsTrusted("run")) { return; }
+
         if (!existsSync(this.file.path)) {
             Notification.showErrorMessage(`Source file "${this.file.path}" does not exist.`);
             return;
@@ -31,7 +35,7 @@ export class Runner {
             args = await promptRunArguments(args);
         }
 
-        const outputLocation = getOutputLocation(this.file);
+        const outputLocation = getOutputLocation(false, this.file.directory);
         const customPrefix = Configuration.customRunPrefix();
         const shell = this.getShell(shouldRunInExternalTerminal);
         const parsedExecutable = await getPath(this.file.executable, shell);

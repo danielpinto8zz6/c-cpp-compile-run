@@ -27,21 +27,27 @@ export function parseFile(doc: TextDocument): File {
  * Returns the output directory for the compiled file.
  * If createIfNotExists is true, ensures the directory exists.
  */
-export function getOutputLocation(file: File, createIfNotExists: boolean = false): string {
+export function getOutputLocation(createIfNotExists: boolean = false, baseDir?: string): string {
     let outputLocation = Configuration.outputLocation();
 
-    // Resolve workspaceFolder or pwd
-    const workspaceFolder = workspace.workspaceFolders?.[0]?.uri.fsPath ?? process.cwd();
-    outputLocation = outputLocation
-        .replace("${workspaceFolder}", workspaceFolder)
-        .replace("${pwd}", process.cwd());
+    const workspaceFolder = workspace.workspaceFolders?.[0]?.uri.fsPath;
+    const root = workspaceFolder ?? baseDir ?? process.cwd();
 
-    // Always use the outputLocation as the base directory
-    let finalOutputDir = outputLocation;
-
-    if (createIfNotExists && !fse.existsSync(finalOutputDir)) {
-        fse.mkdirpSync(finalOutputDir);
+    if (!outputLocation) {
+        return root;
     }
 
-    return finalOutputDir;
+    outputLocation = outputLocation
+        .replace("${workspaceFolder}", root)
+        .replace("${pwd}", process.cwd());
+
+    if (!isAbsolute(outputLocation)) {
+        outputLocation = join(root, outputLocation);
+    }
+
+    if (createIfNotExists && !fse.existsSync(outputLocation)) {
+        fse.mkdirpSync(outputLocation);
+    }
+
+    return outputLocation;
 }

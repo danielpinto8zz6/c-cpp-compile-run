@@ -5,6 +5,7 @@ import path = require("path");
 import { debug, DebugConfiguration, Uri, workspace, extensions, window, commands } from "vscode";
 import { getOutputLocation } from "./utils/file-utils";
 import { Configuration } from "./configuration";
+import { ensureWorkspaceIsTrusted } from "./utils/workspace-utils";
 
 const CPPTOLS_EXTENSION_ID = "ms-vscode.cpptools";
 
@@ -16,12 +17,14 @@ export class Debugger {
     }
 
     async debug(): Promise<void> {
+        if (!await ensureWorkspaceIsTrusted("debug")) { return; }
+
         if (!existsSync(this.file.path)) {
             Notification.showErrorMessage(`Source file "${this.file.path}" does not exist.`);
             return;
         }
 
-        const outputLocation = getOutputLocation(this.file);
+        const outputLocation = getOutputLocation(false, this.file.directory);
         const executablePath = path.join(outputLocation, this.file.executable);
 
         if (!existsSync(executablePath)) {

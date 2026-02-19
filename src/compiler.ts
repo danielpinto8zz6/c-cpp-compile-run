@@ -1,4 +1,4 @@
-import { ProcessExecution, Task, tasks, TaskScope, window } from "vscode";
+import { commands, ProcessExecution, Task, tasks, TaskScope, window, workspace } from "vscode";
 import { Configuration } from "./configuration";
 import { FileType } from "./enums/file-type";
 import { File } from "./models/file";
@@ -10,6 +10,7 @@ import { Notification } from "./notification";
 import path = require("path");
 import { getOutputLocation } from "./utils/file-utils";
 import { existsSync, statSync } from "fs";
+import { ensureWorkspaceIsTrusted } from "./utils/workspace-utils";
 
 export class Compiler {
     private file: File;
@@ -24,6 +25,8 @@ export class Compiler {
     }
 
     async compile(runCallback: (() => Promise<void>) | null = null): Promise<void> {
+        if (!await ensureWorkspaceIsTrusted("compile")) { return; }
+
         if (this.setCompiler() === Result.error) { return; }
 
         if (Configuration.saveBeforeCompile()) {
@@ -49,7 +52,7 @@ export class Compiler {
             }
         }
 
-        const outputLocation = getOutputLocation(this.file, true);
+        const outputLocation = getOutputLocation(true, this.file.directory);
         const outputPath = path.join(outputLocation, this.file.executable);
 
         // --- Up-to-date check ---

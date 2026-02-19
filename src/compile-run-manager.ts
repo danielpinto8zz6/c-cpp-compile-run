@@ -1,6 +1,7 @@
 import { File } from "./models/file";
 import { Compiler } from "./compiler";
 import { Runner } from "./runner";
+import { MakeRunner } from "./make-runner";
 import { window } from "vscode";
 import { Configuration } from "./configuration";
 import { parseFile } from "./utils/file-utils";
@@ -14,8 +15,13 @@ export class CompileRunManager {
             return;
         }
 
-        const compiler = new Compiler(file, shouldAskForInputFlags);
-        await compiler.compile();
+        if (Configuration.useMake()) {
+            const makeRunner = new MakeRunner(file);
+            await makeRunner.build();
+        } else {
+            const compiler = new Compiler(file, shouldAskForInputFlags);
+            await compiler.compile();
+        }
     }
 
     public async run(shouldAskForArgs = false, shouldRunInExternalTerminal = false) {
@@ -24,8 +30,13 @@ export class CompileRunManager {
             return;
         }
 
-        const runner = new Runner(file, shouldAskForArgs);
-        await runner.run(shouldRunInExternalTerminal);
+        if (Configuration.useMake()) {
+            const makeRunner = new MakeRunner(file);
+            await makeRunner.run(shouldRunInExternalTerminal);
+        } else {
+            const runner = new Runner(file, shouldAskForArgs);
+            await runner.run(shouldRunInExternalTerminal);
+        }
     }
 
     public async debug() {
@@ -47,11 +58,14 @@ export class CompileRunManager {
             return;
         }
 
-        const compiler = new Compiler(file, shouldAskForInputFlags);
-
-        const runner = new Runner(file, shouldAskForArgs);
-
-        await compiler.compile(async () => await runner.run(shouldRunInExternalTerminal));
+        if (Configuration.useMake()) {
+            const makeRunner = new MakeRunner(file);
+            await makeRunner.build(async () => await makeRunner.run(shouldRunInExternalTerminal));
+        } else {
+            const compiler = new Compiler(file, shouldAskForInputFlags);
+            const runner = new Runner(file, shouldAskForArgs);
+            await compiler.compile(async () => await runner.run(shouldRunInExternalTerminal));
+        }
     }
 
     public async getFile(): Promise<File> {

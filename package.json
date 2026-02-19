@@ -358,6 +358,30 @@
                     "default": "",
                     "description": "Path to the debugger executable (e.g. /usr/bin/gdb)",
                     "scope": "resource"
+                },
+                "c-cpp-compile-run.use-make": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Use make instead of the compiler to build the project",
+                    "scope": "resource"
+                },
+                "c-cpp-compile-run.make-path": {
+                    "type": "string",
+                    "default": "make",
+                    "description": "Path to the make executable",
+                    "scope": "resource"
+                },
+                "c-cpp-compile-run.make-build-target": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Make target for building (leave empty for the default target)",
+                    "scope": "resource"
+                },
+                "c-cpp-compile-run.make-run-target": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Make target for running the program (leave empty to run the compiled executable directly)",
+                    "scope": "resource"
                 }
             }
         }

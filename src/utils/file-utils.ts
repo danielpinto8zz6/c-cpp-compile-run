@@ -1,6 +1,6 @@
 import { File } from "../models/file";
 import { TextDocument, workspace } from "vscode";
-import { basename, extname, dirname, isAbsolute, join, relative } from "path";
+import { basename, extname, dirname, isAbsolute, join } from "path";
 import { getFileType } from "./file-type-utils";
 import * as fse from "fs-extra";
 import { Configuration } from "../configuration";

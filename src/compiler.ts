@@ -1,11 +1,11 @@
-import { commands, ProcessExecution, Task, tasks, TaskScope, window, workspace } from "vscode";
+import { ProcessExecution, Task, tasks, TaskScope, window } from "vscode";
 import { Configuration } from "./configuration";
 import { FileType } from "./enums/file-type";
 import { File } from "./models/file";
 import { promptCompiler, promptFlags } from "./utils/prompt-utils";
 import { commandExists, isProcessRunning } from "./utils/common-utils";
 import { Result } from "./enums/result";
-import { isStringNullOrWhiteSpace } from "./utils/string-utils";
+import { isStringNullOrWhiteSpace, splitArgs } from "./utils/string-utils";
 import { Notification } from "./notification";
 import path = require("path");
 import { getOutputLocation } from "./utils/file-utils";
@@ -77,12 +77,12 @@ export class Compiler {
         const includeFlags = includePaths.flatMap(dir => ["-I", dir]);
 
         let compilerArgs = [
-            ...(this.inputFlags ? this.inputFlags.split(" ") : []),
+            ...splitArgs(this.inputFlags),
             ...includeFlags,
             this.file.path,
             "-o",
             outputPath,
-            ...(this.linkerFlags ? this.linkerFlags.split(" ") : [])
+            ...splitArgs(this.linkerFlags)
         ].filter(Boolean);
 
         const processExecution = new ProcessExecution(
@@ -102,8 +102,9 @@ export class Compiler {
 
         const execution = await tasks.executeTask(task);
 
-        tasks.onDidEndTaskProcess(async e => {
+        const endListener = tasks.onDidEndTaskProcess(async e => {
             if (e.execution === execution) {
+                endListener.dispose();
                 if (e.exitCode === 0) {
                     Notification.showInformationMessage("Compilation successful.");
                     if (runCallback) { await runCallback(); }

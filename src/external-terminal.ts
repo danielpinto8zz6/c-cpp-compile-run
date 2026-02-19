@@ -3,7 +3,6 @@ import { lookpath } from "lookpath";
 import { Configuration } from "./configuration";
 import { ShellType } from "./enums/shell-type";
 import { Notification } from "./notification";
-import { terminal } from "./terminal";
 import { getPath } from "./utils/shell-utils";
 import { escapeStringAppleScript, isStringNullOrWhiteSpace } from "./utils/string-utils";
 
@@ -51,7 +50,7 @@ class ExternalTerminal {
 
                 if (isStringNullOrWhiteSpace(linuxTerminal)
                     || isStringNullOrWhiteSpace(await lookpath(linuxTerminal))) {
-                    Notification.showErrorMessage(`${terminal} not found! Try to enter a valid terminal in 'terminal.external.linuxExec' `
+                    Notification.showErrorMessage(`${linuxTerminal} not found! Try to enter a valid terminal in 'terminal.external.linuxExec' `
                         + "settings!(gnome - terminal, xterm, konsole)");
 
                     return null;

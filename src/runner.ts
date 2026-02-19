@@ -1,5 +1,4 @@
 import { existsSync } from "fs";
-import { commands, window, workspace } from "vscode";
 import { Configuration } from "./configuration";
 import { ShellType } from "./enums/shell-type";
 import { File } from "./models/file";

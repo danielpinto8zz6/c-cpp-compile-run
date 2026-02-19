@@ -1,4 +1,4 @@
-import find = require("find-process");
+import find, { ProcessInfo, FindConfig } from "find-process";
 import { lookpath } from "lookpath";
 import { isStringNullOrWhiteSpace } from "./string-utils";
 import isWsl from "is-wsl";
@@ -20,7 +20,8 @@ export async function isProcessRunning(processName: string): Promise<boolean> {
         return false;
     }
     try {
-        const list = await find("name", processName, true);
+        const config: FindConfig = { strict: true };
+        const list: ProcessInfo[] = await find("name", processName, config);
         return list.length > 0;
     } catch (error) {
         return false;

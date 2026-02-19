@@ -2,7 +2,7 @@
     "name": "c-cpp-compile-run",
     "displayName": "C/C++ Compile Run",
     "description": "Easily compile, run, and debug single C/C++ files in VS Code.",
-    "version": "1.0.73",
+    "version": "1.0.74",
     "publisher": "danielpinto8zz6",
     "author": {
         "name": "Daniel Pinto",
@@ -347,7 +347,10 @@
                     "type": "string",
                     "default": "gdb",
                     "description": "The MI debugger to use (gdb or lldb)",
-                    "enum": ["gdb", "lldb"],
+                    "enum": [
+                        "gdb",
+                        "lldb"
+                    ],
                     "scope": "resource"
                 },
                 "c-cpp-compile-run.debugger-path": {

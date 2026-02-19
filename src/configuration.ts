@@ -76,6 +76,14 @@ export class Configuration {
         return this.getStringSetting("custom-run-prefix");
     }
 
+    static debuggerMIMode(): string {
+        return this.getStringSetting("debugger-mimode") || "gdb";
+    }
+
+    static debuggerPath(): string {
+        return this.getStringSetting("debugger-path");
+    }
+
     static async setCompiler(compiler: string, type: FileType): Promise<void> {
         const key = type === FileType.c ? "c-compiler" : "cpp-compiler";
         await workspace.getConfiguration("c-cpp-compile-run", null).update(key, compiler, ConfigurationTarget.Global);

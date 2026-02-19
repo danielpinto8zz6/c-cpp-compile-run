@@ -4,6 +4,7 @@ import { Notification } from "./notification";
 import path = require("path");
 import { debug, DebugConfiguration, Uri, workspace, extensions, window, commands } from "vscode";
 import { getOutputLocation } from "./utils/file-utils";
+import { Configuration } from "./configuration";
 
 const CPPTOLS_EXTENSION_ID = "ms-vscode.cpptools";
 
@@ -48,10 +49,16 @@ export class Debugger {
             stopAtEntry: false,
             cwd: this.file.directory,
             externalConsole: false,
-            MIMode: "gdb",
-            miDebuggerPath: "gdb",
+            MIMode: Configuration.debuggerMIMode(),
             program: executablePath
         };
+
+        const debuggerPath = Configuration.debuggerPath();
+        if (debuggerPath) {
+            debugConfiguration.miDebuggerPath = debuggerPath;
+        } else if (debugConfiguration.MIMode === "gdb") {
+            debugConfiguration.miDebuggerPath = "gdb";
+        }
 
         const workspaceFolder = workspace.getWorkspaceFolder(Uri.file(this.file.directory));
 

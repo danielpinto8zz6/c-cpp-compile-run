@@ -104,10 +104,15 @@ export class Configuration {
             const configs = json.configurations ?? [];
             // Use the first configuration or match by name if desired
             const config = configs[0];
-            return (config?.includePath ?? []).map((p: string) =>
-                p.replace("${workspaceFolder}", workspaceFolder)
-                 .replace("${workspaceRoot}", workspaceFolder)
-            );
+            return (config?.includePath ?? [])
+                .map((p: string) =>
+                    p.replace("${workspaceFolder}", workspaceFolder)
+                     .replace("${workspaceRoot}", workspaceFolder)
+                )
+                // Filter out glob patterns (e.g. "/**", "/**/*") that are valid for
+                // IntelliSense but would be shell-expanded when passed as -I flags,
+                // causing the compiler to receive all files in the folder as source files.
+                .filter((p: string) => !p.includes("*") && !p.includes("?"));
         } catch {
             return [];
         }

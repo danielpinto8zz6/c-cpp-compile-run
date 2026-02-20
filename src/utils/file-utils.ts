@@ -1,6 +1,6 @@
 import { File } from "../models/file";
 import { TextDocument, workspace } from "vscode";
-import { basename, extname, dirname, isAbsolute, join } from "path";
+import { basename, extname, dirname, isAbsolute, join, relative } from "path";
 import { getFileType } from "./file-type-utils";
 import * as fse from "fs-extra";
 import { Configuration } from "../configuration";
@@ -43,6 +43,14 @@ export function getOutputLocation(createIfNotExists: boolean = false, baseDir?: 
 
     if (!isAbsolute(outputLocation)) {
         outputLocation = join(root, outputLocation);
+    }
+
+    // Mirror the folder structure: append the relative path of baseDir from the workspace root
+    if (baseDir && workspaceFolder) {
+        const relativePath = relative(workspaceFolder, baseDir);
+        if (relativePath && !relativePath.startsWith("..")) {
+            outputLocation = join(outputLocation, relativePath);
+        }
     }
 
     if (createIfNotExists && !fse.existsSync(outputLocation)) {

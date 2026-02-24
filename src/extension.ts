@@ -1,4 +1,4 @@
-import { commands, ExtensionContext, Terminal, window, workspace } from "vscode";
+import { commands, ExtensionContext, Terminal, window } from "vscode";
 import { CompileRunManager } from "./compile-run-manager";
 import { Configuration } from "./configuration";
 import { FileType } from "./enums/file-type";
@@ -47,13 +47,9 @@ function initializeExtension(context: ExtensionContext) {
 }
 
 export function activate(context: ExtensionContext) {
-    if (!workspace.isTrusted) {
-        context.subscriptions.push(
-            workspace.onDidGrantWorkspaceTrust(() => initializeExtension(context))
-        );
-        return;
-    }
-
+    // Always register commands so users can trigger compile/run actions.
+    // Trust checks are handled per-action in ensureWorkspaceIsTrusted,
+    // which will prompt the user to grant trust when needed.
     initializeExtension(context);
 }
 

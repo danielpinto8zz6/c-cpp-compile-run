@@ -8,10 +8,26 @@ import { Configuration } from "../configuration";
 const trustedSingleFiles = new Set<string>();
 
 export async function ensureWorkspaceIsTrusted(action: string): Promise<boolean> {
-    // When no workspace folder is open (single file mode), VS Code considers
-    // the environment trusted by default. If the setting is enabled, we follow
-    // that behavior. Otherwise, prompt the user for confirmation.
+    // When no workspace folder is open (single file mode), VS Code may still
+    // treat the workspace as untrusted, which blocks terminal creation.
+    // We must ensure workspace.isTrusted is true before proceeding.
     if (!workspace.workspaceFolders || workspace.workspaceFolders.length === 0) {
+        if (!workspace.isTrusted) {
+            // VS Code blocks terminal access in untrusted workspaces,
+            // so we must prompt the user to grant trust first.
+            const manageTrust = "Manage Workspace Trust";
+            const choice = await window.showErrorMessage(
+                `Cannot ${action} in an untrusted workspace. Please trust the workspace to allow terminal access.`,
+                manageTrust
+            );
+
+            if (choice === manageTrust) {
+                await commands.executeCommand("workbench.trust.manage");
+            }
+
+            return workspace.isTrusted;
+        }
+
         if (Configuration.trustSingleFiles()) {
             return true;
         }

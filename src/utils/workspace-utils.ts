@@ -7,6 +7,45 @@ import { Configuration } from "../configuration";
  */
 const trustedSingleFiles = new Set<string>();
 
+/**
+ * Opens the Workspace Trust manager and waits for the user to grant trust.
+ * Returns true if trust was granted, false if the user dismissed without granting.
+ */
+async function requestAndWaitForTrust(): Promise<boolean> {
+    if (workspace.isTrusted) {
+        return true;
+    }
+
+    // Set up a listener BEFORE opening the trust manager to avoid race conditions
+    const trustGranted = new Promise<boolean>((resolve) => {
+        // Resolve true when trust is granted
+        const trustDisposable = workspace.onDidGrantWorkspaceTrust(() => {
+            trustDisposable.dispose();
+            resolve(true);
+        });
+
+        // Also resolve false if the user closes the trust editor without granting
+        // We use a timeout as a fallback since there's no "trust denied" event
+        const checkInterval = setInterval(() => {
+            if (workspace.isTrusted) {
+                clearInterval(checkInterval);
+                trustDisposable.dispose();
+                resolve(true);
+            }
+        }, 500);
+
+        // Timeout after 5 minutes to avoid hanging forever
+        setTimeout(() => {
+            clearInterval(checkInterval);
+            trustDisposable.dispose();
+            resolve(workspace.isTrusted);
+        }, 5 * 60 * 1000);
+    });
+
+    await commands.executeCommand("workbench.trust.manage");
+    return trustGranted;
+}
+
 export async function ensureWorkspaceIsTrusted(action: string): Promise<boolean> {
     // When no workspace folder is open (single file mode), VS Code may still
     // treat the workspace as untrusted, which blocks terminal creation.
@@ -22,10 +61,10 @@ export async function ensureWorkspaceIsTrusted(action: string): Promise<boolean>
             );
 
             if (choice === manageTrust) {
-                await commands.executeCommand("workbench.trust.manage");
+                return await requestAndWaitForTrust();
             }
 
-            return workspace.isTrusted;
+            return false;
         }
 
         if (Configuration.trustSingleFiles()) {
@@ -71,7 +110,7 @@ export async function ensureWorkspaceIsTrusted(action: string): Promise<boolean>
     );
 
     if (choice === manageTrust) {
-        await commands.executeCommand("workbench.trust.manage");
+        return await requestAndWaitForTrust();
     }
 
     return false;

@@ -80,6 +80,10 @@ export class Configuration {
         return this.getStringSetting("debugger-path");
     }
 
+    static trustSingleFiles(): boolean {
+        return this.getSetting<boolean>("trust-single-files") ?? true;
+    }
+
     static async setCompiler(compiler: string, type: FileType): Promise<void> {
         const key = type === FileType.c ? "c-compiler" : "cpp-compiler";
         await workspace.getConfiguration("c-cpp-compile-run", null).update(key, compiler, ConfigurationTarget.Global);

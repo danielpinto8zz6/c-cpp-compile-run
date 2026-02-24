@@ -358,6 +358,12 @@
                     "default": "",
                     "description": "Path to the debugger executable (e.g. /usr/bin/gdb)",
                     "scope": "resource"
+                },
+                "c-cpp-compile-run.trust-single-files": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Automatically trust single files opened without a workspace folder. When disabled, the extension will prompt for confirmation before compiling or running.",
+                    "scope": "application"
                 }
             }
         }

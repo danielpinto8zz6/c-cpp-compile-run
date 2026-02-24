@@ -15,7 +15,7 @@
     },
     "capabilities": {
         "workspaceTrust": {
-            "request": "always",
+            "request": "onDemand",
             "description": "This extension requires workspace trust to compile and run code using terminal processes."
         }
     },

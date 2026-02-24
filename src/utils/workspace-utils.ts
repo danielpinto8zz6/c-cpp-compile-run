@@ -1,12 +1,23 @@
 import { commands, window, workspace } from "vscode";
 import { Configuration } from "../configuration";
 
+/**
+ * Set of file paths the user has already trusted in single-file mode
+ * during this session, so they are not prompted repeatedly.
+ */
+const trustedSingleFiles = new Set<string>();
+
 export async function ensureWorkspaceIsTrusted(action: string): Promise<boolean> {
     // When no workspace folder is open (single file mode), VS Code considers
     // the environment trusted by default. If the setting is enabled, we follow
     // that behavior. Otherwise, prompt the user for confirmation.
     if (!workspace.workspaceFolders || workspace.workspaceFolders.length === 0) {
         if (Configuration.trustSingleFiles()) {
+            return true;
+        }
+
+        const filePath = window.activeTextEditor?.document.uri.fsPath;
+        if (filePath && trustedSingleFiles.has(filePath)) {
             return true;
         }
 
@@ -20,6 +31,9 @@ export async function ensureWorkspaceIsTrusted(action: string): Promise<boolean>
         );
 
         if (choice === trustAction) {
+            if (filePath) {
+                trustedSingleFiles.add(filePath);
+            }
             return true;
         }
 

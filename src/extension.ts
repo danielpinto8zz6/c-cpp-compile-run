@@ -1,4 +1,4 @@
-import { commands, ExtensionContext, Terminal, window } from "vscode";
+import { commands, ExtensionContext, Terminal, window, workspace } from "vscode";
 import { CompileRunManager } from "./compile-run-manager";
 import { Configuration } from "./configuration";
 import { FileType } from "./enums/file-type";
@@ -6,7 +6,7 @@ import { StatusBar } from "./status-bar";
 import { terminal } from "./terminal";
 import { getFileType } from "./utils/file-type-utils";
 
-export function activate(context: ExtensionContext) {
+function initializeExtension(context: ExtensionContext) {
     const compileRunManager = new CompileRunManager();
 
     // Helper to register and push commands
@@ -44,6 +44,17 @@ export function activate(context: ExtensionContext) {
             }
         })
     );
+}
+
+export function activate(context: ExtensionContext) {
+    if (!workspace.isTrusted) {
+        context.subscriptions.push(
+            workspace.onDidGrantWorkspaceTrust(() => initializeExtension(context))
+        );
+        return;
+    }
+
+    initializeExtension(context);
 }
 
 export function deactivate() {}

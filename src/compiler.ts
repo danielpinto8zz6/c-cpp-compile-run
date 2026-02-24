@@ -1,4 +1,4 @@
-import { ProcessExecution, Task, tasks, TaskScope, window } from "vscode";
+import { ProcessExecution, Task, tasks, TaskScope, window, workspace } from "vscode";
 import { Configuration } from "./configuration";
 import { FileType } from "./enums/file-type";
 import { File } from "./models/file";
@@ -89,15 +89,19 @@ export class Compiler {
             ? { LANG: "C.UTF-8", LC_ALL: "C.UTF-8" }
             : undefined;
 
+        // When no workspace folder is open (single-file mode), avoid setting
+        // cwd on ProcessExecution — VS Code blocks terminal creation with a cwd
+        // in untrusted paths. All compiler args already use absolute paths.
+        const hasWorkspace = workspace.workspaceFolders && workspace.workspaceFolders.length > 0;
         const processExecution = new ProcessExecution(
             this.compiler!,
             compilerArgs,
-            { cwd: this.file.directory, env: execEnv }
+            { cwd: hasWorkspace ? this.file.directory : undefined, env: execEnv }
         );
 
         const task = new Task(
             { type: "process" },
-            TaskScope.Workspace,
+            hasWorkspace ? TaskScope.Workspace : TaskScope.Global,
             "C/C++ Compile Run: Compile",
             "C/C++ Compile Run",
             processExecution,

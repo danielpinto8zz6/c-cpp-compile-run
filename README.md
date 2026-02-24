@@ -56,6 +56,9 @@ A Visual Studio Code extension to **compile, run, and debug** single C/C++ files
 | c-cpp-compile-run.output-location           | Custom output location for the compiled file. Supports `${workspaceFolder}` and `${pwd}` variables. See [Output Folder Mirroring](#output-folder-mirroring) |
 | c-cpp-compile-run.custom-run-prefix         | Prefix command before run (e.g. `valgrind ./foobar`)                    |
 | c-cpp-compile-run.additional-include-paths | Additional directories to add to the compiler's include path (e.g. ["${workspaceFolder}/include"]) |
+| c-cpp-compile-run.debugger-mimode          | The MI debugger to use (`gdb` or `lldb`)                                |
+| c-cpp-compile-run.debugger-path            | Path to the debugger executable (e.g. `/usr/bin/gdb`)                   |
+| c-cpp-compile-run.trust-single-files       | Automatically trust single files opened without a workspace folder (default: `true`). When disabled, prompts for confirmation before compiling or running. |
 
 ## Output Folder Mirroring
 

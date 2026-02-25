@@ -11,6 +11,7 @@ import path = require("path");
 import { getOutputLocation } from "./utils/file-utils";
 import { existsSync, statSync } from "fs";
 import { ensureWorkspaceIsTrusted } from "./utils/workspace-utils";
+import * as cp from "child_process";
 
 export class Compiler {
     private file: File;
@@ -89,44 +90,74 @@ export class Compiler {
             ? { LANG: "C.UTF-8", LC_ALL: "C.UTF-8" }
             : undefined;
 
-        // When no workspace folder is open (single-file mode), avoid setting
-        // cwd on ProcessExecution — VS Code blocks terminal creation with a cwd
-        // in untrusted paths. All compiler args already use absolute paths.
         const hasWorkspace = workspace.workspaceFolders && workspace.workspaceFolders.length > 0;
-        const processExecution = new ProcessExecution(
-            this.compiler!,
-            compilerArgs,
-            { cwd: hasWorkspace ? this.file.directory : undefined, env: execEnv }
-        );
 
-        const task = new Task(
-            { type: "process" },
-            hasWorkspace ? TaskScope.Workspace : TaskScope.Global,
-            "C/C++ Compile Run: Compile",
-            "C/C++ Compile Run",
-            processExecution,
-            // The $gcc problem matcher uses ${workspaceFolder} internally,
-            // which fails to resolve when no workspace folder is open.
-            hasWorkspace ? ["$gcc"] : []
-        );
+        if (hasWorkspace) {
+            // Use VS Code Task API when a workspace folder is open —
+            // provides $gcc problem matcher for clickable error links.
+            const processExecution = new ProcessExecution(
+                this.compiler!,
+                compilerArgs,
+                { cwd: this.file.directory, env: execEnv }
+            );
 
-        // Register listener before executing to avoid race condition
-        const executionPromise = tasks.executeTask(task);
+            const task = new Task(
+                { type: "process" },
+                TaskScope.Workspace,
+                "C/C++ Compile Run: Compile",
+                "C/C++ Compile Run",
+                processExecution,
+                ["$gcc"]
+            );
 
-        const endListener = tasks.onDidEndTaskProcess(async e => {
-            const execution = await executionPromise;
-            if (e.execution === execution) {
-                endListener.dispose();
-                if (e.exitCode === 0) {
-                    Notification.showInformationMessage("Compilation successful.");
-                    if (runCallback) { await runCallback(); }
-                } else {
-                    Notification.showErrorMessage("Compilation failed. Please check the output for errors.");
+            const executionPromise = tasks.executeTask(task);
+
+            const endListener = tasks.onDidEndTaskProcess(async e => {
+                const execution = await executionPromise;
+                if (e.execution === execution) {
+                    endListener.dispose();
+                    if (e.exitCode === 0) {
+                        Notification.showInformationMessage("Compilation successful.");
+                        if (runCallback) { await runCallback(); }
+                    } else {
+                        Notification.showErrorMessage("Compilation failed. Please check the output for errors.");
+                    }
                 }
-            }
-        });
+            });
 
-        await executionPromise;
+            await executionPromise;
+        } else {
+            // In single-file mode (no workspace folder), the VS Code Task API
+            // fails because it tries to resolve ${workspaceFolder} internally.
+            // Use child_process.spawn directly instead.
+            await new Promise<void>((resolve) => {
+                const proc = cp.spawn(this.compiler!, compilerArgs, {
+                    cwd: this.file.directory,
+                    env: { ...process.env, ...execEnv },
+                });
+
+                let stderr = "";
+                proc.stderr?.on("data", (data) => { stderr += data.toString(); });
+                proc.stdout?.on("data", (data) => { stderr += data.toString(); });
+
+                proc.on("close", async (code) => {
+                    if (code === 0) {
+                        Notification.showInformationMessage("Compilation successful.");
+                        if (runCallback) { await runCallback(); }
+                    } else {
+                        Notification.showErrorMessage(
+                            `Compilation failed (exit code ${code}).${stderr ? "\n" + stderr.trim() : " Please check the output for errors."}`
+                        );
+                    }
+                    resolve();
+                });
+
+                proc.on("error", (err) => {
+                    Notification.showErrorMessage(`Failed to launch compiler: ${err.message}`);
+                    resolve();
+                });
+            });
+        }
     }
 
     setCompiler(): Result {

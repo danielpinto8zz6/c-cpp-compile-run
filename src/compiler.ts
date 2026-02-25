@@ -105,7 +105,9 @@ export class Compiler {
             "C/C++ Compile Run: Compile",
             "C/C++ Compile Run",
             processExecution,
-            ["$gcc"]
+            // The $gcc problem matcher uses ${workspaceFolder} internally,
+            // which fails to resolve when no workspace folder is open.
+            hasWorkspace ? ["$gcc"] : []
         );
 
         // Register listener before executing to avoid race condition

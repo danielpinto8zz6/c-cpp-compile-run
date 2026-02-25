@@ -47,26 +47,10 @@ async function requestAndWaitForTrust(): Promise<boolean> {
 }
 
 export async function ensureWorkspaceIsTrusted(action: string): Promise<boolean> {
-    // When no workspace folder is open (single file mode), VS Code may still
-    // treat the workspace as untrusted, which blocks terminal creation.
-    // We must ensure workspace.isTrusted is true before proceeding.
+    // When no workspace folder is open (single file mode), VS Code treats the
+    // environment as trusted with "onDemand" trust request. Check the
+    // trust-single-files setting to decide whether to prompt anyway.
     if (!workspace.workspaceFolders || workspace.workspaceFolders.length === 0) {
-        if (!workspace.isTrusted) {
-            // VS Code blocks terminal access in untrusted workspaces,
-            // so we must prompt the user to grant trust first.
-            const manageTrust = "Manage Workspace Trust";
-            const choice = await window.showErrorMessage(
-                `Cannot ${action} in an untrusted workspace. Please trust the workspace to allow terminal access.`,
-                manageTrust
-            );
-
-            if (choice === manageTrust) {
-                return await requestAndWaitForTrust();
-            }
-
-            return false;
-        }
-
         if (Configuration.trustSingleFiles()) {
             return true;
         }

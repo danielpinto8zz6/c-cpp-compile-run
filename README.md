@@ -59,6 +59,7 @@ A Visual Studio Code extension to **compile, run, and debug** single C/C++ files
 | c-cpp-compile-run.debugger-mimode          | The MI debugger to use (`gdb` or `lldb`)                                |
 | c-cpp-compile-run.debugger-path            | Path to the debugger executable (e.g. `/usr/bin/gdb`)                   |
 | c-cpp-compile-run.trust-single-files       | Automatically trust single files opened without a workspace folder (default: `true`). When disabled, prompts for confirmation before compiling or running. |
+| c-cpp-compile-run.skip-if-compiled         | Skip compilation if the executable is already up-to-date (default: `true`). The check compares modification times of the source file, all header files (`.h`, `.hpp`, `.hxx`, `.hh`) found in the source directory and configured include paths, against the executable. Set to `false` to always recompile. |
 
 ## Output Folder Mirroring
 

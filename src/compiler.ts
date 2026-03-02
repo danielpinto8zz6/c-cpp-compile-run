@@ -74,7 +74,7 @@ export class Compiler {
         const includePaths = [
             ...Configuration.additionalIncludePaths(),
             ...Configuration.includePathsFromCppProperties()
-        ];
+        ].filter(p => p.trim().length > 0);
         const includeFlags = includePaths.flatMap(dir => ["-I", dir]);
 
         let compilerArgs = [

@@ -9,9 +9,32 @@ import { isStringNullOrWhiteSpace, splitArgs } from "./utils/string-utils";
 import { Notification } from "./notification";
 import path = require("path");
 import { getOutputLocation } from "./utils/file-utils";
-import { existsSync, statSync } from "fs";
+import { existsSync, readdirSync, statSync } from "fs";
 import { ensureWorkspaceIsTrusted } from "./utils/workspace-utils";
 import * as cp from "child_process";
+
+const HEADER_EXTENSIONS = new Set([".h", ".hpp", ".hxx", ".hh"]);
+const MAX_SCAN_DEPTH = 10;
+
+function hasNewerFile(dirs: string[], exeMtimeMs: number, depth: number = 0): boolean {
+    if (depth > MAX_SCAN_DEPTH) { return false; }
+    for (const dir of dirs) {
+        if (!existsSync(dir)) { continue; }
+        try {
+            for (const entry of readdirSync(dir, { withFileTypes: true })) {
+                const fullPath = path.join(dir, entry.name);
+                if (entry.isDirectory()) {
+                    if (hasNewerFile([fullPath], exeMtimeMs, depth + 1)) { return true; }
+                } else if (HEADER_EXTENSIONS.has(path.extname(entry.name).toLowerCase())) {
+                    try {
+                        if (statSync(fullPath).mtimeMs > exeMtimeMs) { return true; }
+                    } catch { /* ignore */ }
+                }
+            }
+        } catch { /* ignore */ }
+    }
+    return false;
+}
 
 export class Compiler {
     private file: File;
@@ -57,11 +80,16 @@ export class Compiler {
         const outputPath = path.join(outputLocation, this.file.executable);
 
         // --- Up-to-date check ---
-        if (existsSync(outputPath)) {
+        if (Configuration.skipIfCompiled() && existsSync(outputPath)) {
             try {
                 const exeStat = statSync(outputPath);
                 const srcStat = statSync(this.file.path);
-                if (exeStat.mtimeMs >= srcStat.mtimeMs) {
+                const includeDirs = [
+                    this.file.directory,
+                    ...Configuration.additionalIncludePaths(),
+                    ...Configuration.includePathsFromCppProperties()
+                ];
+                if (exeStat.mtimeMs >= srcStat.mtimeMs && !hasNewerFile(includeDirs, exeStat.mtimeMs)) {
                     Notification.showInformationMessage("Executable is up-to-date. Skipping compilation.");
                     if (runCallback) { await runCallback(); }
                     return;

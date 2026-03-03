@@ -80,6 +80,10 @@ export class Configuration {
         return this.getStringSetting("debugger-path");
     }
 
+    static skipIfCompiled(): boolean {
+        return this.getSetting<boolean>("skip-if-compiled") ?? true;
+    }
+
     static trustSingleFiles(): boolean {
         return this.getSetting<boolean>("trust-single-files") ?? true;
     }

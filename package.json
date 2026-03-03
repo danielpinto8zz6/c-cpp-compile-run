@@ -364,6 +364,12 @@
                     "default": true,
                     "description": "Automatically trust single files opened without a workspace folder. When disabled, the extension will prompt for confirmation before compiling or running.",
                     "scope": "application"
+                },
+                "c-cpp-compile-run.skip-if-compiled": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Skip compilation if the executable is already up-to-date (no changes detected in source or header files). Disable this to always recompile.",
+                    "scope": "resource"
                 }
             }
         }

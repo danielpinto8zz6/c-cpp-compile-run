@@ -1,4 +1,4 @@
-import { ProcessExecution, Task, tasks, TaskScope, window, workspace } from "vscode";
+import { ProcessExecution, ShellExecution, Task, tasks, TaskScope, window, workspace } from "vscode";
 import { Configuration } from "./configuration";
 import { FileType } from "./enums/file-type";
 import { File } from "./models/file";
@@ -12,9 +12,40 @@ import { getOutputLocation } from "./utils/file-utils";
 import { existsSync, readdirSync, statSync } from "fs";
 import { ensureWorkspaceIsTrusted } from "./utils/workspace-utils";
 import * as cp from "child_process";
+import { currentShell } from "./utils/shell-utils";
+import { ShellType } from "./enums/shell-type";
 
 const HEADER_EXTENSIONS = new Set([".h", ".hpp", ".hxx", ".hh"]);
 const MAX_SCAN_DEPTH = 10;
+
+/**
+ * Builds a task execution for compiling. On Windows with PowerShell or CMD shells,
+ * wraps the compiler command with `chcp 65001` to force UTF-8 console encoding.
+ * This prevents garbled non-ASCII characters (e.g. Chinese) in GCC diagnostic output
+ * when the system's active code page is not UTF-8 (e.g. GBK on Chinese Windows).
+ */
+function buildCompileTaskExecution(
+    compiler: string,
+    args: string[],
+    opts: { cwd: string; env?: { [key: string]: string } }
+): ProcessExecution | ShellExecution {
+    if (isWindows()) {
+        const shell = currentShell();
+        if (shell === ShellType.powerShell) {
+            // Single-quote each argument; escape embedded single quotes by doubling them
+            const quote = (s: string) => `'${s.replace(/'/g, "''")}'`;
+            const cmdLine = `chcp 65001 | Out-Null; & ${[compiler, ...args].map(quote).join(" ")}`;
+            return new ShellExecution(cmdLine, opts);
+        } else if (shell === ShellType.cmd) {
+            // Double-quote each argument; escape embedded double quotes by doubling them
+            const quote = (s: string) => `"${s.replace(/"/g, '""')}"`;
+            const cmdLine = `chcp 65001 > nul 2>&1 && ${[compiler, ...args].map(quote).join(" ")}`;
+            return new ShellExecution(cmdLine, opts);
+        }
+    }
+    // Non-Windows or other Windows shells (Git Bash, WSL): use ProcessExecution directly
+    return new ProcessExecution(compiler, args, opts);
+}
 
 function hasNewerFile(dirs: string[], exeMtimeMs: number, depth: number = 0): boolean {
     if (depth > MAX_SCAN_DEPTH) { return false; }
@@ -123,7 +154,7 @@ export class Compiler {
         if (hasWorkspace) {
             // Use VS Code Task API when a workspace folder is open —
             // provides $gcc problem matcher for clickable error links.
-            const processExecution = new ProcessExecution(
+            const taskExecution = buildCompileTaskExecution(
                 this.compiler!,
                 compilerArgs,
                 { cwd: this.file.directory, env: execEnv }
@@ -134,7 +165,7 @@ export class Compiler {
                 TaskScope.Workspace,
                 "C/C++ Compile Run: Compile",
                 "C/C++ Compile Run",
-                processExecution,
+                taskExecution,
                 ["$gcc"]
             );
 

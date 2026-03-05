@@ -54,6 +54,7 @@ A Visual Studio Code extension to **compile, run, and debug** single C/C++ files
 | c-cpp-compile-run.run-in-external-terminal  | Run in an external terminal                                             |
 | c-cpp-compile-run.should-show-notifications | Show notifications                                                      |
 | c-cpp-compile-run.output-location           | Custom output location for the compiled file. Supports `${workspaceFolder}` and `${pwd}` variables. See [Output Folder Mirroring](#output-folder-mirroring) |
+| c-cpp-compile-run.mirror-output-location    | Mirror the source folder structure under the output directory (default: `false`). See [Output Folder Mirroring](#output-folder-mirroring) |
 | c-cpp-compile-run.custom-run-prefix         | Prefix command before run (e.g. `valgrind ./foobar`)                    |
 | c-cpp-compile-run.additional-include-paths | Additional directories to add to the compiler's include path (e.g. ["${workspaceFolder}/include"]) |
 | c-cpp-compile-run.debugger-mimode          | The MI debugger to use (`gdb` or `lldb`)                                |
@@ -63,8 +64,41 @@ A Visual Studio Code extension to **compile, run, and debug** single C/C++ files
 
 ## Output Folder Mirroring
 
-You can configure the extension to mirror your source folder structure in a separate output directory.  
-For example, if your project is organized as:
+The `c-cpp-compile-run.output-location` setting controls where compiled executables are placed.
+By default (`mirror-output-location: false`), a relative `output-location` is resolved **relative to the source file's directory**, so the output stays next to the source:
+
+```
+proj/
+├── AA/BB/CC/
+│   ├── a.cpp
+│   └── output/        ← output-location "output" goes here (next to the source)
+│       └── a.exe
+```
+
+Set in your `.vscode/settings.json`:
+
+```json
+{
+    "c-cpp-compile-run.output-location": "output"
+}
+```
+
+When you compile `proj/AA/BB/CC/a.cpp`, the executable is placed at `proj/AA/BB/CC/output/a.exe`.
+
+---
+
+### Enabling folder-structure mirroring
+
+Set `c-cpp-compile-run.mirror-output-location` to `true` to place all outputs under a **single root directory**, mirroring the folder structure of your sources:
+
+```json
+{
+    "c-cpp-compile-run.output-location": "${workspaceFolder}/out",
+    "c-cpp-compile-run.mirror-output-location": true
+}
+```
+
+With the above settings and this project layout:
 
 ```
 myproj/
@@ -76,30 +110,10 @@ myproj/
 └── out/
 ```
 
-And you set in your `.vscode/settings.json`:
+Compiling `src/basics/HelloWorld.cpp` produces `out/basics/HelloWorld.exe`, and compiling `src/functions/Math.cpp` produces `out/functions/Math.exe`.
 
-```json
-{
-    "c-cpp-compile-run.output-location": "${workspaceFolder}/out"
-}
-```
-
-When you compile `src/basics/HelloWorld.cpp`, the executable will be placed at:
-
-```
-out/basics/HelloWorld.exe
-```
-
-The subfolder structure under `src` is mirrored under `out`, so both source and output files stay in the same relative location.
-
-- `${workspaceFolder}` will be replaced with your project's root folder.
-- `${pwd}` will be replaced with your current working directory.
-
-**Example:**  
-If your file is `D:/myproj/src/functions/Math.cpp`,  
-the output will be `D:/myproj/out/functions/Math.exe`.
-
-This makes it easy to keep your build artifacts organized and separate from your source code, similar to Gradle/Java project layouts.
+- `${workspaceFolder}` is replaced with your project's root folder.
+- `${pwd}` is replaced with your current working directory.
 
 ## Keybindings
 

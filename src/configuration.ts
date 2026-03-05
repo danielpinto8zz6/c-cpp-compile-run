@@ -56,6 +56,10 @@ export class Configuration {
         return this.getStringSetting("output-location");
     }
 
+    static mirrorOutputLocation(): boolean {
+        return this.getSetting<boolean>("mirror-output-location") ?? false;
+    }
+
     static linuxTerminal(): string {
         return workspace.getConfiguration().get<string>("terminal.external.linuxExec") ?? "";
     }

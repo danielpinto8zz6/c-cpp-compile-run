@@ -29,27 +29,39 @@ export function parseFile(doc: TextDocument): File {
  */
 export function getOutputLocation(createIfNotExists: boolean = false, baseDir?: string): string {
     let outputLocation = Configuration.outputLocation();
+    const mirrorOutputLocation = Configuration.mirrorOutputLocation();
 
     const workspaceFolder = workspace.workspaceFolders?.[0]?.uri.fsPath;
-    const root = workspaceFolder ?? baseDir ?? process.cwd();
 
     if (!outputLocation) {
-        return root;
+        return baseDir ?? workspaceFolder ?? process.cwd();
     }
 
     outputLocation = outputLocation
         .replace("${workspaceFolder}", workspaceFolder ?? process.cwd())
         .replace("${pwd}", process.cwd());
 
-    if (!isAbsolute(outputLocation)) {
-        outputLocation = join(root, outputLocation);
-    }
-
-    // Mirror the folder structure: append the relative path of baseDir from the workspace root
-    if (baseDir && workspaceFolder) {
-        const relativePath = relative(workspaceFolder, baseDir);
-        if (relativePath && !relativePath.startsWith("..")) {
-            outputLocation = join(outputLocation, relativePath);
+    if (mirrorOutputLocation) {
+        // Mirror mode: the workspace root is the anchor for relative paths so that
+        // the full source-relative folder structure can be replicated under the output dir.
+        // Workspace folder takes priority over baseDir here because mirroring only makes
+        // sense relative to the workspace root.
+        const root = workspaceFolder ?? baseDir ?? process.cwd();
+        if (!isAbsolute(outputLocation)) {
+            outputLocation = join(root, outputLocation);
+        }
+        if (baseDir && workspaceFolder) {
+            const relativePath = relative(workspaceFolder, baseDir);
+            if (relativePath && !relativePath.startsWith("..")) {
+                outputLocation = join(outputLocation, relativePath);
+            }
+        }
+    } else {
+        // Default (no mirroring): output path is relative to the source file's
+        // directory (baseDir), falling back to workspace root.
+        const root = baseDir ?? workspaceFolder ?? process.cwd();
+        if (!isAbsolute(outputLocation)) {
+            outputLocation = join(root, outputLocation);
         }
     }
 

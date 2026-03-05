@@ -39,7 +39,7 @@ function buildCompileTaskExecution(
                 || arg.includes("'")
                 || arg.includes("&")
                 || arg.includes("|")
-            ) return `${arg.replace(/'/g, "''")}`;
+            ) return `$'{arg.replace(/'/g, "''")}'`;
               return arg;
             }).join(' ');
             const cmdLine = `chcp 65001 | Out-Null; & ${quote}`;
@@ -268,4 +268,5 @@ export class Compiler {
         }
     }
 }
+
 

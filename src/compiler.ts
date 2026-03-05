@@ -23,6 +23,12 @@ const MAX_SCAN_DEPTH = 10;
  * wraps the compiler command with `chcp 65001` to force UTF-8 console encoding.
  * This prevents garbled non-ASCII characters (e.g. Chinese) in GCC diagnostic output
  * when the system's active code page is not UTF-8 (e.g. GBK on Chinese Windows).
+ *
+ * For PowerShell, ProcessExecution is used (spawning a dedicated powershell.exe
+ * process) instead of ShellExecution because VS Code's onDidEndTaskProcess event
+ * is not guaranteed to fire for ShellExecution tasks running in an integrated
+ * terminal (per VS Code API documentation). Using ProcessExecution ensures the
+ * event fires reliably when the spawned process exits.
  */
 function buildCompileTaskExecution(
     compiler: string,
@@ -33,20 +39,26 @@ function buildCompileTaskExecution(
         const shell = currentShell();
         if (shell === ShellType.powerShell) {
             // Single-quote each argument; escape embedded single quotes by doubling them
-            const quote = [compiler, ...args].map(arg => {
+            const psQuote = (arg: string): string => {
                 if (arg.includes(" ")
                     || arg.includes("\"")
                     || arg.includes("'")
                     || arg.includes("&")
                     || arg.includes("|")
                 ) {
-                    // PowerShell: '...' with single quotes doubled inside
                     return `'${arg.replace(/'/g, "''")}'`;
                 }
                 return arg;
-            }).join(" ");
-            const cmdLine = `chcp 65001 | Out-Null; & ${quote}`;
-            return new ShellExecution(cmdLine, opts);
+            };
+            const quotedCmd = [compiler, ...args].map(psQuote).join(" ");
+            // Append `; exit $LASTEXITCODE` so the spawned powershell.exe process
+            // exits with the compiler's exit code, which onDidEndTaskProcess receives.
+            const cmdLine = `chcp 65001 | Out-Null; & ${quotedCmd}; exit $LASTEXITCODE`;
+            return new ProcessExecution(
+                "powershell.exe",
+                ["-NoProfile", "-NonInteractive", "-Command", cmdLine],
+                opts
+            );
 
         } else if (shell === ShellType.cmd) {
             // Double-quote each argument; escape embedded double quotes by doubling them

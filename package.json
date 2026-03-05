@@ -329,6 +329,12 @@
                     "scope": "resource",
                     "default": "output"
                 },
+                "c-cpp-compile-run.mirror-output-location": {
+                    "type": "boolean",
+                    "description": "Mirror the source folder structure under the output directory. When enabled, a file at src/foo/bar.cpp with output-location 'out' produces out/foo/bar.exe. When disabled (default), the output is placed directly in a folder relative to the source file (e.g. src/foo/out/bar.exe).",
+                    "scope": "resource",
+                    "default": false
+                },
                 "c-cpp-compile-run.custom-run-prefix": {
                     "type": "string",
                     "description": "Prefix command before run (e.g. valgrind ./foobar)",

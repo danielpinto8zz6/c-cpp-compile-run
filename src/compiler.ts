@@ -34,14 +34,17 @@ function buildCompileTaskExecution(
         if (shell === ShellType.powerShell) {
             // Single-quote each argument; escape embedded single quotes by doubling them
             const quote = [compiler, ...args].map(arg => {
-                if(arg.includes(' ')
-                || arg.includes('"')
-                || arg.includes("'")
-                || arg.includes("&")
-                || arg.includes("|")
-            ) { return `$'{arg.replace(/'/g, "''")}'`; }
-              return arg;
-            }).join(' ');
+                if (arg.includes(" ")
+                    || arg.includes("\"")
+                    || arg.includes("'")
+                    || arg.includes("&")
+                    || arg.includes("|")
+                ) {
+                    // PowerShell: '...' with single quotes doubled inside
+                    return `'${arg.replace(/'/g, "''")}'`;
+                }
+                return arg;
+            }).join(" ");
             const cmdLine = `chcp 65001 | Out-Null; & ${quote}`;
             return new ShellExecution(cmdLine, opts);
 

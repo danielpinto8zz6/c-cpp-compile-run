@@ -8,6 +8,7 @@ import { Configuration } from "./configuration";
 import { ensureWorkspaceIsTrusted } from "./utils/workspace-utils";
 
 const CPPTOLS_EXTENSION_ID = "ms-vscode.cpptools";
+const CPPDEBUG_EXTENSION_ID = "kylinideteam.cppdebug";
 
 export class Debugger {
     private file: File;
@@ -32,15 +33,16 @@ export class Debugger {
             return;
         }
 
-        // Check if cpptools extension is installed
-        if (!extensions.getExtension(CPPTOLS_EXTENSION_ID)) {
-            const install = "Install C/C++ Extension";
+        // Check if a compatible cppdbg extension is installed
+        if (!extensions.getExtension(CPPTOLS_EXTENSION_ID) &&
+            !extensions.getExtension(CPPDEBUG_EXTENSION_ID)) {
+            const install = "Install C/C++ Debug Extension";
             const choice = await window.showErrorMessage(
-                "C/C++ Debugger (cpptools) extension is not installed. Debugging is not available.",
+                "No compatible C/C++ debugger extension (cpptools or cppdebug) is installed. Debugging is not available.",
                 install
             );
             if (choice === install) {
-                await commands.executeCommand("workbench.extensions.installExtension", CPPTOLS_EXTENSION_ID);
+                await commands.executeCommand("workbench.extensions.installExtension", CPPDEBUG_EXTENSION_ID);
             }
             return;
         }

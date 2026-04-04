@@ -36,12 +36,16 @@ export class Debugger {
         // Check if a compatible cppdbg extension is installed
         if (!extensions.getExtension(CPPTOLS_EXTENSION_ID) &&
             !extensions.getExtension(CPPDEBUG_EXTENSION_ID)) {
-            const install = "Install C/C++ Debug Extension";
+            const installMicrosoft = `Install Microsoft C/C++ (${CPPTOLS_EXTENSION_ID})`;
+            const installKylin = `Install KylinIDE C/C++ Debug (${CPPDEBUG_EXTENSION_ID})`;
             const choice = await window.showErrorMessage(
-                "No compatible C/C++ debugger extension (cpptools or cppdebug) is installed. Debugging is not available.",
-                install
+                `No compatible C/C++ debugger extension is installed. Install Microsoft's C/C++ extension (${CPPTOLS_EXTENSION_ID}) or KylinIDE C/C++ Debug (${CPPDEBUG_EXTENSION_ID}).`,
+                installMicrosoft,
+                installKylin
             );
-            if (choice === install) {
+            if (choice === installMicrosoft) {
+                await commands.executeCommand("workbench.extensions.installExtension", CPPTOLS_EXTENSION_ID);
+            } else if (choice === installKylin) {
                 await commands.executeCommand("workbench.extensions.installExtension", CPPDEBUG_EXTENSION_ID);
             }
             return;

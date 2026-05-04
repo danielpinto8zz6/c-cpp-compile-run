@@ -407,7 +407,7 @@
         "glob": "^13.0.6",
         "gulp": "^5.0.1",
         "mocha": "^11.7.5",
-        "release-it": "^19.2.4",
+        "release-it": "^20.0.1",
         "ts-loader": "^9.5.4",
         "typescript": "^5.9.3",
         "webpack": "^5.105.2",
